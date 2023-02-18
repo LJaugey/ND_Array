@@ -1,7 +1,10 @@
 # N-D Array
 
 This project contains a header file that defines a n-dimensional array (variadic) template. This definition takes advantage of data locality which improves performance over e.g. nested `std::vectors`.
-The main is a quick demonstration of the speed difference between this template and nested `std::valarray`.
+The main.cpp is a quick demonstration of the speed difference between this template and nested `std::valarray`.
+
+** Note: ** Must be compiled with c++17
+
 ## Usage
 
 ### definition
@@ -10,7 +13,7 @@ An array with shape `[Dim_1,Dim_2,Dim_3]` is defined with
 Array<Dim_1,Dim_2,Dim_3> A;
 ```
 
-**Warning: ** To get better performance, the copy constructor only performs a shallow copy. Deep copies must be explicit with `Array::copy()` or with `Array::operator=(Array& other)`
+** Warning: ** To get better performance, the copy constructor only performs a shallow copy. Deep copies must be explicit with `Array::copy()` or with `Array::operator=(Array& other)`
 
 ### accessors
 Elements can be accessed through `Array::operator()` with the right amount of indices:
