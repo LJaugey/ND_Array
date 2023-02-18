@@ -14,7 +14,7 @@
 template <size_t firstDim, size_t... RestDims>
 class Array
 {
-public:
+protected:
 
     static constexpr size_t N = sizeof...(RestDims) + 1;
     static constexpr size_t length = firstDim*(RestDims * ...);
@@ -49,35 +49,8 @@ public:
         data_ = p;
         is_original = is_or;
     }
-    
-//    // move constructor
-//    constexpr Array(Array<firstDim, RestDims...> && other) noexcept
-//    {
-//        if(debug) std::cout<<"Move cst ("<<N<<")"<<std::endl;
-//
-//        data_ = std::move(other.data_);
-//        is_original = true;
-//    }
-//    // move assignment operator
-//    Array<firstDim, RestDims...>& operator=(Array<firstDim, RestDims...>&& other) noexcept
-//    {
-//        if(debug) std::cout<<"Move assignment ("<<N<<")"<<std::endl;
-//
-//        //data_ = std::move(other.data_);
-//        std::copy(other.data_, other.data_ + length, data_);
-//
-//        return *this;
-//    }
-    
 
-    // swap function
-    friend void swap(Array<firstDim, RestDims...>& A1, Array<firstDim, RestDims...>& A2)
-    {
-        using std::swap;
 
-        swap(A1.data_, A2.data_);
-        swap(A1.is_original, A2.is_original);
-    }
 
     const Array<firstDim, RestDims...>& operator=(const Array<firstDim, RestDims...>& other)
     {
@@ -562,7 +535,7 @@ constexpr Array<firstDim, RestDims...> operator-(const Array<firstDim, RestDims.
 template <size_t Dim>
 class Array<Dim>
 {
-public:
+protected:
 
     static constexpr size_t N = 1;
     static constexpr size_t length = Dim;
@@ -596,34 +569,7 @@ public:
         is_original = is_or;
     }
     
-//    // move constructor
-//    constexpr Array(Array<Dim> && other) noexcept
-//    {
-//        if(debug) std::cout<<"Move cst ("<<N<<")"<<std::endl;
-//
-//        data_ = std::move(other.data_);
-//        is_original = true;
-//    }
-//    // move assignment operator
-//    Array<Dim>& operator=(Array<Dim>&& other) noexcept
-//    {
-//        if(debug) std::cout<<"Move assignment ("<<N<<")"<<std::endl;
-//
-//        //data_ = std::move(other.data_);
-//        std::copy(other.data_, other.data_ + length, data_);
-//
-//        return *this;
-//    }
-    
 
-    // swap function
-    friend void swap(Array<Dim>& A1, Array<Dim>& A2)
-    {
-        using std::swap;
-
-        swap(A1.data_, A2.data_);
-        swap(A1.is_original, A2.is_original);
-    }
 
     const Array<Dim>& operator=(const Array<Dim>& other)
     {

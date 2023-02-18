@@ -91,8 +91,7 @@ int main()
     }
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-    cout<<endl<<"test end"<<endl;
-    cout<<endl<<"Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl<<endl;
+    cout<<endl<<"test end. Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl<<endl;
     
     
     t = 0;
@@ -112,8 +111,7 @@ int main()
     }
     stop = std::chrono::high_resolution_clock::now();
     duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-    cout<<endl<<"test end"<<endl;
-    cout<<endl<<"Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl;
+    cout<<endl<<"test end. Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl;
 
     
     t = 0;
@@ -133,8 +131,7 @@ int main()
     }
     stop = std::chrono::high_resolution_clock::now();
     duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-    cout<<endl<<"test end"<<endl;
-    cout<<endl<<"Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl;
+    cout<<endl<<"test end. Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl;
 
     return 0;
 }
