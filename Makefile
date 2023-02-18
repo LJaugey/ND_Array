@@ -15,7 +15,7 @@ run: $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 $(OBJ)/%.o: $(SRC)/%.$(EXT) Makefile
-	$(CXX) $(CXXFLAGS) -MMD -MP -MF $(DEP)/$*.d -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
 	clear && rm run
