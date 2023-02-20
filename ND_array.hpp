@@ -14,7 +14,7 @@
 template <size_t firstDim, size_t... RestDims>
 class Array
 {
-protected:
+public:
 
     static constexpr size_t N = sizeof...(RestDims) + 1;
     static constexpr size_t length = firstDim*(RestDims * ...);
@@ -24,7 +24,6 @@ protected:
 
     bool is_original;
 
-public:
 
     // Base constructor
     Array()
@@ -537,7 +536,7 @@ constexpr Array<firstDim, RestDims...> operator-(const Array<firstDim, RestDims.
 template <size_t Dim>
 class Array<Dim>
 {
-protected:
+public:
 
     static constexpr size_t N = 1;
     static constexpr size_t length = Dim;
@@ -546,7 +545,6 @@ protected:
 
     bool is_original;
 
-public:
     
     // Base constructor
     Array()
