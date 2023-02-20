@@ -19,7 +19,7 @@ Array<Dim_1,Dim_2,Dim_3> A;
 Elements can be accessed through `Array::operator()` with the right amount of indices:
 ```
 A(4,3,2) = 5;
-std::cout<<A(3,4,5)<<std::endl;
+std::cout<<A(4,3,2)<<std::endl;
 ```
 ```
 5
