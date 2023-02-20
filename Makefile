@@ -1,4 +1,4 @@
-CXX:=clang++
+CXX:=g++
 CXXFLAGS:= -Ofast -Wall -std=c++17 -fopenmp
 
 EXT = cpp
