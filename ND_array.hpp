@@ -394,23 +394,25 @@ std::ostream& operator<<(std::ostream& output, const Array<firstDim, RestDims...
 
 // abs
 template <size_t firstDim, size_t... RestDims>
-constexpr Array<firstDim, RestDims...> abs(Array<firstDim, RestDims...> Array)
+constexpr Array<firstDim, RestDims...> abs(Array<firstDim, RestDims...> M)
 {
-    return Array.abs();
+    Array<firstDim, RestDims...> result = M.copy();
+
+    return result.abs();
 }
 
 
 // min
 template <size_t firstDim, size_t... RestDims>
-constexpr Array<firstDim, RestDims...> min(Array<firstDim, RestDims...> Array)
+constexpr Array<firstDim, RestDims...> min(Array<firstDim, RestDims...> M)
 {
-    return Array.min();
+    return M.min();
 }
 // max
 template <size_t firstDim, size_t... RestDims>
-constexpr Array<firstDim, RestDims...> max(Array<firstDim, RestDims...> Array)
+constexpr Array<firstDim, RestDims...> max(Array<firstDim, RestDims...> M)
 {
-    return Array.max();
+    return M.max();
 }
 
 
