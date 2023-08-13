@@ -56,7 +56,8 @@ public:
     // copy assigment operator
     const Array<firstDim, RestDims...>& operator=(const Array<firstDim, RestDims...>& other)
     {
-        return Array(other.data_, false);
+        std::copy(other.data_, other.data_ + length, data_);
+        return *this;
     }
     
     constexpr const Array<firstDim, RestDims...>& operator=(double val)
@@ -577,9 +578,7 @@ public:
 
     const Array<Dim>& operator=(const Array<Dim>& other)
     {
-        //data_ = other.data_;
         std::copy(other.data_, other.data_ + length, data_);
-
         return *this;
     }
     constexpr const Array<Dim>& operator=(double val)
