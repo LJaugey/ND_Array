@@ -17,13 +17,16 @@ class Array
 public:
 
     static constexpr size_t N = sizeof...(RestDims) + 1;
-    static constexpr size_t length = firstDim*(RestDims * ...);
-    static constexpr size_t Dims[] = {firstDim, RestDims...};
-    
-    double* data_;
+    static constexpr size_t length = firstDim * (RestDims * ...);
+    static constexpr size_t Dims[N] = {firstDim, RestDims...};
 
+private:
+
+    double* data_;
     bool is_original;
 
+
+public:
 
     // Base constructor
     Array()
@@ -41,7 +44,7 @@ public:
         data_ = other.data_;
         is_original =  false;
     }
-    
+
     // Constructor from pointer
     Array(double* p, bool is_or = false)
     {
@@ -50,14 +53,12 @@ public:
     }
 
 
-
+    // copy assigment operator
     const Array<firstDim, RestDims...>& operator=(const Array<firstDim, RestDims...>& other)
     {
-        //data_ = other.data_;
-        std::copy(other.data_, other.data_ + length, data_);
-
-        return *this;
+        return Array(other.data_, false);
     }
+    
     constexpr const Array<firstDim, RestDims...>& operator=(double val)
     {
         std::fill_n(data_,length, val);
@@ -79,24 +80,24 @@ public:
 
 
     // access element
-    template <typename... Indices>
-    constexpr double& operator()(Indices... indices)
+    template <typename... ind_type>
+    constexpr double& operator()(ind_type... indices)
     {
         size_t offset = 0;
-        size_t temp[] = {static_cast<size_t>(indices)...};
+        size_t temp[N] = {static_cast<size_t>(indices)...};
 
-        for (size_t i = 0; i < N; i++) {
+        for (size_t i = 0; i < std::min(N, sizeof...(ind_type)); i++) {
             offset = offset * Dims[i] + temp[i];
         }
         return data_[offset];
     }
-    template <typename... Indices>
-    constexpr double operator()(Indices... indices) const
+    template <typename... ind_type>
+    constexpr const double& operator()(ind_type... indices) const
     {
         size_t offset = 0;
-        size_t temp[] = {static_cast<size_t>(indices)...};
+        size_t temp[N] = {static_cast<size_t>(indices)...};
 
-        for (size_t i = 0; i < N; i++) {
+        for (size_t i = 0; i < std::min(N, sizeof...(ind_type)); i++) {
             offset = offset * Dims[i] + temp[i];
         }
         return data_[offset];
@@ -106,11 +107,11 @@ public:
     // access element
     constexpr Array<RestDims...> operator[](size_t index)
     {
-        return Array<RestDims...>(data_+ index * (RestDims * ...));
+        return Array<RestDims...>(data_+ index * (RestDims * ...), false);
     }
     constexpr const Array<RestDims...> operator[](size_t index) const
     {
-        return Array<RestDims...>(data_+ index * (RestDims * ...));
+        return Array<RestDims...>(data_+ index * (RestDims * ...), false);
     }
 
 
@@ -541,11 +542,14 @@ public:
     static constexpr size_t N = 1;
     static constexpr size_t length = Dim;
 
-    double* data_;
+private:
 
+    double* data_;
     bool is_original;
 
     
+public:
+
     // Base constructor
     Array()
     {
@@ -588,10 +592,10 @@ public:
 
 
     // access element
-    constexpr double& operator()(size_t index)              { return data_[index]; }
-    constexpr double operator()(size_t index) const   { return data_[index]; }
-    constexpr double& operator[](size_t index)              { return data_[index]; }
-    constexpr double operator[](size_t index) const   { return data_[index]; }
+    constexpr double& operator()(size_t index)          { return data_[index]; }
+    constexpr double operator()(size_t index) const     { return data_[index]; }
+    constexpr double& operator[](size_t index)          { return data_[index]; }
+    constexpr double operator[](size_t index) const     { return data_[index]; }
 
 
 
