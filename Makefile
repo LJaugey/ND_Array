@@ -6,16 +6,19 @@ EXT = cpp
 SOURCES := $(wildcard *.$(EXT))
 OBJECTS := $(patsubst $(SRC)/%.$(EXT),%.o,$(SOURCES))
 
-all: run
+all: test speed_test
 
 debug: CXXFLAGS += -g
-debug: run
+debug: test speed
 
-run: $(OBJECTS)
+test: main.cpp
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+speed_test:  speed_test.cpp
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 $(OBJ)/%.o: $(SRC)/%.$(EXT) Makefile
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	clear && rm run
+	clear && rm test speed_test
