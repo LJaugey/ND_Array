@@ -1,5 +1,5 @@
 CXX:=g++
-CXXFLAGS:= -Ofast -Wall -std=c++17 -fopenmp
+CXXFLAGS:= -Ofast -Wall -std=c++20 -fopenmp
 
 EXT = cpp
 
