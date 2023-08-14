@@ -82,7 +82,7 @@ public:
 
     // access element
     template <typename... ind_type>
-    double& operator()(ind_type... indices)
+    inline double& operator()(ind_type... indices)
     {
         size_t offset = 0;
         size_t temp[N] = {static_cast<size_t>(indices)...};
@@ -93,7 +93,7 @@ public:
         return data_[offset];
     }
     template <typename... ind_type>
-    const double& operator()(ind_type... indices) const
+    inline const double& operator()(ind_type... indices) const
     {
         size_t offset = 0;
         size_t temp[N] = {static_cast<size_t>(indices)...};
@@ -106,11 +106,11 @@ public:
 
 
     // access element
-    Array<RestDims...> operator[](size_t index)
+    inline Array<RestDims...> operator[](size_t index)
     {
         return Array<RestDims...>(data_+ index * (RestDims * ...), false);
     }
-    const Array<RestDims...> operator[](size_t index) const
+    inline const Array<RestDims...> operator[](size_t index) const
     {
         return Array<RestDims...>(data_+ index * (RestDims * ...), false);
     }
@@ -591,10 +591,10 @@ public:
 
 
     // access element
-    double& operator()(size_t index)                { return data_[index]; }
-    const double operator()(size_t index) const     { return data_[index]; }
-    double& operator[](size_t index)                { return data_[index]; }
-    const double operator[](size_t index) const     { return data_[index]; }
+    inline double& operator()(size_t index)                { return data_[index]; }
+    inline const double operator()(size_t index) const     { return data_[index]; }
+    inline double& operator[](size_t index)                { return data_[index]; }
+    inline const double operator[](size_t index) const     { return data_[index]; }
 
 
 
