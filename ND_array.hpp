@@ -29,7 +29,7 @@ private:
 public:
 
     // Base constructor
-    constexpr Array()
+    Array()
     {
         data_ = new double[length];
         
@@ -39,14 +39,14 @@ public:
     }
 
     // copy constructor
-    constexpr Array(const Array<firstDim, RestDims...>& other)
+    Array(const Array<firstDim, RestDims...>& other)
     {
         data_ = other.data_;
         is_original =  false;
     }
 
     // Constructor from pointer
-    constexpr Array(double* p, bool is_or = false)
+    Array(double* p, bool is_or = false)
     {
         data_ = p;
         is_original = is_or;
@@ -54,20 +54,20 @@ public:
 
 
     // copy assigment operator
-    constexpr const Array<firstDim, RestDims...>& operator=(const Array<firstDim, RestDims...>& other)
+    const Array<firstDim, RestDims...>& operator=(const Array<firstDim, RestDims...>& other)
     {
         std::copy(other.data_, other.data_ + length, data_);
         return *this;
     }
     
-    constexpr const Array<firstDim, RestDims...>& operator=(double val)
+    const Array<firstDim, RestDims...>& operator=(double val)
     {
         std::fill_n(data_,length, val);
         return *this;
     }
     
     // constructor from N-1 dimensional array
-    constexpr Array(Array<RestDims...> const& slice)
+    Array(Array<RestDims...> const& slice)
     {
         data_ = new double[length];
         for(size_t i = 0; i<firstDim; i++)
@@ -76,13 +76,13 @@ public:
         }
     }
 
-    constexpr ~Array() {  if(is_original)    delete[] data_;   }
+    ~Array() {  if(is_original)    delete[] data_;   }
 
 
 
     // access element
     template <typename... ind_type>
-    constexpr double& operator()(ind_type... indices)
+    double& operator()(ind_type... indices)
     {
         size_t offset = 0;
         size_t temp[N] = {static_cast<size_t>(indices)...};
@@ -93,7 +93,7 @@ public:
         return data_[offset];
     }
     template <typename... ind_type>
-    constexpr const double& operator()(ind_type... indices) const
+    const double& operator()(ind_type... indices) const
     {
         size_t offset = 0;
         size_t temp[N] = {static_cast<size_t>(indices)...};
@@ -106,11 +106,11 @@ public:
 
 
     // access element
-    constexpr Array<RestDims...> operator[](size_t index)
+    Array<RestDims...> operator[](size_t index)
     {
         return Array<RestDims...>(data_+ index * (RestDims * ...), false);
     }
-    constexpr const Array<RestDims...> operator[](size_t index) const
+    const Array<RestDims...> operator[](size_t index) const
     {
         return Array<RestDims...>(data_+ index * (RestDims * ...), false);
     }
@@ -119,12 +119,12 @@ public:
 
 
 
-    constexpr const Array<firstDim, RestDims...>& fill(double val)
+    Array<firstDim, RestDims...>& fill(double val)
     {
         std::fill_n(data_,length, val);
         return *this;
     }
-    constexpr const Array<firstDim, RestDims...>& fill(const Array<firstDim, RestDims...>& other)
+    Array<firstDim, RestDims...>& fill(const Array<firstDim, RestDims...>& other)
     {
         if(data_ != other.data_)    std::copy(other.data_, other.data_ + length, data_);
         return *this;
@@ -132,7 +132,7 @@ public:
 
 
     // explicit copy
-    constexpr Array<firstDim, RestDims...> copy() const
+    Array<firstDim, RestDims...> copy() const
     {
         Array<firstDim, RestDims...> result;
 
@@ -143,14 +143,14 @@ public:
 
 
 
-    constexpr size_t size(const size_t index = 0) const
+    const size_t size(const size_t index = 0) const
     {
         return Dims[index];
     }
 
     
     // abs
-    constexpr Array<firstDim, RestDims...> const& abs()
+    Array<firstDim, RestDims...> const& abs()
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -170,7 +170,7 @@ public:
 
 
     // min
-    constexpr double min() const
+    const double min() const
     {
         double res = data_[0];
         
@@ -190,7 +190,7 @@ public:
         return res;
     }
     // max
-    constexpr double max() const
+    const double max() const
     {
         double res = data_[0];
         
@@ -218,7 +218,7 @@ public:
 
 
     // += operator
-    constexpr const Array<firstDim, RestDims...>& operator+=(const Array<firstDim, RestDims...>& other)
+    const Array<firstDim, RestDims...>& operator+=(const Array<firstDim, RestDims...>& other)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -236,7 +236,7 @@ public:
         return *this;
     }
     // scalar
-    constexpr const Array<firstDim, RestDims...>& operator+=(double scalar)
+    const Array<firstDim, RestDims...>& operator+=(double scalar)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -255,7 +255,7 @@ public:
     }
 
     // -= operator
-    constexpr const Array<firstDim, RestDims...>& operator-=(const Array<firstDim, RestDims...>& other)
+    const Array<firstDim, RestDims...>& operator-=(const Array<firstDim, RestDims...>& other)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -273,7 +273,7 @@ public:
         return *this;
     }
     // scalar
-    constexpr const Array<firstDim, RestDims...>& operator-=(double scalar)
+    const Array<firstDim, RestDims...>& operator-=(double scalar)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -292,7 +292,7 @@ public:
     }
 
     // *= operator
-    constexpr const Array<firstDim, RestDims...>& operator*=(const Array<firstDim, RestDims...>& other)
+    const Array<firstDim, RestDims...>& operator*=(const Array<firstDim, RestDims...>& other)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -310,7 +310,7 @@ public:
         return *this;
     }
     // scalar
-    constexpr const Array<firstDim, RestDims...>& operator*=(double scalar)
+    const Array<firstDim, RestDims...>& operator*=(double scalar)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -329,7 +329,7 @@ public:
     }
 
     // /= operator
-    constexpr const Array<firstDim, RestDims...>& operator/=(const Array<firstDim, RestDims...>& other)
+    const Array<firstDim, RestDims...>& operator/=(const Array<firstDim, RestDims...>& other)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -347,7 +347,7 @@ public:
         return *this;
     }
     // scalar
-    constexpr const Array<firstDim, RestDims...>& operator/=(double scalar)
+    const Array<firstDim, RestDims...>& operator/=(double scalar)
     {
         double inv_scal = 1.0/scalar;
 
@@ -373,9 +373,9 @@ public:
 
 // ostream
 template <size_t firstDim, size_t... RestDims>
-constexpr std::ostream& operator<<(std::ostream& output, const Array<firstDim, RestDims...>& other)
+std::ostream& operator<<(std::ostream& output, const Array<firstDim, RestDims...>& other)
 {
-    if constexpr (sizeof...(RestDims) > 0)
+    if (sizeof...(RestDims) > 0)
     {
         for(size_t i = 0; i<firstDim; i++)
             output<<other[i]<<std::endl;
@@ -395,7 +395,7 @@ constexpr std::ostream& operator<<(std::ostream& output, const Array<firstDim, R
 
 // abs
 template <size_t firstDim, size_t... RestDims>
-constexpr Array<firstDim, RestDims...> abs(Array<firstDim, RestDims...> M)
+Array<firstDim, RestDims...> abs(Array<firstDim, RestDims...> M)
 {
     Array<firstDim, RestDims...> result = M.copy();
 
@@ -405,13 +405,13 @@ constexpr Array<firstDim, RestDims...> abs(Array<firstDim, RestDims...> M)
 
 // min
 template <size_t firstDim, size_t... RestDims>
-constexpr double min(Array<firstDim, RestDims...> M)
+const double min(Array<firstDim, RestDims...> M)
 {
     return M.min();
 }
 // max
 template <size_t firstDim, size_t... RestDims>
-constexpr double max(Array<firstDim, RestDims...> M)
+const double max(Array<firstDim, RestDims...> M)
 {
     return M.max();
 }
@@ -420,7 +420,7 @@ constexpr double max(Array<firstDim, RestDims...> M)
 
 // addition
 template <size_t firstDim, size_t... RestDims>
-constexpr Array<firstDim, RestDims...> operator+(const Array<firstDim, RestDims...>& M1, const Array<firstDim, RestDims...>& M2)
+Array<firstDim, RestDims...> operator+(const Array<firstDim, RestDims...>& M1, const Array<firstDim, RestDims...>& M2)
 {
     Array<firstDim, RestDims...> result = M1.copy();
     result+=M2;
@@ -428,14 +428,14 @@ constexpr Array<firstDim, RestDims...> operator+(const Array<firstDim, RestDims.
 }
 // scalar
 template <size_t firstDim, size_t... RestDims>
-constexpr Array<firstDim, RestDims...> operator+(double scalar, const Array<firstDim, RestDims...>& other)
+Array<firstDim, RestDims...> operator+(double scalar, const Array<firstDim, RestDims...>& other)
 {
     Array<firstDim, RestDims...> result = other.copy();
     result+=scalar;
     return result;
 }
 template <size_t firstDim, size_t... RestDims>
-constexpr Array<firstDim, RestDims...> operator+(const Array<firstDim, RestDims...>& other, double scalar)
+Array<firstDim, RestDims...> operator+(const Array<firstDim, RestDims...>& other, double scalar)
 {
     Array<firstDim, RestDims...> result = other.copy();
     result+=scalar;
@@ -445,7 +445,7 @@ constexpr Array<firstDim, RestDims...> operator+(const Array<firstDim, RestDims.
 
 // substraction
 template <size_t firstDim, size_t... RestDims>
-constexpr Array<firstDim, RestDims...> operator-(const Array<firstDim, RestDims...>& M1, const Array<firstDim, RestDims...>& M2)
+Array<firstDim, RestDims...> operator-(const Array<firstDim, RestDims...>& M1, const Array<firstDim, RestDims...>& M2)
 {
     Array<firstDim, RestDims...> result = M1.copy();
     result-=M2;
@@ -453,14 +453,14 @@ constexpr Array<firstDim, RestDims...> operator-(const Array<firstDim, RestDims.
 }
 // scalar
 template <size_t firstDim, size_t... RestDims>
-constexpr Array<firstDim, RestDims...> operator-(double scalar, const Array<firstDim, RestDims...>& other)
+Array<firstDim, RestDims...> operator-(double scalar, const Array<firstDim, RestDims...>& other)
 {
     Array<firstDim, RestDims...> result = other.copy();
     result-=scalar;
     return result;
 }
 template <size_t firstDim, size_t... RestDims>
-constexpr Array<firstDim, RestDims...> operator-(const Array<firstDim, RestDims...>& other, double scalar)
+Array<firstDim, RestDims...> operator-(const Array<firstDim, RestDims...>& other, double scalar)
 {
     Array<firstDim, RestDims...> result = other.copy();
     result-=scalar;
@@ -470,7 +470,7 @@ constexpr Array<firstDim, RestDims...> operator-(const Array<firstDim, RestDims.
 
 // multiplication
 template <size_t firstDim, size_t... RestDims>
-constexpr Array<firstDim, RestDims...> operator*(const Array<firstDim, RestDims...>& M1, const Array<firstDim, RestDims...>& M2)
+Array<firstDim, RestDims...> operator*(const Array<firstDim, RestDims...>& M1, const Array<firstDim, RestDims...>& M2)
 {
     Array<firstDim, RestDims...> result = M1.copy();
     result*=M2;
@@ -478,14 +478,14 @@ constexpr Array<firstDim, RestDims...> operator*(const Array<firstDim, RestDims.
 }
 // scalar
 template <size_t firstDim, size_t... RestDims>
-constexpr Array<firstDim, RestDims...> operator*(double scalar, const Array<firstDim, RestDims...>& other)
+Array<firstDim, RestDims...> operator*(double scalar, const Array<firstDim, RestDims...>& other)
 {
     Array<firstDim, RestDims...> result = other.copy();
     result*=scalar;
     return result;
 }
 template <size_t firstDim, size_t... RestDims>
-constexpr Array<firstDim, RestDims...> operator*(const Array<firstDim, RestDims...>& other, double scalar)
+Array<firstDim, RestDims...> operator*(const Array<firstDim, RestDims...>& other, double scalar)
 {
     Array<firstDim, RestDims...> result = other.copy();
     result*=scalar;
@@ -495,7 +495,7 @@ constexpr Array<firstDim, RestDims...> operator*(const Array<firstDim, RestDims.
 
 // division
 template <size_t firstDim, size_t... RestDims>
-constexpr Array<firstDim, RestDims...> operator/(const Array<firstDim, RestDims...>& M1, const Array<firstDim, RestDims...>& M2)
+Array<firstDim, RestDims...> operator/(const Array<firstDim, RestDims...>& M1, const Array<firstDim, RestDims...>& M2)
 {
     Array<firstDim, RestDims...> result = M1.copy();
     result/=M2;
@@ -503,7 +503,7 @@ constexpr Array<firstDim, RestDims...> operator/(const Array<firstDim, RestDims.
 }
 // scalar
 template <size_t firstDim, size_t... RestDims>
-constexpr Array<firstDim, RestDims...> operator/(double scalar, const Array<firstDim, RestDims...>& other)
+Array<firstDim, RestDims...> operator/(double scalar, const Array<firstDim, RestDims...>& other)
 {
     Array<firstDim, RestDims...> result;
 
@@ -514,7 +514,7 @@ constexpr Array<firstDim, RestDims...> operator/(double scalar, const Array<firs
     return result;
 }
 template <size_t firstDim, size_t... RestDims>
-constexpr Array<firstDim, RestDims...> operator/(const Array<firstDim, RestDims...>& other, double scalar)
+Array<firstDim, RestDims...> operator/(const Array<firstDim, RestDims...>& other, double scalar)
 {
     Array<firstDim, RestDims...> result = other.copy();
     result/=scalar;
@@ -523,7 +523,7 @@ constexpr Array<firstDim, RestDims...> operator/(const Array<firstDim, RestDims.
 
 // opposite
 template <size_t firstDim, size_t... RestDims>
-constexpr Array<firstDim, RestDims...> operator-(const Array<firstDim, RestDims...>& other)
+Array<firstDim, RestDims...> operator-(const Array<firstDim, RestDims...>& other)
 {
     Array<firstDim, RestDims...> result;
 
@@ -552,7 +552,7 @@ private:
 public:
 
     // Base constructor
-    constexpr Array()
+    Array()
     {
         data_ = new double[length];
         std::fill_n(data_,length, 0.0);
@@ -561,14 +561,14 @@ public:
     }
 
     // copy constructor
-    constexpr Array(const Array<Dim> & other)
+    Array(const Array<Dim> & other)
     {
         data_ = other.data_;
         is_original =  false;
     }
     
     // Constructor from pointer
-    constexpr Array(double* p, bool is_or = false)
+    Array(double* p, bool is_or = false)
     {
         data_ = p;
         is_original = is_or;
@@ -576,36 +576,36 @@ public:
     
 
 
-    constexpr const Array<Dim>& operator=(const Array<Dim>& other)
+    const Array<Dim>& operator=(const Array<Dim>& other)
     {
         std::copy(other.data_, other.data_ + length, data_);
         return *this;
     }
-    constexpr const Array<Dim>& operator=(double val)
+    const Array<Dim>& operator=(double val)
     {
         std::fill_n(data_,length, val);
         return *this;
     }
     
-    constexpr ~Array() {  if(is_original)    delete[] data_;   }
+    ~Array() {  if(is_original)    delete[] data_;   }
 
 
     // access element
-    constexpr double& operator()(size_t index)          { return data_[index]; }
-    constexpr double operator()(size_t index) const     { return data_[index]; }
-    constexpr double& operator[](size_t index)          { return data_[index]; }
-    constexpr double operator[](size_t index) const     { return data_[index]; }
+    double& operator()(size_t index)                { return data_[index]; }
+    const double operator()(size_t index) const     { return data_[index]; }
+    double& operator[](size_t index)                { return data_[index]; }
+    const double operator[](size_t index) const     { return data_[index]; }
 
 
 
 
 
-    constexpr const Array<Dim>& fill(double val)
+    Array<Dim>& fill(double val)
     {
         std::fill_n(data_,length, val);
         return *this;
     }
-    constexpr const Array<Dim>& fill(const Array<Dim> & other)
+    Array<Dim>& fill(const Array<Dim> & other)
     {
         if(data_ != other.data_)    std::copy(other.data_, other.data_ + length, data_);
         return *this;
@@ -613,7 +613,7 @@ public:
 
 
     // explicit copy
-    constexpr Array<Dim> copy() const
+    Array<Dim> copy() const
     {
         Array<Dim> result;
 
@@ -626,7 +626,7 @@ public:
 
 
     // abs
-    constexpr Array<Dim> const& abs()
+    Array<Dim> const& abs()
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -646,7 +646,7 @@ public:
 
 
     // min
-    constexpr double min() const
+    const double min() const
     {
         double res = data_[0];
         
@@ -666,7 +666,7 @@ public:
         return res;
     }
     // max
-    constexpr double max() const
+    const double max() const
     {
         double res = data_[0];
         
@@ -694,7 +694,7 @@ public:
 
 
     // += operator
-    constexpr const Array<Dim>& operator+=(const Array<Dim>& other)
+    const Array<Dim>& operator+=(const Array<Dim>& other)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -712,7 +712,7 @@ public:
         return *this;
     }
     // scalar
-    constexpr const Array<Dim>& operator+=(double scalar)
+    const Array<Dim>& operator+=(double scalar)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -731,7 +731,7 @@ public:
     }
 
     // -= operator
-    constexpr const Array<Dim>& operator-=(const Array<Dim>& other)
+    const Array<Dim>& operator-=(const Array<Dim>& other)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -749,7 +749,7 @@ public:
         return *this;
     }
     // scalar
-    constexpr const Array<Dim>& operator-=(double scalar)
+    const Array<Dim>& operator-=(double scalar)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -768,7 +768,7 @@ public:
     }
 
     // *= operator
-    constexpr const Array<Dim>& operator*=(const Array<Dim>& other)
+    const Array<Dim>& operator*=(const Array<Dim>& other)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -786,7 +786,7 @@ public:
         return *this;
     }
     // scalar
-    constexpr const Array<Dim>& operator*=(double scalar)
+    const Array<Dim>& operator*=(double scalar)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -805,7 +805,7 @@ public:
     }
 
     // /= operator
-    constexpr const Array<Dim>& operator/=(const Array<Dim>& other)
+    const Array<Dim>& operator/=(const Array<Dim>& other)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -823,7 +823,7 @@ public:
         return *this;
     }
     // scalar
-    constexpr const Array<Dim>& operator/=(double scalar)
+    const Array<Dim>& operator/=(double scalar)
     {
         double inv_scal = 1.0/scalar;
 
