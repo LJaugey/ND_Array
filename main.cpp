@@ -55,7 +55,6 @@ int main()
     cout<<min(A-B)<<endl;
     cout<<(A-B).max()<<endl;
     cout<<max(A-B)<<endl;
-    cout<<endl<<endl<<endl;
     
 
     /*// 1D array
