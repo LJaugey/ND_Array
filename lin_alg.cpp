@@ -17,5 +17,17 @@ int main()
     cout<<B<<endl<<endl;
     cout<<C<<endl<<endl;
 
+    cout<<endl<<endl;
+
+    Vector<4> V;
+    V.fill(0.5);
+
+    Vector<4> res = A*V;
+
+    cout<<res<<endl<<endl;
+    cout<<endl<<endl;
+
+    cout<<V*res<<endl;
+
     return 0;
 }
