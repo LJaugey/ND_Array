@@ -1,6 +1,7 @@
 # N-D Array
 
-This project contains a header file that defines a n-dimensional array (variadic) template. This definition takes advantage of data locality which improves performance over e.g. nested `std::vectors`.
+This project contains a header file that defines a n-dimensional array (variadic) template. This definition takes advantage of data locality which improves performance over e.g. nested `std::vectors`. Expression templates are used for lazy evaluation of operations (e.g. `(A+B)*C` compiles to a `for` loop over `ì` containing `(A[i]+B[i])*C[i]`).
+
 The main.cpp is a quick overview of the features and the speed_test.cpp is a demonstration of the speed difference between this template and nested `std::valarray`.
 
 ** Note: ** Must be compiled with c++17

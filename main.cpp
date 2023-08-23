@@ -47,14 +47,14 @@ int main()
     cout<<-B(50,25,5,2)<<endl;
     cout<<endl<<endl<<endl;
 
-    cout<<(A-B).abs()(50,25,5,2)<<endl;
+    //cout<<(A-B).abs()(50,25,5,2)<<endl;
     cout<<abs(A-B)(50,25,5,2)<<endl;
     cout<<endl<<endl<<endl;
     
-    cout<<(A-B).min()<<endl;
-    cout<<min(A-B)<<endl;
-    cout<<(A-B).max()<<endl;
-    cout<<max(A-B)<<endl;
+    //cout<<(A-B).min()<<endl;
+    //cout<<min(A-B)<<endl;
+    //cout<<(A-B).max()<<endl;
+    //cout<<max(A-B)<<endl;
     
 
     /*// 1D array

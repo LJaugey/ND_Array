@@ -26,7 +26,7 @@ Matrix<dim,dim> diag(double val)
         result(i,i) = val;
     }
 
-    return result
+    return result;
 }
 template<size_t dim>
 Matrix<dim,dim> diag(Vector<dim> V)
@@ -38,7 +38,7 @@ Matrix<dim,dim> diag(Vector<dim> V)
         result(i,i) = V(i);
     }
 
-    return result
+    return result;
 }
 
 
