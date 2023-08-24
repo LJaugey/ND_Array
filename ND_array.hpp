@@ -4,224 +4,14 @@
 #include <cstddef>
 #include <iostream>
 #include <type_traits>
-#include <vector>
 #include <omp.h>
 
 
+#include "Array_Expression.hpp"
+#include "Unary_Expression.hpp"
+#include "Binary_Expression.hpp"
+
 #define PAR_SIZE 1024
-
-
-template <class E>
-class Array_Expression
-{
-public:
-    
-    inline double get_element(size_t i) const   {  return static_cast<const E&>(*this).get_element(i);   }
-
-    inline size_t len() const   {   return static_cast<const E&>(*this).len();  }
-
-    template <typename... ind_type>
-    inline double operator()(ind_type... indices)              {   return static_cast<const E&>(*this)(indices...);    }
-};
-
-/*
-// min
-template<class E>
-const double min(Array_Expression<E> Arr_expr)
-{
-    return Arr_expr.min();
-}
-// max
-template<class E>
-const double max(Array_Expression<E> Arr_expr)
-{
-    return Arr_expr.max();
-}
-*/
-
-
-template <class E1, class OP, class E2>
-class Binary_Op : public Array_Expression<Binary_Op<E1,OP,E2>>
-{
-    E1 arg1;
-    E2 arg2;
-
-    OP operation;
-
-public:
-
-    Binary_Op(E1 a_1, E2 a_2)
-    :arg1(a_1),arg2(a_2)
-    {}
-
-    inline auto get_element(size_t i) const
-    {
-        if constexpr(std::is_convertible<E1, double>::value)
-        {
-            return operation.apply(arg1,arg2.get_element(i));
-        }
-        else if constexpr(std::is_convertible<E2, double>::value)
-        {
-            return operation.apply(arg1.get_element(i),arg2);
-        }
-        else
-        {
-            return operation.apply(arg1.get_element(i),arg2.get_element(i));
-        }
-    }
-
-    inline size_t len() const
-    {
-        if constexpr(!std::is_convertible<E1, double>::value)
-        {
-            return arg1.len();
-        }
-        else if constexpr(!std::is_convertible<E2, double>::value)
-        {
-            return arg2.len();
-        }
-        else
-        {
-            return 1;
-        }
-    }
-
-    template <typename... ind_type>
-    inline double operator()(ind_type... indices)
-    {
-        if constexpr(std::is_convertible<E1, double>::value)
-        {
-            return operation.apply(arg1,arg2(indices...));
-        }
-        else if constexpr(std::is_convertible<E2, double>::value)
-        {
-            return operation.apply(arg1(indices...),arg2);
-        }
-        else
-        {
-            return operation.apply(arg1(indices...),arg2(indices...));
-        }
-    }
-};
-
-template <class OP, class E>
-class Unary_Op : public Array_Expression<Unary_Op<OP,E>>
-{
-    E arg;
-
-    OP operation;
-
-public:
-
-    Unary_Op(E a)
-    :arg(a)
-    {}
-
-    inline auto get_element(size_t i) const
-    {
-        if constexpr(std::is_convertible<E, double>::value)
-        {
-            return operation.apply(arg);
-        }
-        else
-        {
-            return operation.apply(arg.get_element(i));
-        }
-    }
-
-    inline size_t len() const
-    {
-        if constexpr(!std::is_convertible<E, double>::value)
-        {
-            return arg.len();
-        }
-        else
-        {
-            return 1;
-        }
-    }
-
-    template <typename... ind_type>
-    inline double operator()(ind_type... indices)
-    {
-        if constexpr(std::is_convertible<E, double>::value)
-        {
-            return operation.apply(arg);
-        }
-        else
-        {
-            return operation.apply(arg(indices...));
-        }
-    }
-};
-
-
-
-struct Array_add
-{
-    template<typename T1, typename T2>
-    inline auto apply(T1 u,T2 v) const  {   return u + v;  }
-};
-template <class LHS, class RHS>
-auto operator+(const LHS& lhs, const RHS& rhs) {
-return Binary_Op<LHS,Array_add,RHS>(lhs,rhs);
-}
-
-struct Array_sub
-{
-    template<typename T1, typename T2>
-    inline auto apply(T1 u,T2 v) const  {   return u - v;  }
-};
-template <class LHS, class RHS>
-auto operator-(const LHS& lhs, const RHS& rhs) {
-return Binary_Op<LHS,Array_sub,RHS>(lhs,rhs);
-}
-
-struct Array_mul
-{
-    template<typename T1, typename T2>
-    inline auto apply(T1 u,T2 v) const  {   return u * v;  }
-};
-template <class LHS, class RHS>
-Binary_Op<LHS,Array_mul,RHS> operator*(const LHS& lhs, const RHS& rhs) {
-return Binary_Op<LHS,Array_mul,RHS>(lhs,rhs);
-}
-
-struct Array_div
-{
-    template<typename T1, typename T2>
-    inline auto apply(T1 u,T2 v) const  {   return u / v;  }
-};
-template <class LHS, class RHS>
-Binary_Op<LHS,Array_div,RHS> operator/(const LHS& lhs, const RHS& rhs) {
-return Binary_Op<LHS,Array_div,RHS>(lhs,rhs);
-}
-
-
-
-struct Array_opp
-{
-    template<typename T>
-    inline T apply(T u) const  {   return -u;  }
-};
-template <class RHS>
-Unary_Op<Array_opp,RHS> operator-(const RHS& rhs) {
-return Unary_Op<Array_opp,RHS>(rhs);
-}
-
-struct Array_abs
-{
-    template<typename T>
-    inline T apply(T u) const  {   return std::abs(u);  }
-};
-template <class RHS>
-Unary_Op<Array_opp,RHS> abs(const RHS& rhs) {
-return Unary_Op<Array_opp,RHS>(rhs);
-}
-
-
-
-
 
 
 
@@ -242,16 +32,22 @@ protected:
 
 public:
 
-    const double get_element(size_t i) const    {   return data_[i];    }
-    double& get_element(size_t i)               {   return data_[i];    }
-    inline size_t len() const                   {   return length;      }
+    inline const double get_element(size_t i) const     {   return data_[i];    }
+    inline double& get_element(size_t i)                {   return data_[i];    }
 
     // Base constructor
     Array()
     {
         data_ = new double[length];
-        
-        std::fill_n(data_,length, 0.0);
+
+        is_original =  true;
+    }
+    // Base constructor
+    Array(double val)
+    {
+        data_ = new double[length];
+
+        std::fill_n(data_,length, val);
 
         is_original =  true;
     }
@@ -300,14 +96,14 @@ public:
         if constexpr(length>PAR_SIZE)
         {
             #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < expr.len(); ++i)
+            for (size_t i = 0; i < length; ++i)
             {
                 data_[i] = expr.get_element(i);
             }
         }
         else
         {
-            for (size_t i = 0; i < expr.len(); ++i)
+            for (size_t i = 0; i < length; ++i)
             {
                 data_[i] = expr.get_element(i);
             }
@@ -319,14 +115,14 @@ public:
         if constexpr(length>PAR_SIZE)
         {
             #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < expr.len(); ++i)
+            for (size_t i = 0; i < length; ++i)
             {
                 data_[i] = expr.get_element(i);
             }
         }
         else
         {
-            for (size_t i = 0; i < expr.len(); ++i)
+            for (size_t i = 0; i < length; ++i)
             {
                 data_[i] = expr.get_element(i);
             }
@@ -389,7 +185,7 @@ public:
     template<class E>
     Array<firstDim, RestDims...>& fill(Array_Expression<E> const& expr)
     {
-        for (size_t i = 0; i < expr.len(); ++i)
+        for (size_t i = 0; i < length; ++i)
         {
             data_[i] = expr[i];
         }
@@ -674,15 +470,21 @@ private:
     
 public:
 
-    const double get_element(size_t i) const    {   return data_[i];    }
-    double& get_element(size_t i)               {   return data_[i];    }
-    inline size_t len() const                   {   return length;      }
+    inline const double get_element(size_t i) const    {   return data_[i];    }
+    inline double& get_element(size_t i)               {   return data_[i];    }
 
     // Base constructor
     Array()
     {
         data_ = new double[length];
-        std::fill_n(data_,length, 0.0);
+
+        is_original =  true;
+    }
+    Array(double val)
+    {
+        data_ = new double[length];
+
+        std::fill_n(data_,length, val);
 
         is_original =  true;
     }
@@ -719,7 +521,7 @@ public:
     : is_original(true)
     {
         data_ = new double[length];
-        for (size_t i = 0; i < expr.len(); ++i)
+        for (size_t i = 0; i < length; ++i)
         {
             data_[i] = expr.get_element(i);
         }
@@ -727,7 +529,7 @@ public:
     template <typename E>
     Array operator=(Array_Expression<E> const& expr)
     {
-        for (size_t i = 0; i < expr.len(); ++i)
+        for (size_t i = 0; i < length; ++i)
         {
             data_[i] = expr.get_element(i);
         }
@@ -763,7 +565,7 @@ public:
     template<class E>
     Array<Dim>& fill(Array_Expression<E> const& expr)
     {
-        for (size_t i = 0; i < expr.len(); ++i)
+        for (size_t i = 0; i < length; ++i)
         {
             data_[i] = expr[i];
         }

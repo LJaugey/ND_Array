@@ -6,21 +6,13 @@ using namespace std;
 
 int main()
 {
-    
     const int dim1 = 100;
     const int dim2 = 50;
     const int dim3 = 10;
     const int dim4 = 5;
 
-    Array<dim1,dim2,dim3,dim4> A;
-
-    A.fill(1.0);
-
-    cout<<A(50,25,5,2)<<endl;
-    cout<<endl<<endl<<endl;
-
-    Array<dim1,dim2,dim3,dim4> B;
-    B.fill(10.0);
+    Array<dim1,dim2,dim3,dim4> A(1.0);
+    Array<dim1,dim2,dim3,dim4> B(10.0);
 
     cout<<(A+B)(50,25,5,2)<<endl;
     cout<<(A+10)(50,25,5,2)<<endl;
@@ -47,15 +39,27 @@ int main()
     cout<<-B(50,25,5,2)<<endl;
     cout<<endl<<endl<<endl;
 
-    //cout<<(A-B).abs()(50,25,5,2)<<endl;
-    cout<<abs(A-B)(50,25,5,2)<<endl;
+    cout<<((A-B*C)/A).abs()(50,25,5,2)<<endl;
+    cout<<abs((A-B*C)/A)(50,25,5,2)<<endl;
     cout<<endl<<endl<<endl;
-    
-    //cout<<(A-B).min()<<endl;
-    //cout<<min(A-B)<<endl;
-    //cout<<(A-B).max()<<endl;
-    //cout<<max(A-B)<<endl;
-    
+
+    cout<<abs(-B)(50,25,5,2)<<endl;
+    cout<<-B.abs()(50,25,5,2)<<endl;
+    cout<<(-B).abs()(50,25,5,2)<<endl;
+    cout<<endl<<endl<<endl;
+
+    Array<dim3,dim4> D = (A[0][0]+B[0][0]*C[0][0]).abs() + 2;
+    cout<<D<<endl;
+
+
+    // Don't work
+    //cout<<(A+B)<<endl;    // operator<<
+    //(A+B)[0];             // operator[]
+    //(A+B).min();
+    //min(A+B);
+    //(A+B).max();
+    //max(A+B);
+
 
     /*// 1D array
     const int dim = 100;
