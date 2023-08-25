@@ -51,14 +51,33 @@ int main()
     Array<dim3,dim4> D = (A[0][0]+B[0][0]*C[0][0]).abs() + 2;
     cout<<D<<endl;
 
+    
+    Array<dim1,dim2,dim3,dim4> K = ((A+B).eval() * C);
+    cout<<K(50,25,5,2)<<endl;
+    K = ((A+B) * C);
+    cout<<K(50,25,5,2)<<endl;
 
-    // Don't work
-    //cout<<(A+B)<<endl;    // operator<<
-    //(A+B)[0];             // operator[]
-    //(A+B).min();
-    //min(A+B);
-    //(A+B).max();
-    //max(A+B);
+
+    Array<dim1> M = ((A[0][4][5]+B[0][4][5]).eval() * C[0][4][5]);
+    cout<<M(2)<<endl;
+    M = ((A[0][4][5]+B[0][4][5]) * C[0][4][5]);
+    cout<<M(2)<<endl;
+
+
+    cout<<(A+B)[0][0]<<endl;
+    cout<<(A+B).min()<<endl;
+    cout<<min(A+B)<<endl;
+    cout<<(A+B).max()<<endl;
+    cout<<max(A+B)<<endl;
+
+
+    Array<dim1> O(2);
+    Array<dim1> P(3);
+    cout<<(O+P)[0]<<endl;
+    cout<<(O+P).min()<<endl;
+    cout<<min(O+P)<<endl;
+    cout<<(O+P).max()<<endl;
+    cout<<max(O+P)<<endl;
 
 
     /*// 1D array
