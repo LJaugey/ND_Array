@@ -24,6 +24,8 @@ public:
     static constexpr size_t length = firstDim * (RestDims * ...);
     static constexpr size_t Dims[N] = {firstDim, RestDims...};
 
+    typedef typename base_traits<Array>::terminal_type terminal_type;
+
 protected:
 
     double* data_;
@@ -430,6 +432,11 @@ public:
         return *this;
     }
 };
+template<size_t firstDim, size_t... RestDims>
+struct base_traits<Array<firstDim, RestDims...>>
+{
+    typedef Array<firstDim, RestDims...> terminal_type;
+};
 
 
 
@@ -461,6 +468,9 @@ public:
 
     static constexpr size_t N = 1;
     static constexpr size_t length = Dim;
+    static constexpr size_t Dims[N] = {Dim};
+
+    typedef typename base_traits<Array>::terminal_type terminal_type;
 
 private:
 
@@ -804,6 +814,11 @@ public:
         }
         return *this;
     }
+};
+template<size_t Dim>
+struct base_traits<Array<Dim>>
+{
+    typedef Array<Dim> terminal_type;
 };
 
 

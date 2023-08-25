@@ -16,6 +16,9 @@ class Binary_Op : public Array_Expression<Binary_Op<E1,OP,E2>>
 
 public:
 
+    typedef typename base_traits<E1>::terminal_type terminal_type;
+
+
     Binary_Op(E1 a_1, E2 a_2)
     :arg1(a_1),arg2(a_2)
     {}
@@ -54,6 +57,11 @@ public:
             return OP::apply(arg1(indices...),arg2(indices...));
         }
     }
+};
+template <class E1, class OP, class E2>
+struct base_traits<Binary_Op<E1,OP,E2>>
+{
+    typedef typename base_traits<E1>::terminal_type terminal_type;
 };
 
 

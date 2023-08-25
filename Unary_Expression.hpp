@@ -15,6 +15,9 @@ class Unary_Op : public Array_Expression<Unary_Op<OP,E>>
 
 public:
 
+    typedef typename base_traits<E>::terminal_type terminal_type;
+
+
     Unary_Op(E a)
     :arg(a)
     {}
@@ -48,6 +51,11 @@ public:
             return OP::apply(arg(indices...));
         }
     }
+};
+template <class OP, class E>
+struct base_traits<Unary_Op<OP,E>>
+{
+    typedef typename base_traits<E>::terminal_type terminal_type;
 };
 
 
