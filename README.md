@@ -40,7 +40,6 @@ std::cout<<A[4]<<std::endl;
 
 ### operations
 Usual arithmetic operations (`+`,`-`,`*`,`/`) are implemented in parallel and operations `min()`,`max()`,`abs()` are also available
-**NOTE:** min/max do not work yet with expression templates.
 
 ### Other
 The size of each dimension can be accessed with `Array::size(dim)`, where `dim` is the dimension (starts at 0)
