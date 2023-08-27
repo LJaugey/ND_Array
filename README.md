@@ -5,7 +5,7 @@ Mathematical expression are also optimzed using lazy evaluation which is impleme
 
 The main.cpp is a quick overview of the features and the speed_test.cpp is a demonstration of the speed difference between this template and nested `std::valarray`.
 
-**Note:** Must be compiled with c++17
+**Note:** Must be compiled with c++20
 
 ## Usage
 

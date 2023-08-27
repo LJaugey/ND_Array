@@ -3,9 +3,17 @@
 
 #include <cstddef>
 #include <iostream>
+#include <type_traits>
 
 template <class E> 
 struct base_traits;
+
+template<typename T>
+requires std::is_scalar_v<T>
+struct base_traits<T>
+{
+    typedef double terminal_type;
+};
 
 
 template <class E>

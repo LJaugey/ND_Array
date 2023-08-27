@@ -1,11 +1,20 @@
 #include <chrono>
 #include <iostream>
+#include <type_traits>
 #include "ND_array.hpp"
 
 using namespace std;
 
 int main()
 {
+    Array<2,3> X(2);
+    Array<2,3> Y;
+
+    Y = 1+X+1;
+
+    cout<<Y<<endl;
+
+    
     const int dim1 = 100;
     const int dim2 = 50;
     const int dim3 = 10;
@@ -78,7 +87,7 @@ int main()
     cout<<min(O+P)<<endl;
     cout<<(O+P).max()<<endl;
     cout<<max(O+P)<<endl;
-
+    
 
     /*// 1D array
     const int dim = 100;

@@ -15,10 +15,9 @@ class Binary_Op : public Array_Expression<Binary_Op<E1,OP,E2>>
     E2 arg2;
 
 public:
-
-    typedef typename base_traits<E1>::terminal_type terminal_type;
-
-
+    
+    typedef typename base_traits<Binary_Op>::terminal_type terminal_type;
+    
     Binary_Op(E1 a_1, E2 a_2)
     :arg1(a_1),arg2(a_2)
     {}
@@ -27,11 +26,11 @@ public:
 
     inline auto get_element(size_t i) const
     {
-        if constexpr(std::is_convertible<E1, double>::value)
+        if constexpr(std::is_scalar_v<E1>)
         {
             return OP::apply(arg1,arg2.get_element(i));
         }
-        else if constexpr(std::is_convertible<E2, double>::value)
+        else if constexpr(std::is_scalar_v<E2>)
         {
             return OP::apply(arg1.get_element(i),arg2);
         }
@@ -44,11 +43,11 @@ public:
     template <typename... ind_type>
     inline double operator()(ind_type... indices)
     {
-        if constexpr(std::is_convertible<E1, double>::value)
+        if constexpr(std::is_scalar_v<E1>)
         {
             return OP::apply(arg1,arg2(indices...));
         }
-        else if constexpr(std::is_convertible<E2, double>::value)
+        else if constexpr(std::is_scalar_v<E2>)
         {
             return OP::apply(arg1(indices...),arg2);
         }
@@ -61,7 +60,10 @@ public:
 template <class E1, class OP, class E2>
 struct base_traits<Binary_Op<E1,OP,E2>>
 {
-    typedef typename base_traits<E1>::terminal_type terminal_type;
+    typedef typename std::conditional<  std::is_scalar_v<E1>,
+                                        base_traits<E2>,
+                                        base_traits<E1>
+                                        >::type::terminal_type   terminal_type;
 };
 
 

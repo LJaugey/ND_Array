@@ -15,8 +15,7 @@ class Unary_Op : public Array_Expression<Unary_Op<OP,E>>
 
 public:
 
-    typedef typename base_traits<E>::terminal_type terminal_type;
-
+    typedef typename base_traits<Unary_Op>::terminal_type terminal_type;
 
     Unary_Op(E a)
     :arg(a)
@@ -29,7 +28,7 @@ public:
 
     inline auto get_element(size_t i) const
     {
-        if constexpr(std::is_convertible<E, double>::value)
+        if constexpr(std::is_scalar_v<E>)
         {
             return OP::apply(arg);
         }
@@ -42,7 +41,7 @@ public:
     template <typename... ind_type>
     inline double operator()(ind_type... indices)
     {
-        if constexpr(std::is_convertible<E, double>::value)
+        if constexpr(std::is_scalar_v<E>)
         {
             return OP::apply(arg);
         }
@@ -57,7 +56,6 @@ struct base_traits<Unary_Op<OP,E>>
 {
     typedef typename base_traits<E>::terminal_type terminal_type;
 };
-
 
 
 struct Array_opp
