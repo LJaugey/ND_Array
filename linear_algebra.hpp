@@ -7,27 +7,19 @@
 
 template<size_t dim1,size_t dim2>
 class Matrix: public Array<dim1,dim2>
-{};
+{
+    using Array<dim1,dim2>::Array;
+};
 
 
 
 template<size_t dim>
 class Vector: public Array<dim>
-{};
-
-
-template<size_t dim>
-Matrix<dim,dim> diag(double val)
 {
-    Matrix<dim,dim> result;
+    using Array<dim>::Array;
+};
 
-    for(size_t i=0; i<dim; i++)
-    {
-        result(i,i) = val;
-    }
 
-    return result;
-}
 template<size_t dim>
 Matrix<dim,dim> diag(Vector<dim> V)
 {
