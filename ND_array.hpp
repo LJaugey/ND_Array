@@ -285,6 +285,52 @@ public:
         }
         return res;
     }
+    // sum
+    const double sum() const
+    {
+        double res = data_[0];
+        
+        if constexpr(length>PAR_SIZE)
+        {
+            #pragma omp parallel for reduction(+:res) if(omp_get_num_threads() == 1)
+            for (size_t i = 1; i < length; i++) {
+                res += data_[i];
+            }
+        }
+        else
+        {
+            for (size_t i = 1; i < length; i++) {
+                res += data_[i];
+            }
+        }
+        return res;
+    }
+    // mean
+    const double mean() const
+    {
+        return this->sum()/length;
+    }
+    const double stdev() const
+    {
+        double m = this->mean();
+
+        double res = 0.0;
+        
+        if constexpr(length>PAR_SIZE)
+        {
+            #pragma omp parallel for reduction(+:res) if(omp_get_num_threads() == 1)
+            for (size_t i = 0; i < length; i++) {
+                res += data_[i]*data_[i];
+            }
+        }
+        else
+        {
+            for (size_t i = 0; i < length; i++) {
+                res += data_[i]*data_[i];
+            }
+        }
+        return sqrt(res/length - m*m);
+    }
 
 
 
@@ -636,7 +682,7 @@ public:
         
         if constexpr(length>PAR_SIZE)
         {
-            #pragma omp parallel for reduction(min:res) if(omp_get_num_threads() == 1)
+            #pragma omp parallel for reduction(max:res) if(omp_get_num_threads() == 1)
             for (size_t i = 1; i < length; i++) {
                 res = std::max(res,data_[i]);
             }
@@ -648,6 +694,52 @@ public:
             }
         }
         return res;
+    }
+    // sum
+    const double sum() const
+    {
+        double res = data_[0];
+        
+        if constexpr(length>PAR_SIZE)
+        {
+            #pragma omp parallel for reduction(+:res) if(omp_get_num_threads() == 1)
+            for (size_t i = 1; i < length; i++) {
+                res += data_[i];
+            }
+        }
+        else
+        {
+            for (size_t i = 1; i < length; i++) {
+                res += data_[i];
+            }
+        }
+        return res;
+    }
+    // mean
+    const double mean() const
+    {
+        return this->sum()/length;
+    }
+    const double stdev() const
+    {
+        double m = this->mean();
+
+        double res = 0.0;
+        
+        if constexpr(length>PAR_SIZE)
+        {
+            #pragma omp parallel for reduction(+:res) if(omp_get_num_threads() == 1)
+            for (size_t i = 0; i < length; i++) {
+                res += data_[i]*data_[i];
+            }
+        }
+        else
+        {
+            for (size_t i = 0; i < length; i++) {
+                res += data_[i]*data_[i];
+            }
+        }
+        return sqrt(res/length - m*m);
     }
 
 

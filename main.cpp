@@ -108,6 +108,15 @@ int main()
     cout<<floor(A+0.1)(50,25,5,2)<<endl;
     cout<<ceil(A+0.1)(50,25,5,2)<<endl;
 
+    cout<<endl<<endl<<endl;
+
+    cout<<A.sum()<<endl;
+    cout<<sum(A)<<endl;
+    cout<<A.mean()<<endl;
+    cout<<mean(A)<<endl;
+    cout<<A.stdev()<<endl;
+    cout<<stdev(A)<<endl;
+
 
 
 
