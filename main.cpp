@@ -87,6 +87,13 @@ int main()
     cout<<min(O+P)<<endl;
     cout<<(O+P).max()<<endl;
     cout<<max(O+P)<<endl;
+
+    cout<<endl<<endl;
+
+    cout<<(A==A)<<endl;
+    cout<<(A==B)<<endl;
+    cout<<(A!=A)<<endl;
+    cout<<(A!=B)<<endl;
     
 
     /*// 1D array

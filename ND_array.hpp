@@ -207,11 +207,40 @@ public:
     }
 
 
-
     inline const size_t size(const size_t index = 0) const
     {
         return Dims[index];
     }
+
+    //comparison operators
+    const bool operator==(Array<firstDim, RestDims...> const other) const
+    {
+        // No need to check the arrays' shape since this
+        // method is only defined when the shape is the same
+        
+        for(size_t i=0; i<length; i++)
+        {
+            if(data_[i] != other.data_[i])  return false;
+        }
+
+        return true;
+    }
+    inline const bool operator!=(const Array<firstDim, RestDims...>& other) const   {   return !((*this)==other);   }
+
+    template<class E>
+    requires std::is_same_v<terminal_type, typename E::terminal_type>   //makes sure only arrays with the same shape are compared
+    const bool operator==(const Array_Expression<E> expr) const
+    {
+        for(size_t i=0; i<length; i++)
+        {
+            if(data_[i] != expr.get_element(i)) return false;
+        }
+
+        return true;
+    }
+    template<class E>
+    requires std::is_same_v<terminal_type, typename E::terminal_type>
+    inline const bool operator!=(const Array_Expression<E> expr) const   {   return !((*this)==expr);   }
 
 
     // abs
