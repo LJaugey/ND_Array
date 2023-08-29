@@ -94,7 +94,23 @@ int main()
     cout<<(A==B)<<endl;
     cout<<(A!=A)<<endl;
     cout<<(A!=B)<<endl;
-    
+
+    cout<<endl<<endl<<endl;
+
+
+    cout<<sin(A)(50,25,5,2)<<endl;
+    cout<<cos(A)(50,25,5,2)<<endl;
+    cout<<tan(A)(50,25,5,2)<<endl;
+    cout<<exp(A)(50,25,5,2)<<endl;
+    cout<<log(A)(50,25,5,2)<<endl;
+
+    cout<<round(A+0.1)(50,25,5,2)<<endl;
+    cout<<round(A+0.51)(50,25,5,2)<<endl;
+    cout<<floor(A+0.1)(50,25,5,2)<<endl;
+    cout<<ceil(A+0.1)(50,25,5,2)<<endl;
+
+
+
 
     /*// 1D array
     const int dim = 100;
