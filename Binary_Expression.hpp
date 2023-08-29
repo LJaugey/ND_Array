@@ -22,8 +22,6 @@ public:
     :arg1(a_1),arg2(a_2)
     {}
 
-    inline auto abs()   {   return Unary_Op<Array_abs,Binary_Op>(*this);    }
-
     inline auto get_element(size_t i) const
     {
         if constexpr(std::is_scalar_v<E1>)

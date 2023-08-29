@@ -29,8 +29,6 @@ public:
     template <typename... ind_type>
     inline double operator()(ind_type... indices)   {   return static_cast<const E&>(*this)(indices...);    }
 
-    inline const E& abs() {  return abs(static_cast<const E&>(*this));   } 
-
 
     terminal_type eval() const
     {

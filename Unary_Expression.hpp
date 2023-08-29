@@ -8,7 +8,6 @@
 
 #include "Array_Expression.hpp"
 
-struct Array_abs;
 
 template <class OP, class E>
 class Unary_Op : public Array_Expression<Unary_Op<OP,E>>
@@ -22,8 +21,6 @@ public:
     Unary_Op(E a)
     :arg(a)
     {}
-
-    inline auto abs()   {   return Unary_Op<Array_abs,Unary_Op>(*this);    }
 
     inline auto get_element(size_t i) const
     {

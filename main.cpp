@@ -48,16 +48,15 @@ int main()
     cout<<-B(50,25,5,2)<<endl;
     cout<<endl<<endl<<endl;
 
-    cout<<((A-B*C)/A).abs()(50,25,5,2)<<endl;
+    cout<<abs((A-B*C)/A)(50,25,5,2)<<endl;
     cout<<abs((A-B*C)/A)(50,25,5,2)<<endl;
     cout<<endl<<endl<<endl;
 
     cout<<abs(-B)(50,25,5,2)<<endl;
-    cout<<-B.abs()(50,25,5,2)<<endl;
-    cout<<(-B).abs()(50,25,5,2)<<endl;
+    cout<<-abs(B)(50,25,5,2)<<endl;
     cout<<endl<<endl<<endl;
 
-    Array<dim3,dim4> D = (A[0][0]+B[0][0]*C[0][0]).abs() + 2;
+    Array<dim3,dim4> D = abs(A[0][0]+B[0][0]*C[0][0]) + 2;
     cout<<D<<endl;
 
     

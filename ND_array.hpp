@@ -243,24 +243,6 @@ public:
     inline const bool operator!=(const Array_Expression<E> expr) const   {   return !((*this)==expr);   }
 
 
-    // abs
-    Array<firstDim, RestDims...> const& abs()
-    {
-        if constexpr(length>PAR_SIZE)
-        {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; i++) {
-                data_[i] = std::abs(data_[i]);
-            }
-        }
-        else
-        {
-            for (size_t i = 0; i < length; i++) {
-                data_[i] = std::abs(data_[i]);
-            }
-        }
-        return *this;
-    }
 
 
     // min
@@ -625,25 +607,6 @@ public:
 
 
 
-
-    // abs
-    Array<Dim> const& abs()
-    {
-        if constexpr(length>PAR_SIZE)
-        {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; i++) {
-                data_[i] = std::abs(data_[i]);
-            }
-        }
-        else
-        {
-            for (size_t i = 0; i < length; i++) {
-                data_[i] = std::abs(data_[i]);
-            }
-        }
-        return *this;
-    }
 
 
     // min

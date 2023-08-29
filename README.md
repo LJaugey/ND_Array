@@ -39,7 +39,7 @@ std::cout<<A[4]<<std::endl;
 ```
 
 ### operations
-Usual arithmetic operations (`+`,`-`,`*`,`/`) are implemented in parallel and operations `min()`,`max()`,`abs()` are also available
+Usual arithmetic operations (`+`,`-`,`*`,`/`) and many other standard mathematical functions are implemented in parallel (element-wise).
 
 ### Other
 The size of each dimension can be accessed with `Array::size(dim)`, where `dim` is the dimension (starts at 0)
