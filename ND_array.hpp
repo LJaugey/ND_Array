@@ -311,19 +311,21 @@ public:
 
 
     // += operator
-    const Array<firstDim, RestDims...>& operator+=(const Array<firstDim, RestDims...>& other)
+    template<class E>
+    requires std::is_same_v<typename E::terminal_type, terminal_type>
+    const Array<firstDim, RestDims...>& operator+=(const Array_Expression<E>& expr)
     {
         if constexpr(length>PAR_SIZE)
         {
             #pragma omp parallel for if(omp_get_num_threads() == 1)
             for (size_t i = 0; i < length; i++) {
-                data_[i] += other.data_[i];
+                data_[i] += expr.get_element(i);
             }
         }
         else
         {
             for (size_t i = 0; i < length; i++) {
-                data_[i] += other.data_[i];
+                data_[i] += expr.get_element(i);
             }
         }
         return *this;
@@ -348,19 +350,21 @@ public:
     }
 
     // -= operator
-    const Array<firstDim, RestDims...>& operator-=(const Array<firstDim, RestDims...>& other)
+    template<class E>
+    requires std::is_same_v<typename E::terminal_type, terminal_type>
+    const Array<firstDim, RestDims...>& operator-=(const Array_Expression<E>& expr)
     {
         if constexpr(length>PAR_SIZE)
         {
             #pragma omp parallel for if(omp_get_num_threads() == 1)
             for (size_t i = 0; i < length; i++) {
-                data_[i] -= other.data_[i];
+                data_[i] -= expr.get_element(i);
             }
         }
         else
         {
             for (size_t i = 0; i < length; i++) {
-                data_[i] -= other.data_[i];
+                data_[i] -= expr.get_element(i);
             }
         }
         return *this;
@@ -385,19 +389,21 @@ public:
     }
 
     // *= operator
-    const Array<firstDim, RestDims...>& operator*=(const Array<firstDim, RestDims...>& other)
+    template<class E>
+    requires std::is_same_v<typename E::terminal_type, terminal_type>
+    const Array<firstDim, RestDims...>& operator*=(const Array_Expression<E>& expr)
     {
         if constexpr(length>PAR_SIZE)
         {
             #pragma omp parallel for if(omp_get_num_threads() == 1)
             for (size_t i = 0; i < length; i++) {
-                data_[i] *= other.data_[i];
+                data_[i] *= expr.get_element(i);
             }
         }
         else
         {
             for (size_t i = 0; i < length; i++) {
-                data_[i] *= other.data_[i];
+                data_[i] *= expr.get_element(i);
             }
         }
         return *this;
@@ -422,19 +428,21 @@ public:
     }
 
     // /= operator
-    const Array<firstDim, RestDims...>& operator/=(const Array<firstDim, RestDims...>& other)
+    template<class E>
+    requires std::is_same_v<typename E::terminal_type, terminal_type>
+    const Array<firstDim, RestDims...>& operator/=(const Array_Expression<E>& expr)
     {
         if constexpr(length>PAR_SIZE)
         {
             #pragma omp parallel for if(omp_get_num_threads() == 1)
             for (size_t i = 0; i < length; i++) {
-                data_[i] /= other.data_[i];
+                data_[i] /= expr.get_element(i);
             }
         }
         else
         {
             for (size_t i = 0; i < length; i++) {
-                data_[i] /= other.data_[i];
+                data_[i] /= expr.get_element(i);
             }
         }
         return *this;
