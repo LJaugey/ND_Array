@@ -14,6 +14,7 @@
 #define PAR_SIZE 1024
 
 
+namespace ND {
 
 template <size_t firstDim, size_t... RestDims>
 class Array : public Array_Expression<Array<firstDim, RestDims...>>
@@ -905,5 +906,6 @@ struct base_traits<Array<Dim>>
     typedef Array<Dim> terminal_type;
 };
 
+}
 
 #endif

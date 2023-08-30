@@ -5,6 +5,8 @@
 
 #define TILE 32
 
+namespace ND {
+
 template<size_t dim1,size_t dim2>
 class Matrix: public Array<dim1,dim2>
 {
@@ -235,6 +237,8 @@ double operator*(const Vector<common_dim>& V1, const Vector<common_dim>& V2)
     }
 
     return result;
+}
+
 }
 
 #endif

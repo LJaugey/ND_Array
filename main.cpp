@@ -5,10 +5,11 @@
 
 using namespace std;
 
+
 int main()
 {
-    Array<2,3> X(2);
-    Array<2,3> Y;
+    ND::Array<2,3> X(2);
+    ND::Array<2,3> Y;
 
     Y = 1+X+1;
 
@@ -20,8 +21,8 @@ int main()
     const int dim3 = 10;
     const int dim4 = 5;
 
-    Array<dim1,dim2,dim3,dim4> A(1.0);
-    Array<dim1,dim2,dim3,dim4> B(10.0);
+    ND::Array<dim1,dim2,dim3,dim4> A(1.0);
+    ND::Array<dim1,dim2,dim3,dim4> B(10.0);
 
     cout<<(A+B)(50,25,5,2)<<endl;
     cout<<(A+10)(50,25,5,2)<<endl;
@@ -42,7 +43,7 @@ int main()
     
     cout<<endl<<endl<<endl;
 
-    Array<dim1,dim2,dim3,dim4> C;
+    ND::Array<dim1,dim2,dim3,dim4> C;
     C = -B;
     cout<<C(50,25,5,2)<<endl;
     cout<<-B(50,25,5,2)<<endl;
@@ -56,17 +57,17 @@ int main()
     cout<<-abs(B)(50,25,5,2)<<endl;
     cout<<endl<<endl<<endl;
 
-    Array<dim3,dim4> D = abs(A[0][0]+B[0][0]*C[0][0]) + 2;
+    ND::Array<dim3,dim4> D = abs(A[0][0]+B[0][0]*C[0][0]) + 2;
     cout<<D<<endl;
 
     
-    Array<dim1,dim2,dim3,dim4> K = ((A+B).eval() * C);
+    ND::Array<dim1,dim2,dim3,dim4> K = ((A+B).eval() * C);
     cout<<K(50,25,5,2)<<endl;
     K = ((A+B) * C);
     cout<<K(50,25,5,2)<<endl;
 
 
-    Array<dim1> M = ((A[0][4][5]+B[0][4][5]).eval() * C[0][4][5]);
+    ND::Array<dim1> M = ((A[0][4][5]+B[0][4][5]).eval() * C[0][4][5]);
     cout<<M(2)<<endl;
     M = ((A[0][4][5]+B[0][4][5]) * C[0][4][5]);
     cout<<M(2)<<endl;
@@ -79,8 +80,8 @@ int main()
     cout<<max(A+B)<<endl;
 
 
-    Array<dim1> O(2);
-    Array<dim1> P(3);
+    ND::Array<dim1> O(2);
+    ND::Array<dim1> P(3);
     cout<<(O+P)[0]<<endl;
     cout<<(O+P).min()<<endl;
     cout<<min(O+P)<<endl;
@@ -120,17 +121,17 @@ int main()
 
 
 
-    /*// 1D array
+    /*// 1D ND::Array
     const int dim = 100;
 
-    Array<dim> A;
+    ND::Array<dim> A;
 
     A.fill(1.0);
 
     cout<<A(50)<<endl;
     cout<<endl<<endl<<endl;
 
-    Array<dim> B;
+    ND::Array<dim> B;
     B.fill(10.0);
 
     cout<<(A+B)(50)<<endl;
@@ -152,7 +153,7 @@ int main()
     
     cout<<endl<<endl<<endl;
 
-    Array<dim> C;
+    ND::Array<dim> C;
     C = -B;
     cout<<C(50)<<endl;
     cout<<-B(50)<<endl;

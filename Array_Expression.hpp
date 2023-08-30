@@ -5,11 +5,13 @@
 #include <iostream>
 #include <type_traits>
 
+namespace ND {
+
 template <class E> 
 struct base_traits;
 
 template<typename T>
-requires std::is_scalar_v<T>
+requires std::is_arithmetic_v<T>
 struct base_traits<T>
 {
     typedef double terminal_type;
@@ -68,5 +70,6 @@ std::ostream& operator<<(std::ostream& output, const Array_Expression<E>& expr)
     return output<<expr.eval();
 }
 
+}
 
 #endif

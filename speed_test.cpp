@@ -21,7 +21,7 @@ const int N = 200;
 
 const int dim = 3;
 
-void func_par(Array<dim,dim,dim> u)
+void func_par(ND::Array<dim,dim,dim> u)
 {
     for(int l = 0; l<dim; l++)
     {
@@ -34,7 +34,7 @@ void func_par(Array<dim,dim,dim> u)
         }
     }
 }
-void func_brac(Array<dim,dim,dim> u)
+void func_brac(ND::Array<dim,dim,dim> u)
 {
     for(int l = 0; l<dim; l++)
     {
@@ -69,7 +69,7 @@ void func_(Mat_3 & u)
 
 int main()
 {
-    Array<N,N,dim,dim,dim> u;
+    ND::Array<N,N,dim,dim,dim> u;
     u.fill(1.0);
 
     Mat_5 u_(Mat_4(Mat_3(Mat_2(Mat_1(1.0, dim), dim), dim), N), N);

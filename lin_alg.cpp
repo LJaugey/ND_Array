@@ -4,6 +4,7 @@
 
 
 using namespace std;
+using namespace ND;
 
 #define SIZE 2500
 

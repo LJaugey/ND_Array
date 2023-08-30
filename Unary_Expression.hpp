@@ -8,6 +8,7 @@
 
 #include "Array_Expression.hpp"
 
+namespace ND {
 
 template <class OP, class E>
 class Unary_Op : public Array_Expression<Unary_Op<OP,E>>
@@ -24,7 +25,7 @@ public:
 
     inline auto get_element(size_t i) const
     {
-        if constexpr(std::is_scalar_v<E>)
+        if constexpr(std::is_arithmetic_v<E>)
         {
             return OP::apply(arg);
         }
@@ -37,7 +38,7 @@ public:
     template <typename... ind_type>
     inline double operator()(ind_type... indices)
     {
-        if constexpr(std::is_scalar_v<E>)
+        if constexpr(std::is_arithmetic_v<E>)
         {
             return OP::apply(arg);
         }
@@ -268,7 +269,6 @@ Unary_Op<Array_ceil,RHS> ceil(const RHS& rhs)
     return Unary_Op<Array_ceil,RHS>(rhs);
 }
 
-
-
+}
 
 #endif

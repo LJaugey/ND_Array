@@ -7,6 +7,7 @@
 #include "Array_Expression.hpp"
 #include "Unary_Expression.hpp"
 
+namespace ND {
 
 template <class E1, class OP, class E2>
 class Binary_Op : public Array_Expression<Binary_Op<E1,OP,E2>>
@@ -24,11 +25,11 @@ public:
 
     inline auto get_element(size_t i) const
     {
-        if constexpr(std::is_scalar_v<E1>)
+        if constexpr(std::is_arithmetic_v<E1>)
         {
             return OP::apply(arg1,arg2.get_element(i));
         }
-        else if constexpr(std::is_scalar_v<E2>)
+        else if constexpr(std::is_arithmetic_v<E2>)
         {
             return OP::apply(arg1.get_element(i),arg2);
         }
@@ -41,11 +42,11 @@ public:
     template <typename... ind_type>
     inline double operator()(ind_type... indices)
     {
-        if constexpr(std::is_scalar_v<E1>)
+        if constexpr(std::is_arithmetic_v<E1>)
         {
             return OP::apply(arg1,arg2(indices...));
         }
-        else if constexpr(std::is_scalar_v<E2>)
+        else if constexpr(std::is_arithmetic_v<E2>)
         {
             return OP::apply(arg1(indices...),arg2);
         }
@@ -58,7 +59,7 @@ public:
 template <class E1, class OP, class E2>
 struct base_traits<Binary_Op<E1,OP,E2>>
 {
-    typedef typename std::conditional<  std::is_scalar_v<E1>,
+    typedef typename std::conditional<  std::is_arithmetic_v<E1>,
                                         base_traits<E2>,
                                         base_traits<E1>
                                         >::type::terminal_type   terminal_type;
@@ -70,7 +71,7 @@ struct Array_add
     static inline double apply(double u,double v)   {   return u + v;  }
 };
 template <class LHS, class RHS>
-auto operator+(const LHS& lhs, const RHS& rhs)
+Binary_Op<LHS,Array_add,RHS> operator+(const LHS& lhs, const RHS& rhs)
 {
     return Binary_Op<LHS,Array_add,RHS>(lhs,rhs);
 }
@@ -80,7 +81,7 @@ struct Array_sub
     static inline double apply(double u, double v)  {   return u - v;  }
 };
 template <class LHS, class RHS>
-auto operator-(const LHS& lhs, const RHS& rhs)
+Binary_Op<LHS,Array_sub,RHS> operator-(const LHS& lhs, const RHS& rhs)
 {
     return Binary_Op<LHS,Array_sub,RHS>(lhs,rhs);
 }
@@ -105,6 +106,6 @@ Binary_Op<LHS,Array_div,RHS> operator/(const LHS& lhs, const RHS& rhs)
     return Binary_Op<LHS,Array_div,RHS>(lhs,rhs);
 }
 
-
+}
 
 #endif
