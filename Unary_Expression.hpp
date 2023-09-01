@@ -4,7 +4,6 @@
 #include <cstddef>
 #include <type_traits>
 #include <algorithm>
-#include <cmath>
 
 #include "Array_Expression.hpp"
 

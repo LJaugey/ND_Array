@@ -4,6 +4,15 @@
 #include <cstddef>
 #include <iostream>
 #include <type_traits>
+#include <cmath>
+
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
+#define PAR_SIZE 1024
+
+
 
 namespace ND {
 
@@ -45,11 +54,84 @@ public:
         return (this->eval())[index];
     }
 
-    const double min() const    {   return (this->eval()).min();    }
-    const double max() const    {   return (this->eval()).max();    }
-    const double sum() const    {   return (this->eval()).sum();    }
-    const double mean() const   {   return (this->eval()).mean();   }
-    const double stdev() const  {   return (this->eval()).stdev();  }
+    
+
+
+
+    // min
+    const double min() const
+    {
+        double res = get_element(0);
+        
+        if constexpr(terminal_type::length>PAR_SIZE)
+        {
+            #pragma omp parallel for reduction(min:res) if(omp_get_num_threads() == 1)
+            for (size_t i = 1; i < terminal_type::length; i++)
+                res = std::min(res,get_element(i));
+        }
+        else {
+            for (size_t i = 1; i < terminal_type::length; i++)
+                res = std::min(res,get_element(i));
+        }
+        return res;
+    }
+    // max
+    const double max() const
+    {
+        double res = get_element(0);
+        
+        if constexpr(terminal_type::length>PAR_SIZE)
+        {
+            #pragma omp parallel for reduction(max:res) if(omp_get_num_threads() == 1)
+            for (size_t i = 1; i < terminal_type::terminal_type::length; i++)
+                res = std::max(res,get_element(i));
+        }
+        else {
+            for (size_t i = 1; i < terminal_type::terminal_type::length; i++) {
+                res = std::max(res,get_element(i));
+            }
+        }
+        return res;
+    }
+    // sum
+    const double sum() const
+    {
+        double res = get_element(0);
+        
+        if constexpr(terminal_type::terminal_type::length>PAR_SIZE)
+        {
+            #pragma omp parallel for reduction(+:res) if(omp_get_num_threads() == 1)
+            for (size_t i = 1; i < terminal_type::terminal_type::length; i++)
+                res += get_element(i);
+        }
+        else {
+            for (size_t i = 1; i < terminal_type::terminal_type::length; i++) {
+                res += get_element(i);
+            }
+        }
+        return res;
+    }
+    // mean
+    const double mean() const   {   return this->sum()/terminal_type::length;   }
+
+    const double stdev() const
+    {
+        double m = this->mean();
+        double res = 0.0;
+        
+        if constexpr(terminal_type::length>PAR_SIZE)
+        {
+            #pragma omp parallel for reduction(+:res) if(omp_get_num_threads() == 1)
+            for (size_t i = 0; i < terminal_type::length; i++)
+                res += get_element(i)*get_element(i);
+        }
+        else {
+            for (size_t i = 0; i < terminal_type::length; i++)
+                res += get_element(i)*get_element(i);
+        }
+        return sqrt(res/terminal_type::length - m*m);
+    }
+
 };
 
 
