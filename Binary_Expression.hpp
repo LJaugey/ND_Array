@@ -12,18 +12,18 @@ namespace ND {
 template <class E1, class OP, class E2>
 class Binary_Op : public Array_Expression<Binary_Op<E1,OP,E2>>
 {
-    E1 arg1;
-    E2 arg2;
+    const E1& arg1;
+    const E2& arg2;
 
 public:
     
     typedef typename base_traits<Binary_Op>::terminal_type terminal_type;
     
-    Binary_Op(E1 a_1, E2 a_2)
+    Binary_Op(const E1& a_1, const E2& a_2)
     :arg1(a_1),arg2(a_2)
     {}
 
-    inline auto get_element(size_t i) const
+    inline const double get_element(size_t i) const
     {
         if constexpr(std::is_arithmetic_v<E1>)
         {
@@ -40,7 +40,7 @@ public:
     }
 
     template <typename... ind_type>
-    inline double operator()(ind_type... indices)
+    inline const double operator()(ind_type... indices) const
     {
         if constexpr(std::is_arithmetic_v<E1>)
         {

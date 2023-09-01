@@ -12,17 +12,17 @@ namespace ND {
 template <class OP, class E>
 class Unary_Op : public Array_Expression<Unary_Op<OP,E>>
 {
-    E arg;
+    const E& arg;
 
 public:
 
     typedef typename base_traits<Unary_Op>::terminal_type terminal_type;
 
-    Unary_Op(E a)
+    Unary_Op(const E& a)
     :arg(a)
     {}
 
-    inline auto get_element(size_t i) const
+    inline const double get_element(size_t i) const
     {
         if constexpr(std::is_arithmetic_v<E>)
         {
@@ -35,7 +35,7 @@ public:
     }
 
     template <typename... ind_type>
-    inline double operator()(ind_type... indices)
+    inline const double operator()(ind_type... indices) const
     {
         if constexpr(std::is_arithmetic_v<E>)
         {

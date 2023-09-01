@@ -4,8 +4,10 @@
 #include <cstddef>
 #include <iostream>
 #include <type_traits>
-#include <omp.h>
 
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 #include "Array_Expression.hpp"
 #include "Unary_Expression.hpp"
@@ -35,7 +37,6 @@ protected:
 public:
 
     inline const double get_element(size_t i) const     {   return data_[i];    }
-    inline double& get_element(size_t i)                {   return data_[i];    }
 
     // Base constructor
     Array()
@@ -44,7 +45,6 @@ public:
 
         is_original =  true;
     }
-    // Base constructor
     Array(double val)
     {
         data_ = new double[length];
@@ -80,7 +80,7 @@ public:
         return *this;
     }
     // constructor from N-1 dimensional array
-    Array(Array<RestDims...> const& slice)
+    Array(const Array<RestDims...>& slice)
     {
         data_ = new double[length];
         for(size_t i = 0; i<firstDim; i++)
@@ -91,7 +91,7 @@ public:
 
     // construct from Array_expressions
     template <typename E>
-    Array(Array_Expression<E> const& expr)
+    Array(const Array_Expression<E>& expr)
     : is_original(true)
     {
         data_ = new double[length];
@@ -112,7 +112,7 @@ public:
         }
     }
     template <typename E>
-    Array operator=(Array_Expression<E> const& expr)
+    const Array& operator=(const Array_Expression<E>& expr)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -151,7 +151,7 @@ public:
         return data_[offset];
     }
     template <typename... ind_type>
-    inline const double& operator()(ind_type... indices) const
+    inline const double operator()(ind_type... indices) const
     {
         size_t offset = 0;
         size_t temp[N] = {static_cast<size_t>(indices)...};
@@ -166,26 +166,26 @@ public:
     // access element
     inline Array<RestDims...> operator[](size_t index)
     {
-        return Array<RestDims...>(data_+ index * (RestDims * ...), false);
+        return Array<RestDims...>(data_+ index * (RestDims * ...), false);  // Guaranteed copy elision
     }
     inline const Array<RestDims...> operator[](size_t index) const
     {
-        return Array<RestDims...>(data_+ index * (RestDims * ...), false);
+        return Array<RestDims...>(data_+ index * (RestDims * ...), false);  // Guaranteed copy elision
     }
 
 
-    Array<firstDim, RestDims...>& fill(double val)
+    const Array<firstDim, RestDims...>& fill(double val)
     {
         std::fill_n(data_,length, val);
         return *this;
     }
-    Array<firstDim, RestDims...>& fill(const Array<firstDim, RestDims...>& other)
+    const Array<firstDim, RestDims...>& fill(const Array<firstDim, RestDims...>& other)
     {
         if(data_ != other.data_)    std::copy(other.data_, other.data_ + length, data_);
         return *this;
     }
     template<class E>
-    Array<firstDim, RestDims...>& fill(Array_Expression<E> const& expr)
+    const Array<firstDim, RestDims...>& fill(const Array_Expression<E>& expr)
     {
         for (size_t i = 0; i < length; ++i)
         {
@@ -217,7 +217,6 @@ public:
 
 
     // Arithmetic operations
-
 
     // += operator
     template<class E>
@@ -417,7 +416,7 @@ public:
 
     typedef typename base_traits<Array>::terminal_type terminal_type;
 
-private:
+protected:
 
     double* data_;
     bool is_original;
@@ -425,8 +424,7 @@ private:
     
 public:
 
-    inline const double get_element(size_t i) const    {   return data_[i];    }
-    inline double& get_element(size_t i)               {   return data_[i];    }
+    inline const double get_element(size_t i) const     {   return data_[i];    }
 
     // Base constructor
     Array()
@@ -445,7 +443,7 @@ public:
     }
 
     // copy constructor
-    Array(const Array<Dim> & other)
+    Array(const Array<Dim>& other)
     {
         data_ = other.data_;
         is_original =  false;
@@ -472,7 +470,7 @@ public:
     
     // construct from Array_expressions
     template <typename E>
-    Array(Array_Expression<E> const& expr)
+    Array(const Array_Expression<E>& expr)
     : is_original(true)
     {
         data_ = new double[length];
@@ -482,7 +480,7 @@ public:
         }
     }
     template <typename E>
-    Array operator=(Array_Expression<E> const& expr)
+    const Array& operator=(const Array_Expression<E>& expr)
     {
         for (size_t i = 0; i < length; ++i)
         {
@@ -507,18 +505,18 @@ public:
 
 
 
-    Array<Dim>& fill(double val)
+    const Array<Dim>& fill(double val)
     {
         std::fill_n(data_,length, val);
         return *this;
     }
-    Array<Dim>& fill(const Array<Dim> & other)
+    const Array<Dim>& fill(const Array<Dim>& other)
     {
         if(data_ != other.data_)    std::copy(other.data_, other.data_ + length, data_);
         return *this;
     }
     template<class E>
-    Array<Dim>& fill(Array_Expression<E> const& expr)
+    const Array<Dim>& fill(const Array_Expression<E>& expr)
     {
         for (size_t i = 0; i < length; ++i)
         {
@@ -540,7 +538,10 @@ public:
     }
 
 
-
+    inline const size_t size(const size_t index = 0) const
+    {
+        return Dims[index];
+    }
 
 
 

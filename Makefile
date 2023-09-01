@@ -9,7 +9,7 @@ OBJECTS := $(patsubst $(SRC)/%.$(EXT),%.o,$(SOURCES))
 all: test speed_test lin_alg
 
 debug: CXXFLAGS += -g
-debug: test speed lin_alg
+debug: all
 
 test: main.cpp
 	$(CXX) $(CXXFLAGS) $^ -o $@

@@ -35,10 +35,10 @@ public:
     typedef typename base_traits<E>::terminal_type terminal_type;
 
     
-    inline double get_element(size_t i) const   {  return static_cast<const E&>(*this).get_element(i);   }
+    inline const double get_element(size_t i) const   {  return static_cast<const E&>(*this).get_element(i);   }
 
     template <typename... ind_type>
-    inline double operator()(ind_type... indices)   {   return static_cast<const E&>(*this)(indices...);    }
+    inline const double operator()(ind_type... indices) const   {   return static_cast<const E&>(*this)(indices...);    }
 
 
     const terminal_type eval() const
@@ -112,12 +112,12 @@ public:
         return res;
     }
     // mean
-    const double mean() const   {   return this->sum()/terminal_type::length;   }
+    const double mean() const   {   return (this->sum())/terminal_type::length; }
 
     const double stdev() const
     {
-        double m = this->mean();
         double res = 0.0;
+        double m = this->mean();
         
         if constexpr(terminal_type::length>PAR_SIZE)
         {
