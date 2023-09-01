@@ -191,7 +191,7 @@ public:
     {
         for (size_t i = 0; i < length; ++i)
         {
-            data_[i] = expr[i];
+            data_[i] = expr.get_element(i);
         }
 
         return *this;
@@ -397,7 +397,7 @@ std::ostream& operator<<(std::ostream& output, const Array<firstDim, RestDims...
 
 
 template <size_t Dim>
-class Array<Dim>
+class Array<Dim> : public Array_Expression<Array<Dim>>
 {
 public:
 
@@ -513,7 +513,7 @@ public:
     {
         for (size_t i = 0; i < length; ++i)
         {
-            data_[i] = expr[i];
+            data_[i] = expr.get_element(i);
         }
 
         return *this;

@@ -41,7 +41,7 @@ public:
     inline const double operator()(ind_type... indices) const   {   return static_cast<const E&>(*this)(indices...);    }
 
 
-    const terminal_type eval() const
+    inline const terminal_type eval() const
     {
         return terminal_type(*this);    // Guaranteed copy elision
     }
@@ -49,7 +49,7 @@ public:
     // For simplicity, operator[] collapses the whole array
     // Could compute only the sub-array arr[i].
     // Could be a problem when N=1
-    const auto operator[](size_t index) const
+    inline const auto operator[](size_t index) const
     {
         return (this->eval())[index];
     }
@@ -112,7 +112,7 @@ public:
         return res;
     }
     // mean
-    const double mean() const   {   return (this->sum())/terminal_type::length; }
+    inline const double mean() const   {   return (this->sum())/terminal_type::length; }
 
     const double stdev() const
     {
@@ -136,18 +136,18 @@ public:
 
 
 template<class E>
-const double min(const Array_Expression<E>& expr)   {   return expr.min();  }
+inline const double min(const Array_Expression<E>& expr)   {   return expr.min();  }
 template<class E>
-const double max(const Array_Expression<E>& expr)   {   return expr.max();  }
+inline const double max(const Array_Expression<E>& expr)   {   return expr.max();  }
 template<class E>
-const double sum(const Array_Expression<E>& expr)   {   return expr.sum();  }
+inline const double sum(const Array_Expression<E>& expr)   {   return expr.sum();  }
 template<class E>
-const double mean(const Array_Expression<E>& expr)  {   return expr.mean(); }
+inline const double mean(const Array_Expression<E>& expr)  {   return expr.mean(); }
 template<class E>
-const double stdev(const Array_Expression<E>& expr) {   return expr.stdev();}
+inline const double stdev(const Array_Expression<E>& expr) {   return expr.stdev();}
 
 template<class E>
-std::ostream& operator<<(std::ostream& output, const Array_Expression<E>& expr)
+inline std::ostream& operator<<(std::ostream& output, const Array_Expression<E>& expr)
 {
     return output<<expr.eval();
 }

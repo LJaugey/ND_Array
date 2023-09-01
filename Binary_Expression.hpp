@@ -71,7 +71,7 @@ struct Array_add
     static inline double apply(double u,double v)   {   return u + v;  }
 };
 template <class LHS, class RHS>
-Binary_Op<LHS,Array_add,RHS> operator+(const LHS& lhs, const RHS& rhs)
+inline Binary_Op<LHS,Array_add,RHS> operator+(const LHS& lhs, const RHS& rhs)
 {
     return Binary_Op<LHS,Array_add,RHS>(lhs,rhs);
 }
@@ -81,7 +81,7 @@ struct Array_sub
     static inline double apply(double u, double v)  {   return u - v;  }
 };
 template <class LHS, class RHS>
-Binary_Op<LHS,Array_sub,RHS> operator-(const LHS& lhs, const RHS& rhs)
+inline Binary_Op<LHS,Array_sub,RHS> operator-(const LHS& lhs, const RHS& rhs)
 {
     return Binary_Op<LHS,Array_sub,RHS>(lhs,rhs);
 }
@@ -91,7 +91,7 @@ struct Array_mul
     static inline double apply(double u, double v)  {   return u * v;  }
 };
 template <class LHS, class RHS>
-Binary_Op<LHS,Array_mul,RHS> operator*(const LHS& lhs, const RHS& rhs)
+inline Binary_Op<LHS,Array_mul,RHS> operator*(const LHS& lhs, const RHS& rhs)
 {
     return Binary_Op<LHS,Array_mul,RHS>(lhs,rhs);
 }
@@ -101,7 +101,7 @@ struct Array_div
     static inline double apply(double u, double v)  {   return u / v;  }
 };
 template <class LHS, class RHS>
-Binary_Op<LHS,Array_div,RHS> operator/(const LHS& lhs, const RHS& rhs)
+inline Binary_Op<LHS,Array_div,RHS> operator/(const LHS& lhs, const RHS& rhs)
 {
     return Binary_Op<LHS,Array_div,RHS>(lhs,rhs);
 }
