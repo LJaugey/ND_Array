@@ -43,7 +43,7 @@ public:
 
     const terminal_type eval() const
     {
-        return terminal_type(*this);
+        return terminal_type(*this);    // Guaranteed copy elision
     }
 
     // For simplicity, operator[] collapses the whole array

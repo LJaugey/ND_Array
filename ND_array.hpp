@@ -56,9 +56,11 @@ public:
 
     // copy constructor
     Array(const Array<firstDim, RestDims...>& other)
+    : is_original(true)
     {
-        data_ = other.data_;
-        is_original =  false;
+        data_ = new double[length];
+
+        std::copy(other.data_, other.data_ + length, data_);
     }
 
     // Constructor from pointer
@@ -166,11 +168,11 @@ public:
     // access element
     inline Array<RestDims...> operator[](size_t index)
     {
-        return Array<RestDims...>(data_+ index * (RestDims * ...), false);  // Guaranteed copy elision
+        return Array<RestDims...>(data_ + index * (RestDims * ...), false);  // Guaranteed copy elision
     }
     inline const Array<RestDims...> operator[](size_t index) const
     {
-        return Array<RestDims...>(data_+ index * (RestDims * ...), false);  // Guaranteed copy elision
+        return Array<RestDims...>(data_ + index * (RestDims * ...), false);  // Guaranteed copy elision
     }
 
 
@@ -193,17 +195,6 @@ public:
         }
 
         return *this;
-    }
-
-
-    // explicit copy
-    Array<firstDim, RestDims...> copy() const
-    {
-        Array<firstDim, RestDims...> result;
-
-        std::copy(data_, data_+length, result.data_);
-
-        return result;
     }
 
 
@@ -444,9 +435,11 @@ public:
 
     // copy constructor
     Array(const Array<Dim>& other)
+    : is_original(true)
     {
-        data_ = other.data_;
-        is_original =  false;
+        data_ = new double[length];
+
+        std::copy(other.data_, other.data_ + length, data_);
     }
     
     // Constructor from pointer
@@ -524,17 +517,6 @@ public:
         }
 
         return *this;
-    }
-
-
-    // explicit copy
-    Array<Dim> copy() const
-    {
-        Array<Dim> result;
-
-        std::copy(data_, data_+length, result.data_);
-
-        return result;
     }
 
 
