@@ -15,7 +15,7 @@ An array with shape `[Dim_1,Dim_2,Dim_3]` is defined with
 Array<Dim_1,Dim_2,Dim_3> A;
 ```
 
-**Warning:** To get better performance, the copy constructor only performs a shallow copy. Deep copies must be explicit with `Array::copy()` or with `Array::operator=(Array& other)`
+**Note:** The copy constructor used to perform a shallow copy to get better performance, however it relied on non-mandatory copy-elision so this behaviour was changed to avoid issues with different compilers. The code has been adapted to remove almost all copies.
 
 ### accessors
 Elements can be accessed through `Array::operator()` with the right amount of indices:
