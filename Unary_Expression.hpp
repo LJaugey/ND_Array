@@ -24,27 +24,13 @@ public:
 
     inline const double get_element(size_t i) const
     {
-        if constexpr(std::is_arithmetic_v<E>)
-        {
-            return OP::apply(arg);
-        }
-        else
-        {
-            return OP::apply(arg.get_element(i));
-        }
+        return OP::apply(arg.get_element(i));
     }
 
     template <typename... ind_type>
     inline const double operator()(ind_type... indices) const
     {
-        if constexpr(std::is_arithmetic_v<E>)
-        {
-            return OP::apply(arg);
-        }
-        else
-        {
-            return OP::apply(arg(indices...));
-        }
+        return OP::apply(arg(indices...));
     }
 };
 template <class OP, class E>
