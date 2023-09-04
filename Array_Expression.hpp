@@ -51,7 +51,7 @@ public:
     // Could be a problem when N=1
     inline const auto operator[](size_t index) const
     {
-        return (this->eval())[index];
+        return std::move((this->eval())[index]);
     }
 
     

@@ -26,6 +26,48 @@ TEST_CASE("Comparison operations") {
     CHECK_FALSE(A==A+A);
 }
 
+TEST_CASE("Access operators") {
+
+    const double a = 2.0;
+    const double b = 1.0;
+
+    ND::Array<dim_1, dim_2> A(a);
+    ND::Array<dim_1, dim_2> B(b);
+    ND::Array<dim_2> A_s(a);
+    ND::Array<dim_2> B_s(b);
+
+    CHECK_EQ(A,A);
+    CHECK_EQ(A[0],A_s);
+    CHECK_EQ(A[dim_1-1],A_s);
+    CHECK_EQ(A[0][0],a);
+
+    CHECK_EQ(A(0,0),a);
+    CHECK_EQ(A(dim_1-1,dim_2-1),a);
+
+    A(0,0) = b;
+    CHECK_EQ(A(0,0),b);
+    CHECK_EQ(A(dim_1-1,dim_2-1),a);
+    A(0,0) = a;
+
+    CHECK_EQ((A+B)(0,0),a+b);
+    CHECK_EQ((A+b)(0,0),a+b);
+    CHECK_EQ((A+b)(dim_1-1,dim_2-1),a+b);
+    std::cout<<(A+B)<<std::endl;
+    std::cout<<(A+B)[0]<<std::endl;
+    CHECK_EQ((A+B)[0],A_s+B_s);
+    CHECK_EQ((A+b)[0][0],a+b);
+    CHECK_EQ((A+b)[dim_1-1][dim_2-1],a+b);
+    
+    A[0] = b;
+    CHECK_EQ(A[0],B_s);
+    CHECK_FALSE(A[dim_1-1]==B_s);
+    CHECK_EQ(A[dim_1-1],A_s);
+    CHECK_EQ(A[0][0],b);
+
+    CHECK_EQ(A(0,0),b);
+    CHECK_EQ(A(dim_1-1,dim_2-1),a);
+}
+
 TEST_CASE("Arithmetic operations") {
 
     const double a = 1.0;
