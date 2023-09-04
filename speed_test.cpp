@@ -15,7 +15,7 @@ using namespace std;
 
 double t = 0;
 const double dt = 0.001;
-const double t_fin = 5;
+const double t_fin = 10;
 
 const int N = 200;
 
@@ -82,19 +82,6 @@ int main()
     ND::Array<N,N,dim,dim,dim> C(0.0);
 
 
-    cout<<endl<<"Test start with normal evaluation"<<endl;
-    t = 0;
-    start = std::chrono::high_resolution_clock::now();
-    while(t<t_fin)
-    {
-        C = (C + (A*(B*dt).eval()).eval()).eval();
-        t+=dt;
-    }
-    stop = std::chrono::high_resolution_clock::now();
-    duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-    cout<<endl<<"test end. Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl<<endl;
-
-
 
     cout<<endl<<"Test start with lazy evaluation"<<endl;
     t = 0;
@@ -106,11 +93,27 @@ int main()
     }
     stop = std::chrono::high_resolution_clock::now();
     duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-    cout<<endl<<"test end. Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl<<endl;
+    cout<<endl<<"test end. Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl<<endl<<endl;
+
+
+    C = 0.0;
+    
+    cout<<endl<<"Test start with normal evaluation"<<endl;
+    t = 0;
+    start = std::chrono::high_resolution_clock::now();
+    while(t<t_fin)
+    {
+        C = (C + (A*(B*dt).eval()).eval()).eval();
+        t+=10*dt;
+    }
+    stop = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    cout<<endl<<"test end. Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl<<endl<<endl;
+    
 
 
 
-
+    cout<<endl<<endl;
 
 
     ND::Array<N,N,dim,dim,dim> u;
@@ -122,6 +125,16 @@ int main()
     cout<<"====================================="<<endl<<endl;
     cout<<"Testing operator() vs operator[] vs nested valarrays"<<endl<<endl;
     cout<<"====================================="<<endl<<endl;
+
+    // Traverse the array once to reduce the difference with/without caching
+    #pragma omp parallel for collapse(2)
+    for(int i = 0; i<N; i++)
+    {
+        for(int j = 0; j<N; j++)
+        {
+            func_par(u[i][j]);
+        }
+    }
 
     cout<<endl<<"test start with operator()"<<endl;
     t = 0;
@@ -140,7 +153,7 @@ int main()
     }
     stop = std::chrono::high_resolution_clock::now();
     duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-    cout<<endl<<"test end. Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl<<endl;
+    cout<<endl<<"test end. Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl<<endl<<endl;
     
     
     cout<<endl<<"test start with operator[]"<<endl;
@@ -160,7 +173,7 @@ int main()
     }
     stop = std::chrono::high_resolution_clock::now();
     duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-    cout<<endl<<"test end. Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl;
+    cout<<endl<<"test end. Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl<<endl;
 
     
     t = 0;
@@ -180,7 +193,7 @@ int main()
     }
     stop = std::chrono::high_resolution_clock::now();
     duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-    cout<<endl<<"test end. Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl;
+    cout<<endl<<"test end. Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl<<endl;
 
     return 0;
 }
