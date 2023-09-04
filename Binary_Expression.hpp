@@ -18,6 +18,7 @@ class Binary_Op : public Array_Expression<Binary_Op<E1,OP,E2>>
 public:
     
     typedef typename base_traits<Binary_Op>::terminal_type terminal_type;
+    typedef typename base_traits<Binary_Op>::terminal_sub_type terminal_sub_type;
     
     Binary_Op(const E1& a_1, const E2& a_2)
     :arg1(a_1),arg2(a_2)
@@ -63,6 +64,8 @@ struct base_traits<Binary_Op<E1,OP,E2>>
                                         base_traits<E2>,
                                         base_traits<E1>
                                         >::type::terminal_type   terminal_type;
+
+    typedef typename terminal_type::terminal_sub_type terminal_sub_type;
 };
 
 

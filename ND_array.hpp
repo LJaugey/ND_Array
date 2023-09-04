@@ -27,6 +27,7 @@ public:
     static constexpr size_t Dims[N] = {firstDim, RestDims...};
 
     typedef typename base_traits<Array>::terminal_type terminal_type;
+    typedef typename base_traits<Array>::terminal_sub_type terminal_sub_type;
 
 protected:
 
@@ -92,8 +93,9 @@ public:
     }
 
     // construct from Array_expressions
+    // Shift can be used if N<expr.N (e.g. operator[] on expressions)
     template <typename E>
-    Array(const Array_Expression<E>& expr)
+    Array(const Array_Expression<E>& expr, size_t shift = 0)
     : is_original(true)
     {
         data_ = new double[length];
@@ -102,14 +104,14 @@ public:
             #pragma omp parallel for if(omp_get_num_threads() == 1)
             for (size_t i = 0; i < length; ++i)
             {
-                data_[i] = expr.get_element(i);
+                data_[i] = expr.get_element(shift + i);
             }
         }
         else
         {
             for (size_t i = 0; i < length; ++i)
             {
-                data_[i] = expr.get_element(i);
+                data_[i] = expr.get_element(shift + i);
             }
         }
     }
@@ -371,6 +373,7 @@ template<size_t firstDim, size_t... RestDims>
 struct base_traits<Array<firstDim, RestDims...>>
 {
     typedef Array<firstDim, RestDims...> terminal_type;
+    typedef Array<RestDims...> terminal_sub_type;
 };
 
 
@@ -406,6 +409,7 @@ public:
     static constexpr size_t Dims[N] = {Dim};
 
     typedef typename base_traits<Array>::terminal_type terminal_type;
+    typedef typename base_traits<Array>::terminal_sub_type terminal_sub_type;
 
 protected:
 
@@ -462,22 +466,45 @@ public:
     }
     
     // construct from Array_expressions
+    // Shift can be used if N<expr.N (e.g. operator[] on expressions)
     template <typename E>
-    Array(const Array_Expression<E>& expr)
+    Array(const Array_Expression<E>& expr, size_t shift = 0)
     : is_original(true)
     {
         data_ = new double[length];
-        for (size_t i = 0; i < length; ++i)
+        if constexpr(length>PAR_SIZE)
         {
-            data_[i] = expr.get_element(i);
+            #pragma omp parallel for if(omp_get_num_threads() == 1)
+            for (size_t i = 0; i < length; ++i)
+            {
+                data_[i] = expr.get_element(shift + i);
+            }
+        }
+        else
+        {
+            for (size_t i = 0; i < length; ++i)
+            {
+                data_[i] = expr.get_element(shift + i);
+            }
         }
     }
     template <typename E>
     const Array& operator=(const Array_Expression<E>& expr)
     {
-        for (size_t i = 0; i < length; ++i)
+        if constexpr(length>PAR_SIZE)
         {
-            data_[i] = expr.get_element(i);
+            #pragma omp parallel for if(omp_get_num_threads() == 1)
+            for (size_t i = 0; i < length; ++i)
+            {
+                data_[i] = expr.get_element(i);
+            }
+        }
+        else
+        {
+            for (size_t i = 0; i < length; ++i)
+            {
+                data_[i] = expr.get_element(i);
+            }
         }
 
         return *this;
@@ -687,6 +714,7 @@ template<size_t Dim>
 struct base_traits<Array<Dim>>
 {
     typedef Array<Dim> terminal_type;
+    typedef double terminal_sub_type;
 };
 
 }

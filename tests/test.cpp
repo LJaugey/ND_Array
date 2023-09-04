@@ -52,8 +52,6 @@ TEST_CASE("Access operators") {
     CHECK_EQ((A+B)(0,0),a+b);
     CHECK_EQ((A+b)(0,0),a+b);
     CHECK_EQ((A+b)(dim_1-1,dim_2-1),a+b);
-    std::cout<<(A+B)<<std::endl;
-    std::cout<<(A+B)[0]<<std::endl;
     CHECK_EQ((A+B)[0],A_s+B_s);
     CHECK_EQ((A+b)[0][0],a+b);
     CHECK_EQ((A+b)[dim_1-1][dim_2-1],a+b);

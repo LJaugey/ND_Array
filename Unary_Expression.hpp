@@ -17,6 +17,7 @@ class Unary_Op : public Array_Expression<Unary_Op<OP,E>>
 public:
 
     typedef typename base_traits<Unary_Op>::terminal_type terminal_type;
+    typedef typename base_traits<Unary_Op>::terminal_sub_type terminal_sub_type;
 
     Unary_Op(const E& a)
     :arg(a)
@@ -37,6 +38,8 @@ template <class OP, class E>
 struct base_traits<Unary_Op<OP,E>>
 {
     typedef typename base_traits<E>::terminal_type terminal_type;
+
+    typedef typename terminal_type::terminal_sub_type terminal_sub_type;
 };
 
 

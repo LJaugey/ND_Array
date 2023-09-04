@@ -33,6 +33,7 @@ class Array_Expression
 public:
     
     typedef typename base_traits<E>::terminal_type terminal_type;
+    typedef typename base_traits<E>::terminal_sub_type terminal_sub_type;
 
     
     inline const double get_element(size_t i) const   {  return static_cast<const E&>(*this).get_element(i);   }
@@ -46,12 +47,17 @@ public:
         return terminal_type(*this);    // Guaranteed copy elision
     }
 
-    // For simplicity, operator[] collapses the whole array
-    // Could compute only the sub-array arr[i].
-    // Could be a problem when N=1
-    inline const auto operator[](size_t index) const
+    // operator[] only collapses sub-array
+    inline const terminal_sub_type operator[](size_t index) const
     {
-        return std::move((this->eval())[index]);
+        if constexpr (terminal_type::N==1)
+        {
+            return get_element(index);
+        }
+        else
+        {
+            return terminal_sub_type(*this, index*terminal_sub_type::length);  // Guaranteed copy elision
+        }
     }
 
     
