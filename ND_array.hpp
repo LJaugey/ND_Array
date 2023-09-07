@@ -193,9 +193,20 @@ public:
     template<class E>
     const Array<firstDim, RestDims...>& fill(const Array_Expression<E>& expr)
     {
-        for (size_t i = 0; i < length; ++i)
+        if constexpr(length>PAR_SIZE)
         {
-            data_[i] = expr.get_element(i);
+            #pragma omp parallel for if(omp_get_num_threads() == 1)
+            for (size_t i = 0; i < length; ++i)
+            {
+                data_[i] = expr.get_element(i);
+            }
+        }
+        else
+        {
+            for (size_t i = 0; i < length; ++i)
+            {
+                data_[i] = expr.get_element(i);
+            }
         }
 
         return *this;
@@ -542,9 +553,20 @@ public:
     template<class E>
     const Array<Dim>& fill(const Array_Expression<E>& expr)
     {
-        for (size_t i = 0; i < length; ++i)
+        if constexpr(length>PAR_SIZE)
         {
-            data_[i] = expr.get_element(i);
+            #pragma omp parallel for if(omp_get_num_threads() == 1)
+            for (size_t i = 0; i < length; ++i)
+            {
+                data_[i] = expr.get_element(i);
+            }
+        }
+        else
+        {
+            for (size_t i = 0; i < length; ++i)
+            {
+                data_[i] = expr.get_element(i);
+            }
         }
 
         return *this;
