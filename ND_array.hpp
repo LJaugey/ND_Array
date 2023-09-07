@@ -20,6 +20,8 @@ namespace ND {
 template <size_t firstDim, size_t... RestDims>
 class Array : public Array_Expression<Array<firstDim, RestDims...>>
 {
+    template<size_t dim1, size_t... dimN>
+    friend class Array;
 public:
 
     static constexpr size_t N = sizeof...(RestDims) + 1;
@@ -402,6 +404,8 @@ std::ostream& operator<<(std::ostream& output, const Array<firstDim, RestDims...
 template <size_t Dim>
 class Array<Dim> : public Array_Expression<Array<Dim>>
 {
+    template<size_t dim1, size_t... dimN>
+    friend class Array;
 public:
 
     static constexpr size_t N = 1;
