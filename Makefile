@@ -1,5 +1,5 @@
 CXX:=g++
-CXXFLAGS:= -O3 -Wall -std=c++20 -fopenmp
+CXXFLAGS:= -O3 -Wall -std=c++20 -fopenmp -funroll-loops
 
 EXT = cpp
 
@@ -7,25 +7,26 @@ SOURCES := $(wildcard *.$(EXT))
 OBJECTS := $(patsubst $(SRC)/%.$(EXT),%.o,$(SOURCES))
 
 
-all: test speed_test lin_alg
+all: test speed_test
 
-profile: CXXFLAGS:= -O3 -pg -Wall -std=c++20
-profile: all
+profile: CXXFLAGS:= -O3 -Wall -std=c++20
+profile: speed_test
 
-debug: CXXFLAGS:= -Og -fopenmp -g -Wall -std=c++20
+debug: CXXFLAGS:= -Og -g -Wall -std=c++20
 debug: all
 
-test: main.cpp
+single: CXXFLAGS:= -O3 -Wall -std=c++20 -funroll-loops
+single: all
+
+test: tests/test.cpp
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-lin_alg: lin_alg.cpp
-	$(CXX) $(CXXFLAGS) $^ -o $@
-
-speed_test:  speed_test.cpp
+speed_test:  tests/speed_test.cpp
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 $(OBJ)/%.o: $(SRC)/%.$(EXT) Makefile
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	clear && rm test speed_test lin_alg
+	rm test speed_test
+	clear

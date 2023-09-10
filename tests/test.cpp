@@ -13,8 +13,8 @@ TEST_CASE("Comparison operations") {
 
     const double a = 1.0;
 
-    ND::Array<dim_1, dim_2> A(a);
-    ND::Array<dim_1, dim_2> A_2(2*a);
+    ND::Array<double,dim_1, dim_2> A(a);
+    ND::Array<double,dim_1, dim_2> A_2(2*a);
 
     CHECK_EQ(A,A);
     CHECK_EQ(A_2,A+A);
@@ -31,10 +31,10 @@ TEST_CASE("Access operators") {
     const double a = 2.0;
     const double b = 1.0;
 
-    ND::Array<dim_1, dim_2> A(a);
-    ND::Array<dim_1, dim_2> B(b);
-    ND::Array<dim_2> A_s(a);
-    ND::Array<dim_2> B_s(b);
+    ND::Array<double,dim_1, dim_2> A(a);
+    ND::Array<double,dim_1, dim_2> B(b);
+    ND::Array<double,dim_2> A_s(a);
+    ND::Array<double,dim_2> B_s(b);
 
     CHECK_EQ(A,A);
     CHECK_EQ(A[0],A_s);
@@ -72,15 +72,15 @@ TEST_CASE("Arithmetic operations") {
     const double b = 0.2;
     const double c = -0.7;
 
-    ND::Array<dim_1, dim_2> A(a);
-    ND::Array<dim_1, dim_2> B(b);
-    ND::Array<dim_1, dim_2> C(c);
+    ND::Array<double,dim_1, dim_2> A(a);
+    ND::Array<double,dim_1, dim_2> B(b);
+    ND::Array<double,dim_1, dim_2> C(c);
 
 
 
     SUBCASE("Addition") {
-        ND::Array<dim_1, dim_2> A_B(a+b);
-        ND::Array<dim_1, dim_2> A_B_C(a+b+c);
+        ND::Array<double,dim_1, dim_2> A_B(a+b);
+        ND::Array<double,dim_1, dim_2> A_B_C(a+b+c);
 
         CHECK_EQ(A+B, A_B);
         CHECK_EQ(A+b, A_B);
@@ -96,8 +96,8 @@ TEST_CASE("Arithmetic operations") {
 
     }
     SUBCASE("Subtraction") {
-        ND::Array<dim_1, dim_2> A_B(a-b);
-        ND::Array<dim_1, dim_2> A_B_C(a-b-c);
+        ND::Array<double,dim_1, dim_2> A_B(a-b);
+        ND::Array<double,dim_1, dim_2> A_B_C(a-b-c);
 
         CHECK_EQ(A-B, A_B);
         CHECK_EQ(A-b, A_B);
@@ -112,8 +112,8 @@ TEST_CASE("Arithmetic operations") {
         CHECK_EQ(B-=c, b-C);
     }
     SUBCASE("Multiplication") {
-        ND::Array<dim_1, dim_2> A_B(a*b);
-        ND::Array<dim_1, dim_2> A_B_C(a*b*c);
+        ND::Array<double,dim_1, dim_2> A_B(a*b);
+        ND::Array<double,dim_1, dim_2> A_B_C(a*b*c);
 
         CHECK_EQ(A*B, A_B);
         CHECK_EQ(A*b, A_B);
@@ -128,8 +128,8 @@ TEST_CASE("Arithmetic operations") {
         CHECK_EQ(B*=c, b*C);
     }
     SUBCASE("Division") {
-        ND::Array<dim_1, dim_2> A_B(a/b);
-        ND::Array<dim_1, dim_2> A_B_C(a/b/c);
+        ND::Array<double,dim_1, dim_2> A_B(a/b);
+        ND::Array<double,dim_1, dim_2> A_B_C(a/b/c);
 
         CHECK_EQ(A/B, A_B);
         CHECK_EQ(A/b, A_B);
