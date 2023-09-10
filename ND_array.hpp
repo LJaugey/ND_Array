@@ -17,10 +17,10 @@
 
 namespace ND {
 
-template <size_t firstDim, size_t... RestDims>
-class Array : public Array_Expression<Array<firstDim, RestDims...>>
+template <typename T, size_t firstDim, size_t... RestDims>
+class Array : public Array_Expression<Array<T, firstDim, RestDims...>>
 {
-    template<size_t dim1, size_t... dimN>
+    template<typename T_, size_t f_Dim, size_t... R_dims>
     friend class Array;
 public:
 
@@ -30,27 +30,28 @@ public:
 
     typedef typename base_traits<Array>::terminal_type terminal_type;
     typedef typename base_traits<Array>::terminal_sub_type terminal_sub_type;
+    typedef typename base_traits<Array>::value_type  value_type;
 
 protected:
 
-    double* data_;
+    value_type* data_;
     bool is_original;
 
 
 public:
 
-    inline const double get_element(size_t i) const     {   return data_[i];    }
+    inline const value_type get_element(size_t i) const     {   return data_[i];    }
 
     // Base constructor
     Array()
     {
-        data_ = new double[length];
+        data_ = new value_type[length];
 
         is_original =  true;
     }
-    Array(double val)
+    Array(value_type val)
     {
-        data_ = new double[length];
+        data_ = new value_type[length];
 
         std::fill_n(data_,length, val);
 
@@ -58,36 +59,36 @@ public:
     }
 
     // copy constructor
-    Array(const Array<firstDim, RestDims...>& other)
+    Array(const Array<T, firstDim, RestDims...>& other)
     : is_original(true)
     {
-        data_ = new double[length];
+        data_ = new value_type[length];
 
         std::copy(other.data_, other.data_ + length, data_);
     }
 
     // Constructor from pointer
-    Array(double* p, bool is_or = false)
+    Array(value_type* p, bool is_or = false)
     {
         data_ = p;
         is_original = is_or;
     }
     
     // copy assigment operator
-    const Array<firstDim, RestDims...>& operator=(const Array<firstDim, RestDims...>& other)
+    const Array<T, firstDim, RestDims...>& operator=(const Array<T, firstDim, RestDims...>& other)
     {
         std::copy(other.data_, other.data_ + length, data_);
         return *this;
     }
-    const Array<firstDim, RestDims...>& operator=(double val)
+    const Array<T, firstDim, RestDims...>& operator=(value_type val)
     {
         std::fill_n(data_,length, val);
         return *this;
     }
     // constructor from N-1 dimensional array
-    Array(const Array<RestDims...>& slice)
+    Array(const Array<T, RestDims...>& slice)
     {
-        data_ = new double[length];
+        data_ = new value_type[length];
         for(size_t i = 0; i<firstDim; i++)
         {
             std::copy(slice.data_, slice.data_ + slice.length, data_+ i*(RestDims*...));
@@ -100,7 +101,7 @@ public:
     Array(const Array_Expression<E>& expr, size_t shift = 0)
     : is_original(true)
     {
-        data_ = new double[length];
+        data_ = new value_type[length];
         if constexpr(length>PAR_SIZE)
         {
             #pragma omp parallel for if(omp_get_num_threads() == 1)
@@ -146,7 +147,7 @@ public:
 
     // access element
     template <typename... ind_type>
-    inline double& operator()(ind_type... indices)
+    inline value_type& operator()(ind_type... indices)
     {
         size_t offset = 0;
         size_t temp[N] = {static_cast<size_t>(indices)...};
@@ -157,7 +158,7 @@ public:
         return data_[offset];
     }
     template <typename... ind_type>
-    inline const double operator()(ind_type... indices) const
+    inline const value_type operator()(ind_type... indices) const
     {
         size_t offset = 0;
         size_t temp[N] = {static_cast<size_t>(indices)...};
@@ -170,28 +171,28 @@ public:
 
 
     // access element
-    inline Array<RestDims...> operator[](size_t index)
+    inline Array<T, RestDims...> operator[](size_t index)
     {
-        return Array<RestDims...>(data_ + index * (RestDims * ...), false);  // Guaranteed copy elision
+        return Array<T, RestDims...>(data_ + index * (RestDims * ...), false);  // Guaranteed copy elision
     }
-    inline const Array<RestDims...> operator[](size_t index) const
+    inline const Array<T, RestDims...> operator[](size_t index) const
     {
-        return Array<RestDims...>(data_ + index * (RestDims * ...), false);  // Guaranteed copy elision
+        return Array<T, RestDims...>(data_ + index * (RestDims * ...), false);  // Guaranteed copy elision
     }
 
 
-    const Array<firstDim, RestDims...>& fill(double val)
+    const Array<T, firstDim, RestDims...>& fill(value_type val)
     {
         std::fill_n(data_,length, val);
         return *this;
     }
-    const Array<firstDim, RestDims...>& fill(const Array<firstDim, RestDims...>& other)
+    const Array<T, firstDim, RestDims...>& fill(const Array<T, firstDim, RestDims...>& other)
     {
         if(data_ != other.data_)    std::copy(other.data_, other.data_ + length, data_);
         return *this;
     }
     template<class E>
-    const Array<firstDim, RestDims...>& fill(const Array_Expression<E>& expr)
+    const Array<T, firstDim, RestDims...>& fill(const Array_Expression<E>& expr)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -227,7 +228,7 @@ public:
     // += operator
     template<class E>
     requires std::is_same_v<typename E::terminal_type, terminal_type>
-    const Array<firstDim, RestDims...>& operator+=(const Array_Expression<E>& expr)
+    const Array<T, firstDim, RestDims...>& operator+=(const Array_Expression<E>& expr)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -245,7 +246,7 @@ public:
         return *this;
     }
     // scalar
-    const Array<firstDim, RestDims...>& operator+=(double scalar)
+    const Array<T, firstDim, RestDims...>& operator+=(value_type scalar)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -266,7 +267,7 @@ public:
     // -= operator
     template<class E>
     requires std::is_same_v<typename E::terminal_type, terminal_type>
-    const Array<firstDim, RestDims...>& operator-=(const Array_Expression<E>& expr)
+    const Array<T, firstDim, RestDims...>& operator-=(const Array_Expression<E>& expr)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -284,7 +285,7 @@ public:
         return *this;
     }
     // scalar
-    const Array<firstDim, RestDims...>& operator-=(double scalar)
+    const Array<T, firstDim, RestDims...>& operator-=(value_type scalar)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -305,7 +306,7 @@ public:
     // *= operator
     template<class E>
     requires std::is_same_v<typename E::terminal_type, terminal_type>
-    const Array<firstDim, RestDims...>& operator*=(const Array_Expression<E>& expr)
+    const Array<T, firstDim, RestDims...>& operator*=(const Array_Expression<E>& expr)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -323,7 +324,7 @@ public:
         return *this;
     }
     // scalar
-    const Array<firstDim, RestDims...>& operator*=(double scalar)
+    const Array<T, firstDim, RestDims...>& operator*=(value_type scalar)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -344,7 +345,7 @@ public:
     // /= operator
     template<class E>
     requires std::is_same_v<typename E::terminal_type, terminal_type>
-    const Array<firstDim, RestDims...>& operator/=(const Array_Expression<E>& expr)
+    const Array<T, firstDim, RestDims...>& operator/=(const Array_Expression<E>& expr)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -362,9 +363,9 @@ public:
         return *this;
     }
     // scalar
-    const Array<firstDim, RestDims...>& operator/=(double scalar)
+    const Array<T, firstDim, RestDims...>& operator/=(value_type scalar)
     {
-        double inv_scal = 1.0/scalar;
+        value_type inv_scal = 1.0/scalar;
 
         if constexpr(length>PAR_SIZE)
         {
@@ -382,19 +383,20 @@ public:
         return *this;
     }
 };
-template<size_t firstDim, size_t... RestDims>
-struct base_traits<Array<firstDim, RestDims...>>
+template<typename T, size_t firstDim, size_t... RestDims>
+struct base_traits<Array<T, firstDim, RestDims...>>
 {
-    typedef Array<firstDim, RestDims...> terminal_type;
-    typedef Array<RestDims...> terminal_sub_type;
+    typedef Array<T, firstDim, RestDims...> terminal_type;
+    typedef Array<T, RestDims...> terminal_sub_type;
+    typedef T value_type;
 };
 
 
 
 
 // ostream
-template <size_t firstDim, size_t... RestDims>
-std::ostream& operator<<(std::ostream& output, const Array<firstDim, RestDims...>& other)
+template <typename T, size_t firstDim, size_t... RestDims>
+std::ostream& operator<<(std::ostream& output, const Array<T, firstDim, RestDims...>& other)
 {
     if (sizeof...(RestDims) > 0)
     {
@@ -412,10 +414,10 @@ std::ostream& operator<<(std::ostream& output, const Array<firstDim, RestDims...
 
 
 
-template <size_t Dim>
-class Array<Dim> : public Array_Expression<Array<Dim>>
+template <typename T, size_t Dim>
+class Array<T, Dim> : public Array_Expression<Array<T, Dim>>
 {
-    template<size_t dim1, size_t... dimN>
+    template<typename T_, size_t f_Dim, size_t... R_dims>
     friend class Array;
 public:
 
@@ -425,27 +427,28 @@ public:
 
     typedef typename base_traits<Array>::terminal_type terminal_type;
     typedef typename base_traits<Array>::terminal_sub_type terminal_sub_type;
+    typedef typename base_traits<Array>::value_type value_type;
 
 protected:
 
-    double* data_;
+    value_type* data_;
     bool is_original;
 
     
 public:
 
-    inline const double get_element(size_t i) const     {   return data_[i];    }
+    inline const value_type get_element(size_t i) const     {   return data_[i];    }
 
     // Base constructor
     Array()
     {
-        data_ = new double[length];
+        data_ = new value_type[length];
 
         is_original =  true;
     }
-    Array(double val)
+    Array(value_type val)
     {
-        data_ = new double[length];
+        data_ = new value_type[length];
 
         std::fill_n(data_,length, val);
 
@@ -453,28 +456,28 @@ public:
     }
 
     // copy constructor
-    Array(const Array<Dim>& other)
+    Array(const Array<T, Dim>& other)
     : is_original(true)
     {
-        data_ = new double[length];
+        data_ = new value_type[length];
 
         std::copy(other.data_, other.data_ + length, data_);
     }
     
     // Constructor from pointer
-    Array(double* p, bool is_or = false)
+    Array(value_type* p, bool is_or = false)
     {
         data_ = p;
         is_original = is_or;
     }
     
     // copy assigment operator
-    const Array<Dim>& operator=(const Array<Dim>& other)
+    const Array<T, Dim>& operator=(const Array<T, Dim>& other)
     {
         std::copy(other.data_, other.data_ + length, data_);
         return *this;
     }
-    const Array<Dim>& operator=(double val)
+    const Array<T, Dim>& operator=(value_type val)
     {
         std::fill_n(data_,length, val);
         return *this;
@@ -486,7 +489,7 @@ public:
     Array(const Array_Expression<E>& expr, size_t shift = 0)
     : is_original(true)
     {
-        data_ = new double[length];
+        data_ = new value_type[length];
         if constexpr(length>PAR_SIZE)
         {
             #pragma omp parallel for if(omp_get_num_threads() == 1)
@@ -504,7 +507,7 @@ public:
         }
     }
     template <typename E>
-    const Array& operator=(const Array_Expression<E>& expr)
+    const Array<T, Dim>& operator=(const Array_Expression<E>& expr)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -531,27 +534,27 @@ public:
 
 
     // access element
-    inline double& operator()(size_t index)                { return data_[index]; }
-    inline const double operator()(size_t index) const     { return data_[index]; }
-    inline double& operator[](size_t index)                { return data_[index]; }
-    inline const double operator[](size_t index) const     { return data_[index]; }
+    inline value_type& operator()(size_t index)                { return data_[index]; }
+    inline const value_type operator()(size_t index) const     { return data_[index]; }
+    inline value_type& operator[](size_t index)                { return data_[index]; }
+    inline const value_type operator[](size_t index) const     { return data_[index]; }
 
 
 
 
 
-    const Array<Dim>& fill(double val)
+    const Array<T, Dim>& fill(value_type val)
     {
         std::fill_n(data_,length, val);
         return *this;
     }
-    const Array<Dim>& fill(const Array<Dim>& other)
+    const Array<T, Dim>& fill(const Array<T, Dim>& other)
     {
         if(data_ != other.data_)    std::copy(other.data_, other.data_ + length, data_);
         return *this;
     }
     template<class E>
-    const Array<Dim>& fill(const Array_Expression<E>& expr)
+    const Array<T, Dim>& fill(const Array_Expression<E>& expr)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -587,7 +590,7 @@ public:
 
 
     // += operator
-    const Array<Dim>& operator+=(const Array<Dim>& other)
+    const Array<T, Dim>& operator+=(const Array<T, Dim>& other)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -605,7 +608,7 @@ public:
         return *this;
     }
     // scalar
-    const Array<Dim>& operator+=(double scalar)
+    const Array<T, Dim>& operator+=(value_type scalar)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -624,7 +627,7 @@ public:
     }
 
     // -= operator
-    const Array<Dim>& operator-=(const Array<Dim>& other)
+    const Array<T, Dim>& operator-=(const Array<T, Dim>& other)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -642,7 +645,7 @@ public:
         return *this;
     }
     // scalar
-    const Array<Dim>& operator-=(double scalar)
+    const Array<T, Dim>& operator-=(value_type scalar)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -661,7 +664,7 @@ public:
     }
 
     // *= operator
-    const Array<Dim>& operator*=(const Array<Dim>& other)
+    const Array<T, Dim>& operator*=(const Array<T, Dim>& other)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -679,7 +682,7 @@ public:
         return *this;
     }
     // scalar
-    const Array<Dim>& operator*=(double scalar)
+    const Array<T, Dim>& operator*=(value_type scalar)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -698,7 +701,7 @@ public:
     }
 
     // /= operator
-    const Array<Dim>& operator/=(const Array<Dim>& other)
+    const Array<T, Dim>& operator/=(const Array<T, Dim>& other)
     {
         if constexpr(length>PAR_SIZE)
         {
@@ -716,9 +719,9 @@ public:
         return *this;
     }
     // scalar
-    const Array<Dim>& operator/=(double scalar)
+    const Array<T, Dim>& operator/=(value_type scalar)
     {
-        double inv_scal = 1.0/scalar;
+        value_type inv_scal = 1.0/scalar;
 
         if constexpr(length>PAR_SIZE)
         {
@@ -736,11 +739,12 @@ public:
         return *this;
     }
 };
-template<size_t Dim>
-struct base_traits<Array<Dim>>
+template<typename T, size_t Dim>
+struct base_traits<Array<T, Dim>>
 {
-    typedef Array<Dim> terminal_type;
-    typedef double terminal_sub_type;
+    typedef Array<T, Dim> terminal_type;
+    typedef T terminal_sub_type;
+    typedef T value_type;
 };
 
 }

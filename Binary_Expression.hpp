@@ -19,6 +19,7 @@ public:
     
     typedef typename base_traits<Binary_Op>::terminal_type terminal_type;
     typedef typename base_traits<Binary_Op>::terminal_sub_type terminal_sub_type;
+    typedef typename base_traits<Binary_Op>::value_type value_type;
     
     Binary_Op(const E1& a_1, const E2& a_2)
     :arg1(a_1),arg2(a_2)
@@ -26,11 +27,11 @@ public:
 
     inline const double get_element(size_t i) const
     {
-        if constexpr(std::is_arithmetic_v<E1>)
+        if constexpr(not ND::is_Array_Expression<E1>::value)
         {
             return OP::apply(arg1,arg2.get_element(i));
         }
-        else if constexpr(std::is_arithmetic_v<E2>)
+        else if constexpr(not ND::is_Array_Expression<E2>::value)
         {
             return OP::apply(arg1.get_element(i),arg2);
         }
@@ -43,11 +44,11 @@ public:
     template <typename... ind_type>
     inline const double operator()(ind_type... indices) const
     {
-        if constexpr(std::is_arithmetic_v<E1>)
+        if constexpr(not ND::is_Array_Expression<E1>::value)
         {
             return OP::apply(arg1,arg2(indices...));
         }
-        else if constexpr(std::is_arithmetic_v<E2>)
+        else if constexpr(not ND::is_Array_Expression<E2>::value)
         {
             return OP::apply(arg1(indices...),arg2);
         }
@@ -60,13 +61,17 @@ public:
 template <class E1, class OP, class E2>
 struct base_traits<Binary_Op<E1,OP,E2>>
 {
-    typedef typename std::conditional<  std::is_arithmetic_v<E1>,
-                                        base_traits<E2>,
-                                        base_traits<E1>
+    typedef typename std::conditional<  ND::is_Array_Expression<E1>::value,
+                                        base_traits<E1>,
+                                        base_traits<E2>
                                         >::type::terminal_type   terminal_type;
 
     typedef typename terminal_type::terminal_sub_type terminal_sub_type;
+    
+    typedef typename terminal_type::value_type value_type;
 };
+
+
 
 
 struct Array_add

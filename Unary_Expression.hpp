@@ -18,6 +18,7 @@ public:
 
     typedef typename base_traits<Unary_Op>::terminal_type terminal_type;
     typedef typename base_traits<Unary_Op>::terminal_sub_type terminal_sub_type;
+    typedef typename base_traits<Unary_Op>::value_type value_type;
 
     Unary_Op(const E& a)
     :arg(a)
@@ -40,7 +41,11 @@ struct base_traits<Unary_Op<OP,E>>
     typedef typename base_traits<E>::terminal_type terminal_type;
 
     typedef typename terminal_type::terminal_sub_type terminal_sub_type;
+
+    typedef typename terminal_type::value_type value_type;
 };
+
+
 
 
 struct Array_opp

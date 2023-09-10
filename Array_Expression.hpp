@@ -19,12 +19,19 @@ namespace ND {
 template <class E> 
 struct base_traits;
 
-template<typename T>
-requires std::is_arithmetic_v<T>
-struct base_traits<T>
+
+
+template <class E>
+class Array_Expression;
+
+
+
+template <class E>
+struct is_Array_Expression
 {
-    typedef double terminal_type;
+    static constexpr bool value = std::is_base_of<Array_Expression<E>,E>::value;
 };
+
 
 
 template <class E>
@@ -34,8 +41,8 @@ public:
     
     typedef typename base_traits<E>::terminal_type terminal_type;
     typedef typename base_traits<E>::terminal_sub_type terminal_sub_type;
+    typedef typename base_traits<E>::value_type value_type;
 
-    
     inline const double get_element(size_t i) const   {  return static_cast<const E&>(*this).get_element(i);   }
 
     template <typename... ind_type>
@@ -75,7 +82,8 @@ public:
             for (size_t i = 1; i < terminal_type::length; i++)
                 res = std::min(res,get_element(i));
         }
-        else {
+        else
+        {
             for (size_t i = 1; i < terminal_type::length; i++)
                 res = std::min(res,get_element(i));
         }
@@ -89,13 +97,13 @@ public:
         if constexpr(terminal_type::length>PAR_SIZE)
         {
             #pragma omp parallel for reduction(max:res) if(omp_get_num_threads() == 1)
-            for (size_t i = 1; i < terminal_type::terminal_type::length; i++)
+            for (size_t i = 1; i < terminal_type::length; i++)
                 res = std::max(res,get_element(i));
         }
-        else {
-            for (size_t i = 1; i < terminal_type::terminal_type::length; i++) {
+        else
+        {
+            for (size_t i = 1; i < terminal_type::length; i++)
                 res = std::max(res,get_element(i));
-            }
         }
         return res;
     }
@@ -104,16 +112,16 @@ public:
     {
         double res = get_element(0);
         
-        if constexpr(terminal_type::terminal_type::length>PAR_SIZE)
+        if constexpr(terminal_type::length>PAR_SIZE)
         {
             #pragma omp parallel for reduction(+:res) if(omp_get_num_threads() == 1)
-            for (size_t i = 1; i < terminal_type::terminal_type::length; i++)
+            for (size_t i = 1; i < terminal_type::length; i++)
                 res += get_element(i);
         }
-        else {
-            for (size_t i = 1; i < terminal_type::terminal_type::length; i++) {
+        else
+        {
+            for (size_t i = 1; i < terminal_type::length; i++)
                 res += get_element(i);
-            }
         }
         return res;
     }
@@ -131,7 +139,8 @@ public:
             for (size_t i = 0; i < terminal_type::length; i++)
                 res += get_element(i)*get_element(i);
         }
-        else {
+        else
+        {
             for (size_t i = 0; i < terminal_type::length; i++)
                 res += get_element(i)*get_element(i);
         }
