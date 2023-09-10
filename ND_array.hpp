@@ -1,7 +1,6 @@
 #ifndef NDARRAY_HPP
 #define NDARRAY_HPP
 
-#include <cstddef>
 #include <iostream>
 #include <type_traits>
 
@@ -383,14 +382,6 @@ public:
         return *this;
     }
 };
-template<typename T, size_t firstDim, size_t... RestDims>
-struct base_traits<Array<T, firstDim, RestDims...>>
-{
-    typedef Array<T, firstDim, RestDims...> terminal_type;
-    typedef Array<T, RestDims...> terminal_sub_type;
-    typedef T value_type;
-};
-
 
 
 
@@ -739,13 +730,8 @@ public:
         return *this;
     }
 };
-template<typename T, size_t Dim>
-struct base_traits<Array<T, Dim>>
-{
-    typedef Array<T, Dim> terminal_type;
-    typedef T terminal_sub_type;
-    typedef T value_type;
-};
+
+
 
 }
 

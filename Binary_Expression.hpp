@@ -1,9 +1,8 @@
 #ifndef BINARY_EXPRESSION_HPP
 #define BINARY_EXPRESSION_HPP
 
-#include <cstddef>
-#include <type_traits>
 
+#include "helper.hpp"
 #include "Array_Expression.hpp"
 #include "Unary_Expression.hpp"
 
@@ -57,18 +56,6 @@ public:
             return OP::apply(arg1(indices...),arg2(indices...));
         }
     }
-};
-template <class E1, class OP, class E2>
-struct base_traits<Binary_Op<E1,OP,E2>>
-{
-    typedef typename std::conditional<  ND::is_Array_Expression<E1>::value,
-                                        base_traits<E1>,
-                                        base_traits<E2>
-                                        >::type::terminal_type   terminal_type;
-
-    typedef typename terminal_type::terminal_sub_type terminal_sub_type;
-    
-    typedef typename terminal_type::value_type value_type;
 };
 
 

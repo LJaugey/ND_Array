@@ -1,38 +1,19 @@
 #ifndef ARRAY_EXPRESSION_HPP
 #define ARRAY_EXPRESSION_HPP
 
-#include <cstddef>
 #include <iostream>
-#include <type_traits>
 #include <cmath>
+
+#include "helper.hpp"
 
 #ifdef _OPENMP
 #include <omp.h>
 #endif
 
-#define PAR_SIZE 1024
 
 
 
 namespace ND {
-
-template <class E> 
-struct base_traits;
-
-
-
-template <class E>
-class Array_Expression;
-
-
-
-template <class E>
-struct is_Array_Expression
-{
-    static constexpr bool value = std::is_base_of<Array_Expression<E>,E>::value;
-};
-
-
 
 template <class E>
 class Array_Expression
@@ -146,7 +127,6 @@ public:
         }
         return sqrt(res/terminal_type::length - m*m);
     }
-
 };
 
 

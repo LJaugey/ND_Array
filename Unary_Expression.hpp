@@ -1,10 +1,8 @@
 #ifndef UNARY_EXPRESSION_HPP
 #define UNARY_EXPRESSION_HPP
 
-#include <cstddef>
-#include <type_traits>
-#include <algorithm>
 
+#include "helper.hpp"
 #include "Array_Expression.hpp"
 
 namespace ND {
@@ -35,15 +33,8 @@ public:
         return OP::apply(arg(indices...));
     }
 };
-template <class OP, class E>
-struct base_traits<Unary_Op<OP,E>>
-{
-    typedef typename base_traits<E>::terminal_type terminal_type;
 
-    typedef typename terminal_type::terminal_sub_type terminal_sub_type;
 
-    typedef typename terminal_type::value_type value_type;
-};
 
 
 
