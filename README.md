@@ -10,12 +10,10 @@ The main.cpp is a quick overview of the features and the speed_test.cpp is a dem
 ## Usage
 
 ### definition
-An array with shape `[Dim_1,Dim_2,Dim_3]` is defined with
+An array of double with shape `[Dim_1,Dim_2,Dim_3]` is defined with
 ```
-Array<Dim_1,Dim_2,Dim_3> A;
+Array<double, Dim_1,Dim_2,Dim_3> A;
 ```
-
-**Note:** The copy constructor used to perform a shallow copy to get better performance, however it relied on non-mandatory copy-elision so this behaviour was changed to avoid issues with different compilers. The code has been adapted to remove almost all copies.
 
 ### accessors
 Elements can be accessed through `Array::operator()` with the right amount of indices:
