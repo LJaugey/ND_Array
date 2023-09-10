@@ -2,7 +2,7 @@
 #include <chrono>
 #include <iostream>
 
-#include "../ND_array.hpp"
+#include "../ND_Array/ND_array.hpp"
 
 typedef std::valarray<double> Mat_1;
 typedef std::valarray<Mat_1> Mat_2;

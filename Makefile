@@ -1,11 +1,6 @@
 CXX:=g++
 CXXFLAGS:= -O3 -Wall -std=c++20 -fopenmp -funroll-loops
 
-EXT = cpp
-
-SOURCES := $(wildcard *.$(EXT))
-OBJECTS := $(patsubst $(SRC)/%.$(EXT),%.o,$(SOURCES))
-
 
 all: test speed_test
 

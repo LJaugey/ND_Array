@@ -2,7 +2,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
-#include "../ND_array.hpp"
+#include "../ND_Array/ND_array.hpp"
 
 
 const size_t dim_1 = 2;
