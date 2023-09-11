@@ -24,7 +24,7 @@ public:
     :arg1(a_1),arg2(a_2)
     {}
 
-    inline const double get_element(size_t i) const
+    inline const value_type get_element(size_t i) const
     {
         if constexpr(not ND::is_Array_Expression<E1>::value)
         {
@@ -41,7 +41,7 @@ public:
     }
 
     template <typename... ind_type>
-    inline const double operator()(ind_type... indices) const
+    inline const value_type operator()(ind_type... indices) const
     {
         if constexpr(not ND::is_Array_Expression<E1>::value)
         {
@@ -63,7 +63,7 @@ public:
 
 struct Array_add
 {
-    static inline const double apply(const double u, const double v)   {   return u + v;  }
+    static inline const auto apply(const auto u, const auto v)   {   return u + v;  }
 };
 template <class LHS, class RHS>
 static inline const Binary_Op<LHS,Array_add,RHS> operator+(const LHS& lhs, const RHS& rhs)
@@ -73,7 +73,7 @@ static inline const Binary_Op<LHS,Array_add,RHS> operator+(const LHS& lhs, const
 
 struct Array_sub
 {
-    static inline const double apply(const double u, const double v)  {   return u - v;  }
+    static inline const auto apply(const auto u, const auto v)  {   return u - v;  }
 };
 template <class LHS, class RHS>
 static inline const Binary_Op<LHS,Array_sub,RHS> operator-(const LHS& lhs, const RHS& rhs)
@@ -83,7 +83,7 @@ static inline const Binary_Op<LHS,Array_sub,RHS> operator-(const LHS& lhs, const
 
 struct Array_mul
 {
-    static inline const double apply(const double u, const double v)  {   return u * v;  }
+    static inline const auto apply(const auto u, const auto v)  {   return u * v;  }
 };
 template <class LHS, class RHS>
 static inline const Binary_Op<LHS,Array_mul,RHS> operator*(const LHS& lhs, const RHS& rhs)
@@ -93,7 +93,7 @@ static inline const Binary_Op<LHS,Array_mul,RHS> operator*(const LHS& lhs, const
 
 struct Array_div
 {
-    static inline const double apply(const double u, const double v)  {   return u / v;  }
+    static inline const auto apply(const auto u, const auto v)  {   return u / v;  }
 };
 template <class LHS, class RHS>
 static inline const Binary_Op<LHS,Array_div,RHS> operator/(const LHS& lhs, const RHS& rhs)

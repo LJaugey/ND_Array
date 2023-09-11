@@ -24,10 +24,10 @@ public:
     typedef typename base_traits<E>::terminal_sub_type terminal_sub_type;
     typedef typename base_traits<E>::value_type value_type;
 
-    inline const double get_element(size_t i) const   {  return static_cast<const E&>(*this).get_element(i);   }
+    inline const value_type get_element(size_t i) const   {  return static_cast<const E&>(*this).get_element(i);   }
 
     template <typename... ind_type>
-    inline const double operator()(ind_type... indices) const   {   return static_cast<const E&>(*this)(indices...);    }
+    inline const value_type operator()(ind_type... indices) const   {   return static_cast<const E&>(*this)(indices...);    }
 
 
     inline const terminal_type eval() const
@@ -53,9 +53,9 @@ public:
 
 
     // min
-    const double min() const
+    const value_type min() const
     {
-        double res = get_element(0);
+        value_type res = get_element(0);
         
         if constexpr(terminal_type::length>PAR_SIZE)
         {
@@ -71,9 +71,9 @@ public:
         return res;
     }
     // max
-    const double max() const
+    const value_type max() const
     {
-        double res = get_element(0);
+        value_type res = get_element(0);
         
         if constexpr(terminal_type::length>PAR_SIZE)
         {
@@ -89,9 +89,9 @@ public:
         return res;
     }
     // sum
-    const double sum() const
+    const value_type sum() const
     {
-        double res = get_element(0);
+        value_type res = get_element(0);
         
         if constexpr(terminal_type::length>PAR_SIZE)
         {
@@ -106,40 +106,15 @@ public:
         }
         return res;
     }
-    // mean
-    inline const double mean() const   {   return (this->sum())/terminal_type::length; }
-
-    const double stdev() const
-    {
-        double res = 0.0;
-        double m = this->mean();
-        
-        if constexpr(terminal_type::length>PAR_SIZE)
-        {
-            #pragma omp parallel for reduction(+:res) if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < terminal_type::length; i++)
-                res += get_element(i)*get_element(i);
-        }
-        else
-        {
-            for (size_t i = 0; i < terminal_type::length; i++)
-                res += get_element(i)*get_element(i);
-        }
-        return sqrt(res/terminal_type::length - m*m);
-    }
 };
 
 
 template<class E>
-inline const double min(const Array_Expression<E>& expr)   {   return expr.min();  }
+inline const auto min(const Array_Expression<E>& expr)   {   return expr.min();  }
 template<class E>
-inline const double max(const Array_Expression<E>& expr)   {   return expr.max();  }
+inline const auto max(const Array_Expression<E>& expr)   {   return expr.max();  }
 template<class E>
-inline const double sum(const Array_Expression<E>& expr)   {   return expr.sum();  }
-template<class E>
-inline const double mean(const Array_Expression<E>& expr)  {   return expr.mean(); }
-template<class E>
-inline const double stdev(const Array_Expression<E>& expr) {   return expr.stdev();}
+inline const auto sum(const Array_Expression<E>& expr)   {   return expr.sum();  }
 
 template<class E>
 inline std::ostream& operator<<(std::ostream& output, const Array_Expression<E>& expr)
