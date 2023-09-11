@@ -4,9 +4,59 @@
 
 #include "../ND_Array/ND_array.hpp"
 
-
 const size_t dim_1 = 2;
 const size_t dim_2 = 3;
+const size_t len = dim_1*dim_2;
+
+
+
+TEST_CASE("Constructors") {
+
+    const double a = 0.0;
+    ND::Array<double, dim_2> A_sub(a);
+
+
+    ND::Array<double,dim_1, dim_2> A1;
+    ND::Array<double,dim_1, dim_2> A2(a);
+    ND::Array<double,dim_1, dim_2> A3(0.0);
+    ND::Array<double,dim_1, dim_2> A4(0);
+    ND::Array<double,dim_1, dim_2> A5(A_sub);
+
+
+    CHECK_EQ(A1,A2);
+    CHECK_EQ(A1,A3);
+    CHECK_EQ(A1,A4);
+    CHECK_EQ(A1,A5);
+    
+    CHECK_EQ(A2,A3);
+    CHECK_EQ(A2,A4);
+    CHECK_EQ(A2,A5);
+    
+    CHECK_EQ(A3,A4);
+    CHECK_EQ(A3,A5);
+    
+    CHECK_EQ(A4,A5);
+
+    
+    //copy constructor
+    ND::Array<double,dim_1, dim_2> B(A1);
+    ND::Array<double,dim_1, dim_2> B1;
+    B1 = A1;
+
+    CHECK_EQ(B,A1);
+    CHECK_EQ(B1,A1);
+
+
+    //from array expression
+    const double b = 2.0;
+
+    ND::Array<double,dim_1, dim_2> C(A1+b);
+    ND::Array<double,dim_1, dim_2> C1;
+    C1 = A1 + b;
+
+    CHECK_EQ(C,(A1+b).eval());
+    CHECK_EQ(C1,(A1+b).eval());
+}
 
 
 TEST_CASE("Comparison operations") {
@@ -25,6 +75,7 @@ TEST_CASE("Comparison operations") {
     CHECK(A+A!=A);
     CHECK_FALSE(A==A+A);
 }
+
 
 TEST_CASE("Access operators") {
 
@@ -145,3 +196,102 @@ TEST_CASE("Arithmetic operations") {
     }
 }
 
+    
+TEST_CASE("Trigonometric/Hyperbolic operations") {
+
+    const double a = 0.4;
+    const double b = -0.7;
+    const double c = 1.7;
+
+    ND::Array<double,dim_1, dim_2> A(a);
+    ND::Array<double,dim_1, dim_2> B(b);
+    ND::Array<double,dim_1, dim_2> C(c);
+
+
+    
+    SUBCASE("sin") {
+
+        CHECK_EQ(sin(A)(0,0), sin(a));
+        CHECK_EQ(sin(B)(0,0), sin(b));
+
+        CHECK_EQ(asin(A)(0,0), asin(a));
+        CHECK_EQ(asin(B)(0,0), asin(b));
+
+        CHECK_EQ(sinh(A)(0,0), sinh(a));
+        CHECK_EQ(sinh(B)(0,0), sinh(b));
+
+        CHECK_EQ(asinh(A)(0,0), asinh(a));
+        CHECK_EQ(asinh(B)(0,0), asinh(b));
+    }
+    
+    SUBCASE("cos") {
+
+        CHECK_EQ(cos(A)(0,0), cos(a));
+        CHECK_EQ(cos(B)(0,0), cos(b));
+
+        CHECK_EQ(acos(A)(0,0), acos(a));
+        CHECK_EQ(acos(B)(0,0), acos(b));
+
+        CHECK_EQ(cosh(A)(0,0), cosh(a));
+        CHECK_EQ(cosh(B)(0,0), cosh(b));
+
+        CHECK_EQ(acosh(C)(0,0), acosh(c));      // for acosh, arg>=1 is required
+    }
+    
+    SUBCASE("tan") {
+
+        CHECK_EQ(tan(A)(0,0), tan(a));
+        CHECK_EQ(tan(B)(0,0), tan(b));
+
+        CHECK_EQ(atan(A)(0,0), atan(a));
+        CHECK_EQ(atan(B)(0,0), atan(b));
+
+        CHECK_EQ(tanh(A)(0,0), tanh(a));
+        CHECK_EQ(tanh(B)(0,0), tanh(b));
+
+        CHECK_EQ(atanh(A)(0,0), atanh(a));
+        CHECK_EQ(atanh(B)(0,0), atanh(b));
+    }
+
+    /*
+    SUBCASE("tan2") {
+        
+        CHECK_EQ(atan2(A,B)(0,0), atan2(a,b));
+        CHECK_EQ(atan2(B,A)(0,0), atan2(b,a));
+        
+        CHECK_EQ(atan2(A,b)(0,0), atan2(a,b));
+        CHECK_EQ(atan2(a,B)(0,0), atan2(a,b));
+    }
+    */
+}
+
+    
+TEST_CASE("Other") {
+
+    const double a = -2.0;
+
+    ND::Array<double,dim_1, dim_2> A(a);
+
+    CHECK_EQ(A.size(0), dim_1);
+    CHECK_EQ(A.size(1), dim_2);
+
+
+    CHECK_EQ((-A)(0,0), (-a));
+    CHECK_EQ(abs(A)(0,0), abs(a));
+
+
+    ND::Array<double,dim_1, dim_2> B;
+    const double x = 1.0;
+    const double y = 2.0;
+
+    B[0] = x; B[1] = y;
+
+    CHECK_EQ(B.min(), std::min(x,y));
+    CHECK_EQ(min(B), std::min(x,y));
+
+    CHECK_EQ(B.max(), std::max(x,y));
+    CHECK_EQ(max(B), std::max(x,y));
+
+    CHECK_EQ(B.sum(), (x+y)*dim_2);
+    CHECK_EQ(sum(B), (x+y)*dim_2);
+}
