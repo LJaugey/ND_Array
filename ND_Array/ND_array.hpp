@@ -52,7 +52,18 @@ public:
     {
         data_ = new value_type[length];
 
-        std::fill_n(data_,length, val);
+        if constexpr(length>PAR_SIZE)
+        {
+            #pragma omp parallel for if(omp_get_num_threads() == 1)
+            for (size_t i = 0; i < length; ++i)
+            {
+                data_[i] = val;
+            }
+        }
+        else
+        {
+            std::fill_n(data_,length, val);
+        }
     }
 
     // copy constructor
@@ -61,7 +72,18 @@ public:
     {
         data_ = new value_type[length];
 
-        std::copy(other.data_, other.data_ + length, data_);
+        if constexpr(length>PAR_SIZE)
+        {
+            #pragma omp parallel for if(omp_get_num_threads() == 1)
+            for (size_t i = 0; i < length; ++i)
+            {
+                data_[i] = other.data_[i];
+            }
+        }
+        else
+        {
+            std::copy(other.data_, other.data_ + length, data_);
+        }
     }
 protected:
     // Constructor from pointer
@@ -74,12 +96,36 @@ public:
     // copy assigment operator
     const Array<T, firstDim, RestDims...>& operator=(const Array<T, firstDim, RestDims...>& other)
     {
-        std::copy(other.data_, other.data_ + length, data_);
+        if constexpr(length>PAR_SIZE)
+        {
+            #pragma omp parallel for if(omp_get_num_threads() == 1)
+            for (size_t i = 0; i < length; ++i)
+            {
+                data_[i] = other.data_[i];
+            }
+        }
+        else
+        {
+            std::copy(other.data_, other.data_ + length, data_);
+        }
+
         return *this;
     }
     const Array<T, firstDim, RestDims...>& operator=(value_type val)
     {
-        std::fill_n(data_,length, val);
+        if constexpr(length>PAR_SIZE)
+        {
+            #pragma omp parallel for if(omp_get_num_threads() == 1)
+            for (size_t i = 0; i < length; ++i)
+            {
+                data_[i] = val;
+            }
+        }
+        else
+        {
+            std::fill_n(data_,length, val);
+        }
+        
         return *this;
     }
     // constructor from N-1 dimensional array
@@ -87,10 +133,23 @@ public:
     : is_original(true)
     {
         data_ = new value_type[length];
-        for(size_t i = 0; i<firstDim; i++)
+
+        if constexpr(length>PAR_SIZE)
         {
-            std::copy(slice.data_, slice.data_ + slice.length, data_+ i*(RestDims*...));
+            #pragma omp parallel for if(omp_get_num_threads() == 1)
+            for(size_t i = 0; i<length; i++)
+            {
+                data_[i] = slice.data_[i%(RestDims*...)];
+            }
         }
+        else
+        {
+            for(size_t i = 0; i<length; i++)
+            {
+                data_[i] = slice.data_[i%(RestDims*...)];
+            }
+        }
+        
     }
 
     // construct from Array_expressions
@@ -181,12 +240,39 @@ public:
 
     const Array<T, firstDim, RestDims...>& fill(value_type val)
     {
-        std::fill_n(data_,length, val);
+        if constexpr(length>PAR_SIZE)
+        {
+            #pragma omp parallel for if(omp_get_num_threads() == 1)
+            for (size_t i = 0; i < length; ++i)
+            {
+                data_[i] = val;
+            }
+        }
+        else
+        {
+            std::fill_n(data_,length, val);
+        }
+
         return *this;
     }
     const Array<T, firstDim, RestDims...>& fill(const Array<T, firstDim, RestDims...>& other)
     {
-        if(data_ != other.data_)    std::copy(other.data_, other.data_ + length, data_);
+        if(data_ != other.data_)
+        {
+            if constexpr(length>PAR_SIZE)
+            {
+                #pragma omp parallel for if(omp_get_num_threads() == 1)
+                for (size_t i = 0; i < length; ++i)
+                {
+                    data_[i] = other.data_[i];
+                }
+            }
+            else
+            {
+                std::copy(other.data_, other.data_ + length, data_);
+            }
+        }
+        
         return *this;
     }
     template<class E>
@@ -431,18 +517,27 @@ public:
 
     // Base constructor
     Array()
+    : is_original(true)
     {
         data_ = new value_type[length];
-
-        is_original =  true;
     }
     Array(value_type val)
+    : is_original(true)
     {
         data_ = new value_type[length];
 
-        std::fill_n(data_,length, val);
-
-        is_original =  true;
+        if constexpr(length>PAR_SIZE)
+        {
+            #pragma omp parallel for if(omp_get_num_threads() == 1)
+            for (size_t i = 0; i < length; ++i)
+            {
+                data_[i] = val;
+            }
+        }
+        else
+        {
+            std::fill_n(data_,length, val);
+        }
     }
 
     // copy constructor
@@ -451,25 +546,60 @@ public:
     {
         data_ = new value_type[length];
 
-        std::copy(other.data_, other.data_ + length, data_);
+        if constexpr(length>PAR_SIZE)
+        {
+            #pragma omp parallel for if(omp_get_num_threads() == 1)
+            for (size_t i = 0; i < length; ++i)
+            {
+                data_[i] = other.data_[i];
+            }
+        }
+        else
+        {
+            std::copy(other.data_, other.data_ + length, data_);
+        }
     }
-    
+protected:
     // Constructor from pointer
     Array(value_type* p, bool is_or = false)
     {
         data_ = p;
         is_original = is_or;
     }
-    
+public:
     // copy assigment operator
     const Array<T, Dim>& operator=(const Array<T, Dim>& other)
     {
-        std::copy(other.data_, other.data_ + length, data_);
+        if constexpr(length>PAR_SIZE)
+        {
+            #pragma omp parallel for if(omp_get_num_threads() == 1)
+            for (size_t i = 0; i < length; ++i)
+            {
+                data_[i] = other.data_[i];
+            }
+        }
+        else
+        {
+            std::copy(other.data_, other.data_ + length, data_);
+        }
+
         return *this;
     }
     const Array<T, Dim>& operator=(value_type val)
     {
-        std::fill_n(data_,length, val);
+        if constexpr(length>PAR_SIZE)
+        {
+            #pragma omp parallel for if(omp_get_num_threads() == 1)
+            for (size_t i = 0; i < length; ++i)
+            {
+                data_[i] = val;
+            }
+        }
+        else
+        {
+            std::fill_n(data_,length, val);
+        }
+        
         return *this;
     }
     
@@ -535,12 +665,39 @@ public:
 
     const Array<T, Dim>& fill(value_type val)
     {
-        std::fill_n(data_,length, val);
+        if constexpr(length>PAR_SIZE)
+        {
+            #pragma omp parallel for if(omp_get_num_threads() == 1)
+            for (size_t i = 0; i < length; ++i)
+            {
+                data_[i] = val;
+            }
+        }
+        else
+        {
+            std::fill_n(data_,length, val);
+        }
+
         return *this;
     }
     const Array<T, Dim>& fill(const Array<T, Dim>& other)
     {
-        if(data_ != other.data_)    std::copy(other.data_, other.data_ + length, data_);
+        if(data_ != other.data_)
+        {
+            if constexpr(length>PAR_SIZE)
+            {
+                #pragma omp parallel for if(omp_get_num_threads() == 1)
+                for (size_t i = 0; i < length; ++i)
+                {
+                    data_[i] = other.data_[i];
+                }
+            }
+            else
+            {
+                std::copy(other.data_, other.data_ + length, data_);
+            }
+        }
+        
         return *this;
     }
     template<class E>
