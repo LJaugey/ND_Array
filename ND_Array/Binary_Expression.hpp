@@ -101,6 +101,18 @@ static inline const Binary_Op<LHS,Array_div,RHS> operator/(const LHS& lhs, const
     return Binary_Op<LHS,Array_div,RHS>(lhs,rhs);
 }
 
+struct Array_atan2
+{
+    static inline const auto apply(const auto u, const auto v)  {   return atan2(u,v);  }
+};
+template <class LHS, class RHS>
+static inline const Binary_Op<LHS,Array_atan2,RHS> atan2(const LHS& lhs, const RHS& rhs)
+{
+    return Binary_Op<LHS,Array_atan2,RHS>(lhs,rhs);
+}
+
+
+
 }
 
 #endif

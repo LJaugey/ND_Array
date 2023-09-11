@@ -6,7 +6,6 @@
 
 const size_t dim_1 = 2;
 const size_t dim_2 = 3;
-const size_t len = dim_1*dim_2;
 
 
 
@@ -253,7 +252,7 @@ TEST_CASE("Trigonometric/Hyperbolic operations") {
         CHECK_EQ(atanh(B)(0,0), atanh(b));
     }
 
-    /*
+    
     SUBCASE("tan2") {
         
         CHECK_EQ(atan2(A,B)(0,0), atan2(a,b));
@@ -262,7 +261,6 @@ TEST_CASE("Trigonometric/Hyperbolic operations") {
         CHECK_EQ(atan2(A,b)(0,0), atan2(a,b));
         CHECK_EQ(atan2(a,B)(0,0), atan2(a,b));
     }
-    */
 }
 
     
