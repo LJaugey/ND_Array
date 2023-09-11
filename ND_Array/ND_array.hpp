@@ -561,7 +561,7 @@ public:
     }
 protected:
     // Constructor from pointer
-    Array(value_type* p, bool is_or = false)
+    Array(value_type* p, bool is_or)
     {
         data_ = p;
         is_original = is_or;
