@@ -43,18 +43,16 @@ public:
 
     // Base constructor
     Array()
+    : is_original(true)
     {
         data_ = new value_type[length];
-
-        is_original =  true;
     }
     Array(value_type val)
+    : is_original(true)
     {
         data_ = new value_type[length];
 
         std::fill_n(data_,length, val);
-
-        is_original =  true;
     }
 
     // copy constructor
@@ -65,14 +63,14 @@ public:
 
         std::copy(other.data_, other.data_ + length, data_);
     }
-
+protected:
     // Constructor from pointer
-    Array(value_type* p, bool is_or = false)
+    Array(value_type* p, bool is_or)
     {
         data_ = p;
         is_original = is_or;
     }
-    
+public:
     // copy assigment operator
     const Array<T, firstDim, RestDims...>& operator=(const Array<T, firstDim, RestDims...>& other)
     {
@@ -86,6 +84,7 @@ public:
     }
     // constructor from N-1 dimensional array
     Array(const Array<T, RestDims...>& slice)
+    : is_original(true)
     {
         data_ = new value_type[length];
         for(size_t i = 0; i<firstDim; i++)
