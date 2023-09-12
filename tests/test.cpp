@@ -116,6 +116,7 @@ TEST_CASE("Access operators") {
     CHECK_EQ(A(dim_1-1,dim_2-1),a);
 }
 
+
 TEST_CASE("Arithmetic operations") {
 
     const double a = 1.0;
@@ -263,10 +264,29 @@ TEST_CASE("Trigonometric/Hyperbolic operations") {
     }
 }
 
+
+
+TEST_CASE("bitwise operations") {
+
+    const int a = 5;
+    const int b = 2;
+
+    ND::Array<int,dim_1, dim_2> A(a);
+    ND::Array<int,dim_1, dim_2> B(b);
+
+
+    CHECK_EQ((A&B)(0,0), a&b);
+    CHECK_EQ((A|B)(0,0), a|b);
+    CHECK_EQ((A^B)(0,0), a^b);
+    CHECK_EQ((A<<B)(0,0), a<<b);
+    CHECK_EQ((A>>B)(0,0), a>>b);
+}
+
     
+
 TEST_CASE("Other") {
 
-    const double a = -2.0;
+    const double a = 1.7;
 
     ND::Array<double,dim_1, dim_2> A(a);
 
@@ -275,7 +295,16 @@ TEST_CASE("Other") {
 
 
     CHECK_EQ((-A)(0,0), (-a));
-    CHECK_EQ(abs(A)(0,0), abs(a));
+    CHECK_EQ(abs(A)(0,0), std::abs(a));
+    CHECK_EQ(exp(A)(0,0), std::exp(a));
+    CHECK_EQ(log(A)(0,0), std::log(a));
+    CHECK_EQ(log2(A)(0,0), std::log2(a));
+    CHECK_EQ(log10(A)(0,0), std::log10(a));
+    CHECK_EQ(sqrt(A)(0,0), std::sqrt(a));
+    
+    CHECK_EQ(round(A)(0,0), round(a));
+    CHECK_EQ(ceil(A)(0,0), ceil(a));
+    CHECK_EQ(floor(A)(0,0), floor(a));
 
 
     ND::Array<double,dim_1, dim_2> B;
@@ -292,4 +321,11 @@ TEST_CASE("Other") {
 
     CHECK_EQ(B.sum(), (x+y)*dim_2);
     CHECK_EQ(sum(B), (x+y)*dim_2);
+
+
+    int c = 5; int d = 2;
+    ND::Array<int, dim_1,dim_2> C(c);
+    ND::Array<int, dim_1,dim_2> D(d);
+
+    CHECK_EQ((C%D)(0,0), c%d);
 }

@@ -24,10 +24,10 @@ public:
     typedef typename base_traits<E>::terminal_sub_type terminal_sub_type;
     typedef typename base_traits<E>::value_type value_type;
 
-    inline const value_type get_element(size_t i) const   {  return static_cast<const E&>(*this).get_element(i);   }
+    inline const value_type get_element(const size_t i) const   {  return static_cast<const E&>(*this).get_element(i);   }
 
     template <typename... ind_type>
-    inline const value_type operator()(ind_type... indices) const   {   return static_cast<const E&>(*this)(indices...);    }
+    inline const value_type operator()(const ind_type... indices) const   {   return static_cast<const E&>(*this)(indices...);    }
 
 
     inline const terminal_type eval() const

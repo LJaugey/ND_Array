@@ -22,13 +22,13 @@ public:
     :arg(a)
     {}
 
-    inline const value_type get_element(size_t i) const
+    inline const value_type get_element(const size_t i) const
     {
         return OP::apply(arg.get_element(i));
     }
 
     template <typename... ind_type>
-    inline const value_type operator()(ind_type... indices) const
+    inline const value_type operator()(const ind_type... indices) const
     {
         return OP::apply(arg(indices...));
     }
@@ -58,6 +58,61 @@ static inline const Unary_Op<Array_abs,RHS> abs(const RHS& rhs)
 {
     return Unary_Op<Array_abs,RHS>(rhs);
 }
+
+
+// exp
+struct Array_exp
+{
+    static inline const auto apply(const auto u)    {   return std::exp(u);  }
+};
+template <class RHS>
+static inline const Unary_Op<Array_exp,RHS> exp(const RHS& rhs)
+{
+    return Unary_Op<Array_exp,RHS>(rhs);
+}
+
+
+// log
+struct Array_log
+{
+    static inline const auto apply(const auto u)    {   return std::log(u);  }
+};
+template <class RHS>
+static inline const Unary_Op<Array_log,RHS> log(const RHS& rhs)
+{
+    return Unary_Op<Array_log,RHS>(rhs);
+}
+
+struct Array_log10
+{
+    static inline const auto apply(const auto u)    {   return std::log10(u);  }
+};
+template <class RHS>
+static inline const Unary_Op<Array_log10,RHS> log10(const RHS& rhs)
+{
+    return Unary_Op<Array_log10,RHS>(rhs);
+}
+
+struct Array_log2
+{
+    static inline const auto apply(const auto u)    {   return std::log2(u);  }
+};
+template <class RHS>
+static inline const Unary_Op<Array_log2,RHS> log2(const RHS& rhs)
+{
+    return Unary_Op<Array_log2,RHS>(rhs);
+}
+
+struct Array_sqrt
+{
+    static inline const auto apply(const auto u)    {   return std::sqrt(u);  }
+};
+template <class RHS>
+static inline const Unary_Op<Array_sqrt,RHS> sqrt(const RHS& rhs)
+{
+    return Unary_Op<Array_sqrt,RHS>(rhs);
+}
+
 
 
 // trigonometric functions
@@ -175,50 +230,6 @@ template <class RHS>
 static inline const Unary_Op<Array_atanh,RHS> atanh(const RHS& rhs)
 {
     return Unary_Op<Array_atanh,RHS>(rhs);
-}
-
-
-// exp
-struct Array_exp
-{
-    static inline const auto apply(const auto u)    {   return std::exp(u);  }
-};
-template <class RHS>
-static inline const Unary_Op<Array_exp,RHS> exp(const RHS& rhs)
-{
-    return Unary_Op<Array_exp,RHS>(rhs);
-}
-
-
-// log
-struct Array_log
-{
-    static inline const auto apply(const auto u)    {   return std::log(u);  }
-};
-template <class RHS>
-static inline const Unary_Op<Array_log,RHS> log(const RHS& rhs)
-{
-    return Unary_Op<Array_log,RHS>(rhs);
-}
-
-struct Array_log10
-{
-    static inline const auto apply(const auto u)    {   return std::log10(u);  }
-};
-template <class RHS>
-static inline const Unary_Op<Array_log10,RHS> log10(const RHS& rhs)
-{
-    return Unary_Op<Array_log10,RHS>(rhs);
-}
-
-struct Array_log2
-{
-    static inline const auto apply(const auto u)    {   return std::log2(u);  }
-};
-template <class RHS>
-static inline const Unary_Op<Array_log2,RHS> log2(const RHS& rhs)
-{
-    return Unary_Op<Array_log2,RHS>(rhs);
 }
 
 

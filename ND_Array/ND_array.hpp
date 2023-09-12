@@ -39,7 +39,7 @@ protected:
 
 public:
 
-    inline const value_type get_element(size_t i) const     {   return data_[i];    }
+    inline const value_type get_element(const size_t i) const     {   return data_[i];    }
 
     // Base constructor
     Array()
