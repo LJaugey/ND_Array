@@ -2,7 +2,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
-#include "../ND_Array/ND_array.hpp"
+#include "../ND_Array/ND_Array.hpp"
 
 const size_t dim_1 = 2;
 const size_t dim_2 = 3;
@@ -287,8 +287,10 @@ TEST_CASE("bitwise operations") {
 TEST_CASE("Other") {
 
     const double a = 1.7;
+    const double a_ = 1.2;
 
     ND::Array<double,dim_1, dim_2> A(a);
+    ND::Array<double,dim_1, dim_2> A_(a_);
 
     CHECK_EQ(A.size(0), dim_1);
     CHECK_EQ(A.size(1), dim_2);
@@ -301,6 +303,10 @@ TEST_CASE("Other") {
     CHECK_EQ(log2(A)(0,0), std::log2(a));
     CHECK_EQ(log10(A)(0,0), std::log10(a));
     CHECK_EQ(sqrt(A)(0,0), std::sqrt(a));
+
+    CHECK_EQ(pow(A,A_)(0,0), std::pow(a,a_));
+    CHECK_EQ(pow(A,a_)(0,0), std::pow(a,a_));
+    CHECK_EQ(pow(a_,A)(0,0), std::pow(a_,a));
     
     CHECK_EQ(round(A)(0,0), round(a));
     CHECK_EQ(ceil(A)(0,0), ceil(a));

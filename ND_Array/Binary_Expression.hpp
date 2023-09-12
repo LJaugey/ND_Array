@@ -168,7 +168,7 @@ struct Array_pow
     static inline const auto apply(const auto u, const auto v)  {   return std::pow(u,v);  }
 };
 template <class LHS, class RHS>
-static inline const Binary_Op<LHS,Array_pow,RHS> operator||(const LHS& lhs, const RHS& rhs)
+static inline const Binary_Op<LHS,Array_pow,RHS> pow(const LHS& lhs, const RHS& rhs)
 {
     return Binary_Op<LHS,Array_pow,RHS>(lhs,rhs);
 }

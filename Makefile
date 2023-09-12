@@ -11,7 +11,7 @@ debug: CXXFLAGS:= -Og -g -Wall -std=c++20
 debug: all
 
 single: CXXFLAGS:= -O3 -Wall -std=c++20 -funroll-loops
-single: all
+single: speed_test
 
 test: tests/test.cpp
 	$(CXX) $(CXXFLAGS) $^ -o $@
