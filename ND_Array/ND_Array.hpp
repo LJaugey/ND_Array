@@ -232,7 +232,6 @@ public:
 
     // += operator
     template<class E>
-    requires std::is_same_v<typename E::terminal_type, terminal_type>
     const Array<T, firstDim, RestDims...>& operator+=(const Array_Expression<E>& expr)
     {
         OMP_FOR(length)
@@ -257,7 +256,6 @@ public:
 
     // -= operator
     template<class E>
-    requires std::is_same_v<typename E::terminal_type, terminal_type>
     const Array<T, firstDim, RestDims...>& operator-=(const Array_Expression<E>& expr)
     {
         OMP_FOR(length)
@@ -282,7 +280,6 @@ public:
 
     // *= operator
     template<class E>
-    requires std::is_same_v<typename E::terminal_type, terminal_type>
     const Array<T, firstDim, RestDims...>& operator*=(const Array_Expression<E>& expr)
     {
         OMP_FOR(length)
@@ -307,7 +304,6 @@ public:
 
     // /= operator
     template<class E>
-    requires std::is_same_v<typename E::terminal_type, terminal_type>
     const Array<T, firstDim, RestDims...>& operator/=(const Array_Expression<E>& expr)
     {
         OMP_FOR(length)

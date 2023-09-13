@@ -193,6 +193,90 @@ static inline const Binary_Op<LHS,Array_atan2,RHS> atan2(const LHS& lhs, const R
 
 
 
+struct Array_eq
+{
+    static inline auto apply(const auto u, const auto v)    {   return u == v;  }
+};
+template <class LHS, class RHS>
+static inline const Binary_Op<LHS,Array_eq,RHS> operator==(const LHS& lhs, const RHS& rhs)
+{
+    return Binary_Op<LHS,Array_eq,RHS>(lhs,rhs);
+}
+
+
+struct Array_neq
+{
+    static inline auto apply(const auto u, const auto v)    {   return u != v;  }
+};
+template <class LHS, class RHS>
+static inline const Binary_Op<LHS,Array_neq,RHS> operator!=(const LHS& lhs, const RHS& rhs)
+{
+    return Binary_Op<LHS,Array_neq,RHS>(lhs,rhs);
+}
+
+
+struct Array_AND
+{
+    static inline auto apply(const auto u, const auto v)    {   return u && v;  }
+};
+template <class LHS, class RHS>
+static inline const Binary_Op<LHS,Array_AND,RHS> operator&&(const LHS& lhs, const RHS& rhs)
+{
+    return Binary_Op<LHS,Array_AND,RHS>(lhs,rhs);
+}
+
+struct Array_OR
+{
+    static inline auto apply(const auto u, const auto v)    {   return u || v;  }
+};
+template <class LHS, class RHS>
+static inline const Binary_Op<LHS,Array_OR,RHS> operator||(const LHS& lhs, const RHS& rhs)
+{
+    return Binary_Op<LHS,Array_OR,RHS>(lhs,rhs);
+}
+
+
+
+struct Array_less
+{
+    static inline auto apply(const auto u, const auto v)    {   return u < v;  }
+};
+template <class LHS, class RHS>
+static inline const Binary_Op<LHS,Array_less,RHS> operator<(const LHS& lhs, const RHS& rhs)
+{
+    return Binary_Op<LHS,Array_less,RHS>(lhs,rhs);
+}
+struct Array_leq
+{
+    static inline auto apply(const auto u, const auto v)    {   return u <= v;  }
+};
+template <class LHS, class RHS>
+static inline const Binary_Op<LHS,Array_leq,RHS> operator<=(const LHS& lhs, const RHS& rhs)
+{
+    return Binary_Op<LHS,Array_leq,RHS>(lhs,rhs);
+}
+
+struct Array_greater
+{
+    static inline auto apply(const auto u, const auto v)    {   return u > v;  }
+};
+template <class LHS, class RHS>
+static inline const Binary_Op<LHS,Array_greater,RHS> operator>(const LHS& lhs, const RHS& rhs)
+{
+    return Binary_Op<LHS,Array_greater,RHS>(lhs,rhs);
+}
+struct Array_geq
+{
+    static inline auto apply(const auto u, const auto v)    {   return u >= v;  }
+};
+template <class LHS, class RHS>
+static inline const Binary_Op<LHS,Array_geq,RHS> operator>=(const LHS& lhs, const RHS& rhs)
+{
+    return Binary_Op<LHS,Array_geq,RHS>(lhs,rhs);
+}
+
+
+
 }
 
 #endif

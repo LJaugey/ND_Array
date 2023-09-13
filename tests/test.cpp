@@ -4,6 +4,8 @@
 
 #include "../ND_Array/ND_Array.hpp"
 
+using doctest::Approx;
+
 const size_t dim_1 = 2;
 const size_t dim_2 = 3;
 
@@ -21,14 +23,14 @@ TEST_CASE("Constructors") {
     ND::Array<double,dim_1, dim_2> A4(A_sub);
 
 
-    CHECK_EQ(A1,A2);
-    CHECK_EQ(A1,A3);
-    CHECK_EQ(A1,A4);
+    CHECK((A1==A2).all());
+    CHECK((A1==A3).all());
+    CHECK((A1==A4).all());
     
-    CHECK_EQ(A2,A3);
-    CHECK_EQ(A2,A4);
+    CHECK((A2==A3).all());
+    CHECK((A2==A4).all());
     
-    CHECK_EQ(A3,A4);
+    CHECK((A3==A4).all());
     
 
     
@@ -37,8 +39,8 @@ TEST_CASE("Constructors") {
     ND::Array<double,dim_1, dim_2> B1;
     B1 = A1;
 
-    CHECK_EQ(B,A1);
-    CHECK_EQ(B1,A1);
+    CHECK((B==A1).all());
+    CHECK((B1==A1).all());
 
 
     //from array expression
@@ -48,8 +50,8 @@ TEST_CASE("Constructors") {
     ND::Array<double,dim_1, dim_2> C1;
     C1 = A1 + b;
 
-    CHECK_EQ(C,(A1+b).eval());
-    CHECK_EQ(C1,(A1+b).eval());
+    CHECK((C==(A1+b).eval()).all());
+    CHECK((C1==(A1+b).eval()).all());
 }
 
 
@@ -60,14 +62,23 @@ TEST_CASE("Comparison operations") {
     ND::Array<double,dim_1, dim_2> A(a);
     ND::Array<double,dim_1, dim_2> A_2(2*a);
 
-    CHECK_EQ(A,A);
-    CHECK_EQ(A_2,A+A);
-    CHECK_EQ(A+A,A_2);
-    CHECK_EQ(A+A,A+A);
+    CHECK((A==A).all());
+    CHECK((A_2==A+A).all());
+    CHECK((A+A==A_2).all());
+    CHECK((A+A==A+A).all());
 
-    CHECK(A!=A+A);
-    CHECK(A+A!=A);
-    CHECK_FALSE(A==A+A);
+    CHECK((A!=A+A).all());
+    CHECK((A+A!=A).all());
+    CHECK_FALSE((A==A+A).all());
+
+    CHECK((A<A+A).all());
+    CHECK((2*A>A).all());
+    
+    CHECK((A<=A+A).all());
+    CHECK((2*A>=A).all());
+    
+    CHECK((2*A<=A+A).all());
+    CHECK((A+A>=2*A).all());
 }
 
 
@@ -81,9 +92,9 @@ TEST_CASE("Access operators") {
     ND::Array<double,dim_2> A_s(a);
     ND::Array<double,dim_2> B_s(b);
 
-    CHECK_EQ(A,A);
-    CHECK_EQ(A[0],A_s);
-    CHECK_EQ(A[dim_1-1],A_s);
+    CHECK((A==A).all());
+    CHECK((A[0]==A_s).all());
+    CHECK((A[dim_1-1]==A_s).all());
     CHECK_EQ(A[0][0],a);
 
     CHECK_EQ(A(0,0),a);
@@ -97,14 +108,14 @@ TEST_CASE("Access operators") {
     CHECK_EQ((A+B)(0,0),a+b);
     CHECK_EQ((A+b)(0,0),a+b);
     CHECK_EQ((A+b)(dim_1-1,dim_2-1),a+b);
-    CHECK_EQ((A+B)[0],A_s+B_s);
+    CHECK(((A+B)[0]==A_s+B_s).all());
     CHECK_EQ((A+b)[0][0],a+b);
     CHECK_EQ((A+b)[dim_1-1][dim_2-1],a+b);
     
     A[0] = b;
-    CHECK_EQ(A[0],B_s);
-    CHECK_FALSE(A[dim_1-1]==B_s);
-    CHECK_EQ(A[dim_1-1],A_s);
+    CHECK((A[0]==B_s).all());
+    CHECK_FALSE((A[dim_1-1]==B_s).all());
+    CHECK((A[dim_1-1]==A_s).all());
     CHECK_EQ(A[0][0],b);
 
     CHECK_EQ(A(0,0),b);
@@ -128,66 +139,66 @@ TEST_CASE("Arithmetic operations") {
         ND::Array<double,dim_1, dim_2> A_B(a+b);
         ND::Array<double,dim_1, dim_2> A_B_C(a+b+c);
 
-        CHECK_EQ(A+B, A_B);
-        CHECK_EQ(A+b, A_B);
-        CHECK_EQ(a+B, A_B);
+        CHECK((A+B == A_B).all());
+        CHECK((A+b == A_B).all());
+        CHECK((a+B == A_B).all());
 
-        CHECK_EQ(A+B+C, A_B_C);
-        CHECK_EQ(A+B+c, A_B_C);
-        CHECK_EQ(A+b+C, A_B_C);
-        CHECK_EQ(a+B+C, A_B_C);
+        CHECK((A+B+C == A_B_C).all());
+        CHECK((A+B+c == A_B_C).all());
+        CHECK((A+b+C == A_B_C).all());
+        CHECK((a+B+C == A_B_C).all());
 
-        CHECK_EQ(A+=B+C, a+(B+C));
-        CHECK_EQ(B+=c, b+C);
+        CHECK(((A+=B+C) == (a+(B+C))).all());
+        CHECK(((B+=c) == (b+C)).all());
 
     }
     SUBCASE("Subtraction") {
         ND::Array<double,dim_1, dim_2> A_B(a-b);
         ND::Array<double,dim_1, dim_2> A_B_C(a-b-c);
 
-        CHECK_EQ(A-B, A_B);
-        CHECK_EQ(A-b, A_B);
-        CHECK_EQ(a-B, A_B);
+        CHECK((A-B == A_B).all());
+        CHECK((A-b == A_B).all());
+        CHECK((a-B == A_B).all());
 
-        CHECK_EQ(A-B-C, A_B_C);
-        CHECK_EQ(A-B-c, A_B_C);
-        CHECK_EQ(A-b-C, A_B_C);
-        CHECK_EQ(a-B-C, A_B_C);
+        CHECK((A-B-C == A_B_C).all());
+        CHECK((A-B-c == A_B_C).all());
+        CHECK((A-b-C == A_B_C).all());
+        CHECK((a-B-C == A_B_C).all());
 
-        CHECK_EQ(A-=B-C, a-(B-C));
-        CHECK_EQ(B-=c, b-C);
+        CHECK(((A-=B-C) == (a-(B-C))).all());
+        CHECK(((B-=c) == (b-C)).all());
     }
     SUBCASE("Multiplication") {
         ND::Array<double,dim_1, dim_2> A_B(a*b);
         ND::Array<double,dim_1, dim_2> A_B_C(a*b*c);
 
-        CHECK_EQ(A*B, A_B);
-        CHECK_EQ(A*b, A_B);
-        CHECK_EQ(a*B, A_B);
+        CHECK((A*B == A_B).all());
+        CHECK((A*b == A_B).all());
+        CHECK((a*B == A_B).all());
 
-        CHECK_EQ(A*B*C, A_B_C);
-        CHECK_EQ(A*B*c, A_B_C);
-        CHECK_EQ(A*b*C, A_B_C);
-        CHECK_EQ(a*B*C, A_B_C);
+        CHECK((A*B*C == A_B_C).all());
+        CHECK((A*B*c == A_B_C).all());
+        CHECK((A*b*C == A_B_C).all());
+        CHECK((a*B*C == A_B_C).all());
 
-        CHECK_EQ(A*=B*C, a*(B*C));
-        CHECK_EQ(B*=c, b*C);
+        CHECK(((A*=B*C) == (a*(B*C))).all());
+        CHECK(((B*=c) == (b*C)).all());
     }
     SUBCASE("Division") {
         ND::Array<double,dim_1, dim_2> A_B(a/b);
         ND::Array<double,dim_1, dim_2> A_B_C(a/b/c);
 
-        CHECK_EQ(A/B, A_B);
-        CHECK_EQ(A/b, A_B);
-        CHECK_EQ(a/B, A_B);
+        CHECK((A/B == A_B).all());
+        CHECK((A/b == A_B).all());
+        CHECK((a/B == A_B).all());
 
-        CHECK_EQ(A/B/C, A_B_C);
-        CHECK_EQ(A/B/c, A_B_C);
-        CHECK_EQ(A/b/C, A_B_C);
-        CHECK_EQ(a/B/C, A_B_C);
+        CHECK((A/B/C == A_B_C).all());
+        CHECK((A/B/c == A_B_C).all());
+        CHECK((A/b/C == A_B_C).all());
+        CHECK((a/B/C == A_B_C).all());
 
-        CHECK_EQ(A/=B/C, a/(B/C));
-        CHECK_EQ(B/=c, b/C);
+        CHECK(((A/=B/C) == (a/(B/C))).all());
+        CHECK(((B/=c) == (b/C)).all());
     }
 }
 
@@ -206,56 +217,56 @@ TEST_CASE("Trigonometric/Hyperbolic operations") {
     
     SUBCASE("sin") {
 
-        CHECK_EQ(sin(A)(0,0), sin(a));
-        CHECK_EQ(sin(B)(0,0), sin(b));
+        CHECK_EQ(sin(A)(0,0), Approx(sin(a)));
+        CHECK_EQ(sin(B)(0,0), Approx(sin(b)));
 
-        CHECK_EQ(asin(A)(0,0), asin(a));
-        CHECK_EQ(asin(B)(0,0), asin(b));
+        CHECK_EQ(asin(A)(0,0), Approx(asin(a)));
+        CHECK_EQ(asin(B)(0,0), Approx(asin(b)));
 
-        CHECK_EQ(sinh(A)(0,0), sinh(a));
-        CHECK_EQ(sinh(B)(0,0), sinh(b));
+        CHECK_EQ(sinh(A)(0,0), Approx(sinh(a)));
+        CHECK_EQ(sinh(B)(0,0), Approx(sinh(b)));
 
-        CHECK_EQ(asinh(A)(0,0), asinh(a));
-        CHECK_EQ(asinh(B)(0,0), asinh(b));
+        CHECK_EQ(asinh(A)(0,0), Approx(asinh(a)));
+        CHECK_EQ(asinh(B)(0,0), Approx(asinh(b)));
     }
     
     SUBCASE("cos") {
 
-        CHECK_EQ(cos(A)(0,0), cos(a));
-        CHECK_EQ(cos(B)(0,0), cos(b));
+        CHECK_EQ(cos(A)(0,0), Approx(cos(a)));
+        CHECK_EQ(cos(B)(0,0), Approx(cos(b)));
 
-        CHECK_EQ(acos(A)(0,0), acos(a));
-        CHECK_EQ(acos(B)(0,0), acos(b));
+        CHECK_EQ(acos(A)(0,0), Approx(acos(a)));
+        CHECK_EQ(acos(B)(0,0), Approx(acos(b)));
 
-        CHECK_EQ(cosh(A)(0,0), cosh(a));
-        CHECK_EQ(cosh(B)(0,0), cosh(b));
+        CHECK_EQ(cosh(A)(0,0), Approx(cosh(a)));
+        CHECK_EQ(cosh(B)(0,0), Approx(cosh(b)));
 
-        CHECK_EQ(acosh(C)(0,0), acosh(c));      // for acosh, arg>=1 is required
+        CHECK_EQ(acosh(C)(0,0), Approx(acosh(c)));      // for acosh, arg>=1 is required
     }
     
     SUBCASE("tan") {
 
-        CHECK_EQ(tan(A)(0,0), tan(a));
-        CHECK_EQ(tan(B)(0,0), tan(b));
+        CHECK_EQ(tan(A)(0,0), Approx(tan(a)));
+        CHECK_EQ(tan(B)(0,0), Approx(tan(b)));
 
-        CHECK_EQ(atan(A)(0,0), atan(a));
-        CHECK_EQ(atan(B)(0,0), atan(b));
+        CHECK_EQ(atan(A)(0,0), Approx(atan(a)));
+        CHECK_EQ(atan(B)(0,0), Approx(atan(b)));
 
-        CHECK_EQ(tanh(A)(0,0), tanh(a));
-        CHECK_EQ(tanh(B)(0,0), tanh(b));
+        CHECK_EQ(tanh(A)(0,0), Approx(tanh(a)));
+        CHECK_EQ(tanh(B)(0,0), Approx(tanh(b)));
 
-        CHECK_EQ(atanh(A)(0,0), atanh(a));
-        CHECK_EQ(atanh(B)(0,0), atanh(b));
+        CHECK_EQ(atanh(A)(0,0), Approx(atanh(a)));
+        CHECK_EQ(atanh(B)(0,0), Approx(atanh(b)));
     }
 
     
     SUBCASE("tan2") {
         
-        CHECK_EQ(atan2(A,B)(0,0), atan2(a,b));
-        CHECK_EQ(atan2(B,A)(0,0), atan2(b,a));
+        CHECK_EQ(atan2(A,B)(0,0), Approx(atan2(a,b)));
+        CHECK_EQ(atan2(B,A)(0,0), Approx(atan2(b,a)));
         
-        CHECK_EQ(atan2(A,b)(0,0), atan2(a,b));
-        CHECK_EQ(atan2(a,B)(0,0), atan2(a,b));
+        CHECK_EQ(atan2(A,b)(0,0), Approx(atan2(a,b)));
+        CHECK_EQ(atan2(a,B)(0,0), Approx(atan2(a,b)));
     }
 }
 
@@ -292,16 +303,16 @@ TEST_CASE("Other") {
 
 
     CHECK_EQ((-A)(0,0), (-a));
-    CHECK_EQ(abs(A)(0,0), std::abs(a));
-    CHECK_EQ(exp(A)(0,0), std::exp(a));
-    CHECK_EQ(log(A)(0,0), std::log(a));
-    CHECK_EQ(log2(A)(0,0), std::log2(a));
-    CHECK_EQ(log10(A)(0,0), std::log10(a));
-    CHECK_EQ(sqrt(A)(0,0), std::sqrt(a));
+    CHECK_EQ(abs(A)(0,0), Approx(std::abs(a)));
+    CHECK_EQ(exp(A)(0,0), Approx(std::exp(a)));
+    CHECK_EQ(log(A)(0,0), Approx(std::log(a)));
+    CHECK_EQ(log2(A)(0,0), Approx(std::log2(a)));
+    CHECK_EQ(log10(A)(0,0), Approx(std::log10(a)));
+    CHECK_EQ(sqrt(A)(0,0), Approx(std::sqrt(a)));
 
-    CHECK_EQ(pow(A,A_)(0,0), std::pow(a,a_));
-    CHECK_EQ(pow(A,a_)(0,0), std::pow(a,a_));
-    CHECK_EQ(pow(a_,A)(0,0), std::pow(a_,a));
+    CHECK_EQ(pow(A,A_)(0,0), Approx(std::pow(a,a_)));
+    CHECK_EQ(pow(A,a_)(0,0), Approx(std::pow(a,a_)));
+    CHECK_EQ(pow(a_,A)(0,0), Approx(std::pow(a_,a)));
     
     CHECK_EQ(round(A)(0,0), round(a));
     CHECK_EQ(ceil(A)(0,0), ceil(a));
