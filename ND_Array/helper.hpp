@@ -8,6 +8,23 @@
 #define PAR_SIZE 1024
 
 
+#ifdef _OPENMP
+    #include <omp.h>
+    #define STRINGIFY(a) #a
+    #define OMP_FOR(n) _Pragma(STRINGIFY(omp parallel for if(n>PAR_SIZE)))
+    #define OMP_FOR_add(n,var) _Pragma(STRINGIFY(omp parallel for reduction(+:var) if(n>PAR_SIZE)))
+    #define OMP_FOR_min(n,var) _Pragma(STRINGIFY(omp parallel for reduction(min:var) if(n>PAR_SIZE)))
+    #define OMP_FOR_max(n,var) _Pragma(STRINGIFY(omp parallel for reduction(max:var) if(n>PAR_SIZE)))
+#else
+    #define omp_get_thread_num() 0
+    #define OMP_FOR(n)
+    #define OMP_FOR_add(n,var)
+    #define OMP_FOR_min(n,var)
+    #define OMP_FOR_max(n,var)
+#endif
+
+
+
 namespace ND {
 
 

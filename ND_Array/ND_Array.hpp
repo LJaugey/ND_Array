@@ -4,10 +4,6 @@
 #include <iostream>
 #include <type_traits>
 
-#ifdef _OPENMP
-#include <omp.h>
-#endif
-
 #include "Array_Expression.hpp"
 #include "Unary_Expression.hpp"
 #include "Binary_Expression.hpp"
@@ -52,17 +48,10 @@ public:
     {
         data_ = new value_type[length];
 
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = val;
-            }
-        }
-        else
-        {
-            std::fill_n(data_,length, val);
+            data_[i] = val;
         }
     }
 
@@ -72,17 +61,10 @@ public:
     {
         data_ = new value_type[length];
 
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = other.data_[i];
-            }
-        }
-        else
-        {
-            std::copy(other.data_, other.data_ + length, data_);
+            data_[i] = other.data_[i];
         }
     }
 protected:
@@ -96,34 +78,20 @@ public:
     // copy assigment operator
     const Array<T, firstDim, RestDims...>& operator=(const Array<T, firstDim, RestDims...>& other)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = other.data_[i];
-            }
-        }
-        else
-        {
-            std::copy(other.data_, other.data_ + length, data_);
+            data_[i] = other.data_[i];
         }
 
         return *this;
     }
     const Array<T, firstDim, RestDims...>& operator=(value_type val)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = val;
-            }
-        }
-        else
-        {
-            std::fill_n(data_,length, val);
+            data_[i] = val;
         }
         
         return *this;
@@ -134,22 +102,11 @@ public:
     {
         data_ = new value_type[length];
 
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for(size_t i = 0; i<length; i++)
-            {
-                data_[i] = slice.data_[i%(RestDims*...)];
-            }
+            data_[i] = slice.data_[i%(RestDims*...)];
         }
-        else
-        {
-            for(size_t i = 0; i<length; i++)
-            {
-                data_[i] = slice.data_[i%(RestDims*...)];
-            }
-        }
-        
     }
 
     // construct from Array_expressions
@@ -159,39 +116,20 @@ public:
     : is_original(true)
     {
         data_ = new value_type[length];
-        if constexpr(length>PAR_SIZE)
+        
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = expr.get_element(shift + i);
-            }
-        }
-        else
-        {
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = expr.get_element(shift + i);
-            }
+            data_[i] = expr.get_element(shift + i);
         }
     }
     template <typename E>
     const Array& operator=(const Array_Expression<E>& expr)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = expr.get_element(i);
-            }
-        }
-        else
-        {
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = expr.get_element(i);
-            }
+            data_[i] = expr.get_element(i);
         }
 
         return *this;
@@ -209,7 +147,7 @@ public:
         size_t offset = 0;
         size_t temp[N] = {static_cast<size_t>(indices)...};
 
-        for (size_t i = 0; i < std::min(N, sizeof...(ind_type)); i++) {
+        for (size_t i = 0; i < std::min(N, sizeof...(ind_type)); ++i) {
             offset = offset * Dims[i] + temp[i];
         }
         return data_[offset];
@@ -220,7 +158,7 @@ public:
         size_t offset = 0;
         size_t temp[N] = {static_cast<size_t>(indices)...};
 
-        for (size_t i = 0; i < std::min(N, sizeof...(ind_type)); i++) {
+        for (size_t i = 0; i < std::min(N, sizeof...(ind_type)); ++i) {
             offset = offset * Dims[i] + temp[i];
         }
         return data_[offset];
@@ -240,17 +178,10 @@ public:
 
     const Array<T, firstDim, RestDims...>& fill(value_type val)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = val;
-            }
-        }
-        else
-        {
-            std::fill_n(data_,length, val);
+            data_[i] = val;
         }
 
         return *this;
@@ -259,17 +190,10 @@ public:
     {
         if(data_ != other.data_)
         {
-            if constexpr(length>PAR_SIZE)
+            OMP_FOR(length)
+            for (size_t i = 0; i < length; ++i)
             {
-                #pragma omp parallel for if(omp_get_num_threads() == 1)
-                for (size_t i = 0; i < length; ++i)
-                {
-                    data_[i] = other.data_[i];
-                }
-            }
-            else
-            {
-                std::copy(other.data_, other.data_ + length, data_);
+                data_[i] = other.data_[i];
             }
         }
         
@@ -278,20 +202,10 @@ public:
     template<class E>
     const Array<T, firstDim, RestDims...>& fill(const Array_Expression<E>& expr)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = expr.get_element(i);
-            }
-        }
-        else
-        {
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = expr.get_element(i);
-            }
+            data_[i] = expr.get_element(i);
         }
 
         return *this;
@@ -314,37 +228,23 @@ public:
     requires std::is_same_v<typename E::terminal_type, terminal_type>
     const Array<T, firstDim, RestDims...>& operator+=(const Array_Expression<E>& expr)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; i++) {
-                data_[i] += expr.get_element(i);
-            }
+            data_[i] += expr.get_element(i);
         }
-        else
-        {
-            for (size_t i = 0; i < length; i++) {
-                data_[i] += expr.get_element(i);
-            }
-        }
+
         return *this;
     }
     // scalar
-    const Array<T, firstDim, RestDims...>& operator+=(value_type scalar)
+    const Array<T, firstDim, RestDims...>& operator+=(value_type val)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; i++) {
-                data_[i] += scalar;
-            }
+            data_[i] += val;
         }
-        else
-        {
-            for (size_t i = 0; i < length; i++) {
-                data_[i] += scalar;
-            }
-        }
+
         return *this;
     }
 
@@ -353,37 +253,23 @@ public:
     requires std::is_same_v<typename E::terminal_type, terminal_type>
     const Array<T, firstDim, RestDims...>& operator-=(const Array_Expression<E>& expr)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; i++) {
-                data_[i] -= expr.get_element(i);
-            }
+            data_[i] -= expr.get_element(i);
         }
-        else
-        {
-            for (size_t i = 0; i < length; i++) {
-                data_[i] -= expr.get_element(i);
-            }
-        }
+
         return *this;
     }
     // scalar
-    const Array<T, firstDim, RestDims...>& operator-=(value_type scalar)
+    const Array<T, firstDim, RestDims...>& operator-=(value_type val)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; i++) {
-                data_[i] -= scalar;
-            }
+            data_[i] -= val;
         }
-        else
-        {
-            for (size_t i = 0; i < length; i++) {
-                data_[i] -= scalar;
-            }
-        }
+
         return *this;
     }
 
@@ -392,37 +278,23 @@ public:
     requires std::is_same_v<typename E::terminal_type, terminal_type>
     const Array<T, firstDim, RestDims...>& operator*=(const Array_Expression<E>& expr)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; i++) {
-                data_[i] *= expr.get_element(i);
-            }
+            data_[i] *= expr.get_element(i);
         }
-        else
-        {
-            for (size_t i = 0; i < length; i++) {
-                data_[i] *= expr.get_element(i);
-            }
-        }
+
         return *this;
     }
     // scalar
-    const Array<T, firstDim, RestDims...>& operator*=(value_type scalar)
+    const Array<T, firstDim, RestDims...>& operator*=(value_type val)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; i++) {
-                data_[i] *= scalar;
-            }
+            data_[i] *= val;
         }
-        else
-        {
-            for (size_t i = 0; i < length; i++) {
-                data_[i] *= scalar;
-            }
-        }
+
         return *this;
     }
 
@@ -431,39 +303,25 @@ public:
     requires std::is_same_v<typename E::terminal_type, terminal_type>
     const Array<T, firstDim, RestDims...>& operator/=(const Array_Expression<E>& expr)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; i++) {
-                data_[i] /= expr.get_element(i);
-            }
+            data_[i] /= expr.get_element(i);
         }
-        else
-        {
-            for (size_t i = 0; i < length; i++) {
-                data_[i] /= expr.get_element(i);
-            }
-        }
+
         return *this;
     }
     // scalar
-    const Array<T, firstDim, RestDims...>& operator/=(value_type scalar)
+    const Array<T, firstDim, RestDims...>& operator/=(value_type val)
     {
-        value_type inv_scal = 1.0/scalar;
+        value_type inv_val = 1.0/val;
 
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; i++) {
-                data_[i] *= inv_scal;
-            }
+            data_[i] *= inv_val;
         }
-        else
-        {
-            for (size_t i = 0; i < length; i++) {
-                data_[i] *= inv_scal;
-            }
-        }
+
         return *this;
     }
 };
@@ -476,12 +334,12 @@ std::ostream& operator<<(std::ostream& output, const Array<T, firstDim, RestDims
 {
     if (sizeof...(RestDims) > 0)
     {
-        for(size_t i = 0; i<firstDim; i++)
+        for(size_t i = 0; i<firstDim; ++i)
             output<<other[i]<<std::endl;
     }
     else
     {
-        for(size_t i = 0; i<firstDim; i++)
+        for(size_t i = 0; i<firstDim; ++i)
             output<<other[i]<<"\t";
     }
 
@@ -526,17 +384,10 @@ public:
     {
         data_ = new value_type[length];
 
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = val;
-            }
-        }
-        else
-        {
-            std::fill_n(data_,length, val);
+            data_[i] = val;
         }
     }
 
@@ -546,17 +397,10 @@ public:
     {
         data_ = new value_type[length];
 
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = other.data_[i];
-            }
-        }
-        else
-        {
-            std::copy(other.data_, other.data_ + length, data_);
+            data_[i] = other.data_[i];
         }
     }
 protected:
@@ -570,34 +414,20 @@ public:
     // copy assigment operator
     const Array<T, Dim>& operator=(const Array<T, Dim>& other)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = other.data_[i];
-            }
-        }
-        else
-        {
-            std::copy(other.data_, other.data_ + length, data_);
+            data_[i] = other.data_[i];
         }
 
         return *this;
     }
     const Array<T, Dim>& operator=(value_type val)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = val;
-            }
-        }
-        else
-        {
-            std::fill_n(data_,length, val);
+            data_[i] = val;
         }
         
         return *this;
@@ -610,39 +440,20 @@ public:
     : is_original(true)
     {
         data_ = new value_type[length];
-        if constexpr(length>PAR_SIZE)
+        
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = expr.get_element(shift + i);
-            }
-        }
-        else
-        {
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = expr.get_element(shift + i);
-            }
+            data_[i] = expr.get_element(shift + i);
         }
     }
     template <typename E>
     const Array<T, Dim>& operator=(const Array_Expression<E>& expr)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = expr.get_element(i);
-            }
-        }
-        else
-        {
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = expr.get_element(i);
-            }
+            data_[i] = expr.get_element(i);
         }
 
         return *this;
@@ -665,17 +476,10 @@ public:
 
     const Array<T, Dim>& fill(value_type val)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = val;
-            }
-        }
-        else
-        {
-            std::fill_n(data_,length, val);
+            data_[i] = val;
         }
 
         return *this;
@@ -684,17 +488,10 @@ public:
     {
         if(data_ != other.data_)
         {
-            if constexpr(length>PAR_SIZE)
+            OMP_FOR(length)
+            for (size_t i = 0; i < length; ++i)
             {
-                #pragma omp parallel for if(omp_get_num_threads() == 1)
-                for (size_t i = 0; i < length; ++i)
-                {
-                    data_[i] = other.data_[i];
-                }
-            }
-            else
-            {
-                std::copy(other.data_, other.data_ + length, data_);
+                data_[i] = other.data_[i];
             }
         }
         
@@ -703,20 +500,10 @@ public:
     template<class E>
     const Array<T, Dim>& fill(const Array_Expression<E>& expr)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = expr.get_element(i);
-            }
-        }
-        else
-        {
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = expr.get_element(i);
-            }
+            data_[i] = expr.get_element(i);
         }
 
         return *this;
@@ -739,150 +526,94 @@ public:
     // += operator
     const Array<T, Dim>& operator+=(const Array<T, Dim>& other)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; i++) {
-                data_[i] += other.data_[i];
-            }
+            data_[i] += other.data_[i];
         }
-        else
-        {
-            for (size_t i = 0; i < length; i++) {
-                data_[i] += other.data_[i];
-            }
-        }
+
         return *this;
     }
     // scalar
-    const Array<T, Dim>& operator+=(value_type scalar)
+    const Array<T, Dim>& operator+=(value_type val)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; i++) {
-                data_[i] += scalar;
-            }
+            data_[i] += val;
         }
-        else
-        {
-            for (size_t i = 0; i < length; i++) {
-                data_[i] += scalar;
-            }
-        }
+
         return *this;
     }
 
     // -= operator
     const Array<T, Dim>& operator-=(const Array<T, Dim>& other)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; i++) {
-                data_[i] -= other.data_[i];
-            }
+            data_[i] -= other.data_[i];
         }
-        else
-        {
-            for (size_t i = 0; i < length; i++) {
-                data_[i] -= other.data_[i];
-            }
-        }
+
         return *this;
     }
     // scalar
-    const Array<T, Dim>& operator-=(value_type scalar)
+    const Array<T, Dim>& operator-=(value_type val)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; i++) {
-                data_[i] -= scalar;
-            }
+            data_[i] -= val;
         }
-        else
-        {
-            for (size_t i = 0; i < length; i++) {
-                data_[i] -= scalar;
-            }
-        }
+
         return *this;
     }
 
     // *= operator
     const Array<T, Dim>& operator*=(const Array<T, Dim>& other)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; i++) {
-                data_[i] *= other.data_[i];
-            }
+            data_[i] *= other.data_[i];
         }
-        else
-        {
-            for (size_t i = 0; i < length; i++) {
-                data_[i] *= other.data_[i];
-            }
-        }
+
         return *this;
     }
     // scalar
-    const Array<T, Dim>& operator*=(value_type scalar)
+    const Array<T, Dim>& operator*=(value_type val)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; i++) {
-                data_[i] *= scalar;
-            }
+            data_[i] *= val;
         }
-        else
-        {
-            for (size_t i = 0; i < length; i++) {
-                data_[i] *= scalar;
-            }
-        }
+
         return *this;
     }
 
     // /= operator
     const Array<T, Dim>& operator/=(const Array<T, Dim>& other)
     {
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; i++) {
-                data_[i] /= other.data_[i];
-            }
+            data_[i] /= other.data_[i];
         }
-        else
-        {
-            for (size_t i = 0; i < length; i++) {
-                data_[i] /= other.data_[i];
-            }
-        }
+
         return *this;
     }
     // scalar
-    const Array<T, Dim>& operator/=(value_type scalar)
+    const Array<T, Dim>& operator/=(value_type val)
     {
-        value_type inv_scal = 1.0/scalar;
+        value_type inv_val = 1.0/val;
 
-        if constexpr(length>PAR_SIZE)
+        OMP_FOR(length)
+        for (size_t i = 0; i < length; ++i)
         {
-            #pragma omp parallel for if(omp_get_num_threads() == 1)
-            for (size_t i = 0; i < length; i++) {
-                data_[i] *= inv_scal;
-            }
+            data_[i] *= inv_val;
         }
-        else
-        {
-            for (size_t i = 0; i < length; i++) {
-                data_[i] *= inv_scal;
-            }
-        }
+
         return *this;
     }
 };

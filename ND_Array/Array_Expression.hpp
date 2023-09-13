@@ -6,10 +6,6 @@
 
 #include "helper.hpp"
 
-#ifdef _OPENMP
-#include <omp.h>
-#endif
-
 
 
 
@@ -57,17 +53,12 @@ public:
     {
         value_type res = get_element(0);
         
-        if constexpr(terminal_type::length>PAR_SIZE)
+        OMP_FOR_min(terminal_type::length,res)
+        for (size_t i = 1; i < terminal_type::length; i++)
         {
-            #pragma omp parallel for reduction(min:res) if(omp_get_num_threads() == 1)
-            for (size_t i = 1; i < terminal_type::length; i++)
-                res = std::min(res,get_element(i));
+            res = std::min(res,get_element(i));
         }
-        else
-        {
-            for (size_t i = 1; i < terminal_type::length; i++)
-                res = std::min(res,get_element(i));
-        }
+
         return res;
     }
     // max
@@ -75,17 +66,12 @@ public:
     {
         value_type res = get_element(0);
         
-        if constexpr(terminal_type::length>PAR_SIZE)
+        OMP_FOR_max(terminal_type::length,res)
+        for (size_t i = 1; i < terminal_type::length; i++)
         {
-            #pragma omp parallel for reduction(max:res) if(omp_get_num_threads() == 1)
-            for (size_t i = 1; i < terminal_type::length; i++)
-                res = std::max(res,get_element(i));
+            res = std::max(res,get_element(i));
         }
-        else
-        {
-            for (size_t i = 1; i < terminal_type::length; i++)
-                res = std::max(res,get_element(i));
-        }
+
         return res;
     }
     // sum
@@ -93,17 +79,12 @@ public:
     {
         value_type res = get_element(0);
         
-        if constexpr(terminal_type::length>PAR_SIZE)
+        OMP_FOR_add(terminal_type::length,res)
+        for (size_t i = 1; i < terminal_type::length; i++)
         {
-            #pragma omp parallel for reduction(+:res) if(omp_get_num_threads() == 1)
-            for (size_t i = 1; i < terminal_type::length; i++)
-                res += get_element(i);
+            res += get_element(i);
         }
-        else
-        {
-            for (size_t i = 1; i < terminal_type::length; i++)
-                res += get_element(i);
-        }
+        
         return res;
     }
 };
