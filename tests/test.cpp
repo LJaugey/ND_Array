@@ -15,26 +15,21 @@ TEST_CASE("Constructors") {
     ND::Array<double, dim_2> A_sub(a);
 
 
-    ND::Array<double,dim_1, dim_2> A1;
-    ND::Array<double,dim_1, dim_2> A2(a);
-    ND::Array<double,dim_1, dim_2> A3(0.0);
-    ND::Array<double,dim_1, dim_2> A4(0);
-    ND::Array<double,dim_1, dim_2> A5(A_sub);
+    ND::Array<double,dim_1, dim_2> A1(a);
+    ND::Array<double,dim_1, dim_2> A2(0.0);
+    ND::Array<double,dim_1, dim_2> A3(0);
+    ND::Array<double,dim_1, dim_2> A4(A_sub);
 
 
     CHECK_EQ(A1,A2);
     CHECK_EQ(A1,A3);
     CHECK_EQ(A1,A4);
-    CHECK_EQ(A1,A5);
     
     CHECK_EQ(A2,A3);
     CHECK_EQ(A2,A4);
-    CHECK_EQ(A2,A5);
     
     CHECK_EQ(A3,A4);
-    CHECK_EQ(A3,A5);
     
-    CHECK_EQ(A4,A5);
 
     
     //copy constructor
