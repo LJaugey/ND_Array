@@ -30,7 +30,10 @@ namespace ND {
 
 // Base traits
 template <class E> 
-struct base_traits;
+struct base_traits
+{
+    typedef E value_type;
+};
 
 
 
@@ -55,11 +58,20 @@ class Unary_Op;
 template <class OP, class E>
 struct base_traits<Unary_Op<OP,E>>
 {
-    typedef typename base_traits<E>::terminal_type terminal_type;
+    typename base_traits<E>::value_type arg_value_type;
+    typedef decltype(OP::apply(arg_value_type)) value_type;
 
-    typedef typename terminal_type::terminal_sub_type terminal_sub_type;
 
-    typedef typename terminal_type::value_type value_type;
+    template<typename any_type>
+    using generic_terminal_type = typename base_traits<E>::generic_terminal_type<any_type>;
+
+    template<typename any_type>
+    using generic_terminal_sub_type = typename base_traits<E>::generic_terminal_sub_type<any_type>;
+    
+
+    typedef generic_terminal_type<value_type> terminal_type;
+    typedef generic_terminal_sub_type<value_type> terminal_sub_type;
+
 };
 
 
@@ -72,14 +84,27 @@ class Binary_Op;
 template <class E1, class OP, class E2>
 struct base_traits<Binary_Op<E1,OP,E2>>
 {
-    typedef typename std::conditional<  ND::is_Array_Expression<E1>::value,
-                                        base_traits<E1>,
-                                        base_traits<E2>
-                                        >::type::terminal_type   terminal_type;
+    typename base_traits<E1>::value_type arg1_value_type;
+    typename base_traits<E2>::value_type arg2_value_type;
 
-    typedef typename terminal_type::terminal_sub_type terminal_sub_type;
-    
-    typedef typename terminal_type::value_type value_type;
+    typedef decltype(OP::apply(arg1_value_type,arg2_value_type)) value_type;
+
+
+    template<typename any_type>
+    using generic_terminal_type = typename std::conditional< ND::is_Array_Expression<E1>::value,
+                                                    base_traits<E1>,
+                                                    base_traits<E2>
+                                                    >::type::generic_terminal_type<any_type>;
+
+    template<typename any_type>
+    using generic_terminal_sub_type = typename std::conditional< ND::is_Array_Expression<E1>::value,
+                                                        base_traits<E1>,
+                                                        base_traits<E2>
+                                                        >::type::generic_terminal_sub_type<any_type>;
+
+
+    typedef generic_terminal_type<value_type> terminal_type;
+    typedef generic_terminal_sub_type<value_type> terminal_sub_type;
 };
 
 
@@ -92,18 +117,36 @@ class Array;
 template<typename T, size_t firstDim, size_t... RestDims>
 struct base_traits<Array<T, firstDim, RestDims...>>
 {
-    typedef Array<T, firstDim, RestDims...> terminal_type;
-    typedef Array<T, RestDims...> terminal_sub_type;
     typedef T value_type;
+
+
+    template<typename any_type>
+    using generic_terminal_type = Array<any_type, firstDim, RestDims...>;
+
+    template<typename any_type>
+    using generic_terminal_sub_type = Array<any_type, RestDims...>;
+
+
+    typedef generic_terminal_type<value_type> terminal_type;
+    typedef generic_terminal_sub_type<value_type> terminal_sub_type;
 };
 
 
 template<typename T, size_t Dim>
 struct base_traits<Array<T, Dim>>
 {
-    typedef Array<T, Dim> terminal_type;
-    typedef T terminal_sub_type;
     typedef T value_type;
+
+
+    template<typename any_type>
+    using generic_terminal_type = Array<any_type, Dim>;
+
+    template<typename any_type>
+    using generic_terminal_sub_type = any_type;
+
+
+    typedef generic_terminal_type<value_type> terminal_type;
+    typedef generic_terminal_sub_type<value_type> terminal_sub_type;
 };
 
 

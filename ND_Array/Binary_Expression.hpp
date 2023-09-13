@@ -19,6 +19,12 @@ public:
     typedef typename base_traits<Binary_Op>::terminal_type terminal_type;
     typedef typename base_traits<Binary_Op>::terminal_sub_type terminal_sub_type;
     typedef typename base_traits<Binary_Op>::value_type value_type;
+
+    template<typename any_type>
+    using generic_terminal_type = typename base_traits<Binary_Op>::generic_terminal_type<any_type>;
+
+    template<typename any_type>
+    using generic_terminal_sub_type = typename base_traits<Binary_Op>::generic_terminal_sub_type<any_type>;
     
     Binary_Op(const E1& a_1, const E2& a_2)
     :arg1(a_1),arg2(a_2)
