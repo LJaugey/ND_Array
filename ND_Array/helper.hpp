@@ -151,6 +151,11 @@ struct base_traits<Array<T, Dim>>
 
 
 
+// Mask Array
+template <typename T, size_t firstDim, size_t... RestDims>
+class Mask_Array;
+
+
 }
 
 

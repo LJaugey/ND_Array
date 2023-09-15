@@ -1,24 +1,31 @@
 #ifndef NDARRAY_HPP
 #define NDARRAY_HPP
 
+#include <cstddef>
 #include <iostream>
 #include <type_traits>
 
 #include "Array_Expression.hpp"
 #include "Unary_Expression.hpp"
 #include "Binary_Expression.hpp"
+#include "Mask_Array.hpp"
 
 
 
 namespace ND {
+
 
 template <typename T, size_t firstDim, size_t... RestDims>
 class Array : public Array_Expression<Array<T, firstDim, RestDims...>>
 {
     template<typename T_, size_t f_Dim, size_t... R_dims>
     friend class Array;
-public:
 
+    template<typename T_, size_t f_Dim, size_t... R_dims>
+    friend class Mask_Array;
+
+public:
+    
     static constexpr size_t N = sizeof...(RestDims) + 1;
     static constexpr size_t length = firstDim * (RestDims * ...);
     static constexpr size_t Dims[N] = {firstDim, RestDims...};
@@ -180,6 +187,11 @@ public:
     inline const Array<T, RestDims...> operator[](size_t index) const
     {
         return Array<T, RestDims...>(data_ + index * (RestDims * ...), false);  // Guaranteed copy elision
+    }
+
+    Mask_Array<T, firstDim, RestDims...> operator[](const Array<bool, firstDim, RestDims...>& mask)
+    {
+        return Mask_Array(*this, mask);
     }
 
 
@@ -356,6 +368,10 @@ class Array<T, Dim> : public Array_Expression<Array<T, Dim>>
 {
     template<typename T_, size_t f_Dim, size_t... R_dims>
     friend class Array;
+
+    template<typename T_, size_t f_Dim, size_t... R_dims>
+    friend class Mask_Array;
+    
 public:
 
     static constexpr size_t N = 1;
@@ -475,11 +491,12 @@ public:
 
 
     // access element
-    inline value_type& operator()(size_t index)                { return data_[index]; }
-    inline const value_type operator()(size_t index) const     { return data_[index]; }
-    inline value_type& operator[](size_t index)                { return data_[index]; }
-    inline const value_type operator[](size_t index) const     { return data_[index]; }
+    inline value_type& operator()(size_t index)                 {   return data_[index];    }
+    inline const value_type operator()(size_t index) const      {   return data_[index];    }
+    inline value_type& operator[](size_t index)                 {   return data_[index];    }
+    inline const value_type operator[](size_t index) const      {   return data_[index];    }
 
+    Mask_Array<T, Dim> operator[](const Array<bool, Dim> mask)  {   return Mask_Array(*this, mask); }
 
 
 

@@ -120,6 +120,19 @@ TEST_CASE("Access operators") {
 
     CHECK_EQ(A(0,0),b);
     CHECK_EQ(A(dim_1-1,dim_2-1),a);
+
+
+    // Mask indexing
+    double c = (a+b)/2.0;
+    ND::Array<double,dim_1, dim_2> C;
+    C[0] = a;   C[1] = b;
+
+    A[C<a] = c;
+    CHECK((A[1]==c).all());
+
+    A[A==c] = a;
+    CHECK((A[1]==a).all());
+
 }
 
 
