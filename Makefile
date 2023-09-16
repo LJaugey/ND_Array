@@ -5,7 +5,7 @@ CXXFLAGS:= -std=c++20
 all: CXXFLAGS+= -O1 -Wall -fopenmp
 all: test speed_test
 
-single: CXXFLAGS+= -O1 -Wall
+single: CXXFLAGS+= -Ofast -march=native
 single: speed_test
 
 release: CXXFLAGS+= -Ofast -fopenmp -march=native

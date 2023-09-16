@@ -14,8 +14,8 @@ using namespace std;
 
 
 double t = 0;
-const double dt = 0.001;
-const double t_fin = 10;
+const double dt = 0.01;
+const double t_fin = 2;
 
 const int N = 200;
 
@@ -82,34 +82,64 @@ int main()
     ND::Array<double,N,N,dim,dim,dim> C(0.0);
 
 
-
-    cout<<endl<<"Test start with lazy evaluation"<<endl;
+    cout<<endl<<"Normal evaluation : ";
+    #ifdef _OPENMP
+    cout<<"Multi-core ("<<omp_get_max_threads()<<" threads)"<<endl;
+    #else
+    cout<<"Single-core"<<endl;
+    #endif
     t = 0;
     start = std::chrono::high_resolution_clock::now();
     while(t<t_fin)
     {
-        C = C + A*B*dt;
-        t+=10*dt;
+        C = (((cos(A).eval() + sin(B).eval()).eval() - (A*dt).eval()).eval() + (((2*B).eval()*dt).eval() * tan(C).eval()).eval()).eval();
+
+        t+=dt;
     }
     stop = std::chrono::high_resolution_clock::now();
     duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
     cout<<endl<<"test end. Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl<<endl<<endl;
+    
+    double base_time = (double)duration.count()/1000.0;
 
 
     C = 0.0;
-    
-    cout<<endl<<"Test start with normal evaluation"<<endl;
+
+    cout<<endl<<"Lazy evaluation : ";
+    #ifdef _OPENMP
+    cout<<"Multi-core ("<<omp_get_max_threads()<<" threads)"<<endl;
+    #else
+    cout<<"Single-core"<<endl;
+    #endif
     t = 0;
     start = std::chrono::high_resolution_clock::now();
     while(t<t_fin)
     {
-        C = (C + (A*(B*dt).eval()).eval()).eval();
-        t+=10*dt;
+        C = cos(A) + sin(B) - A*dt + 2*B*dt * tan(C);
+        t+=dt;
     }
     stop = std::chrono::high_resolution_clock::now();
     duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-    cout<<endl<<"test end. Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl<<endl<<endl;
+    cout<<endl<<"test end. Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl<<"Speed-up :"<<base_time/((double)duration.count()/1000.0)<<"x"<<endl<<endl;
+
+
+
+    std::valarray<double> A_(2.0, N*N*dim*dim*dim);
+    std::valarray<double> B_(0.5, N*N*dim*dim*dim);
+    std::valarray<double> C_(0.0, N*N*dim*dim*dim);
     
+    cout<<endl<<"valarray (lazy evaluation) : Single-core"<<endl;
+    t = 0;
+    start = std::chrono::high_resolution_clock::now();
+    while(t<t_fin)
+    {
+        C_ = cos(A_) + sin(B_) - A_*dt + 2*B_*dt * tan(C_);
+        t+=dt;
+    }
+    stop = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    cout<<endl<<"test end. Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl<<"Speed-up :"<<base_time/((double)duration.count()/1000.0)<<"x"<<endl<<endl;
+
 
 
 
@@ -126,62 +156,22 @@ int main()
     cout<<"Testing operator() vs operator[] vs nested valarrays"<<endl<<endl;
     cout<<"====================================="<<endl<<endl;
 
+
     // Traverse the array once to reduce the difference with/without caching
     #pragma omp parallel for collapse(2)
     for(int i = 0; i<N; i++)
     {
         for(int j = 0; j<N; j++)
         {
-            func_par(u[i][j]);
+            func_(u_[i][j]);
         }
     }
 
-    cout<<endl<<"test start with operator()"<<endl;
-    t = 0;
-    start = std::chrono::high_resolution_clock::now();
-    while(t<t_fin)
-    {
-        #pragma omp parallel for collapse(2)
-        for(int i = 0; i<N; i++)
-        {
-            for(int j = 0; j<N; j++)
-            {
-                func_par(u[i][j]);
-            }
-        }
-        t += dt;
-    }
-    stop = std::chrono::high_resolution_clock::now();
-    duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-    cout<<endl<<"test end. Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl<<endl<<endl;
-    
-    
-    cout<<endl<<"test start with operator[]"<<endl;
-    t = 0;
-    start = std::chrono::high_resolution_clock::now();
-    while(t<t_fin)
-    {
-        #pragma omp parallel for collapse(2)
-        for(int i = 0; i<N; i++)
-        {
-            for(int j = 0; j<N; j++)
-            {
-                func_brac(u[i][j]);
-            }
-        }
-        t += dt;
-    }
-    stop = std::chrono::high_resolution_clock::now();
-    duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-    cout<<endl<<"test end. Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl<<endl;
-
-    
-    t = 0;
     cout<<endl<<"test start with valarray"<<endl;
+    t = 0;
     start = std::chrono::high_resolution_clock::now();
-    while(t<t_fin)
+    while(t<t_fin*10)
     {
-        #pragma omp parallel for collapse(2)
         for(int i = 0; i<N; i++)
         {
             for(int j = 0; j<N; j++)
@@ -194,6 +184,61 @@ int main()
     stop = std::chrono::high_resolution_clock::now();
     duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
     cout<<endl<<"test end. Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl<<endl;
+
+    base_time = (double)duration.count()/1000.0;
+
+
+    // Traverse the array once to reduce the difference with/without caching
+    #pragma omp parallel for collapse(2)
+    for(int i = 0; i<N; i++)
+    {
+        for(int j = 0; j<N; j++)
+        {
+            func_par(u[i][j]);
+        }
+    }
+
+    cout<<endl<<"test start with operator[]"<<endl;
+    t = 0;
+    start = std::chrono::high_resolution_clock::now();
+    while(t<t_fin*10)
+    {
+        for(int i = 0; i<N; i++)
+        {
+            for(int j = 0; j<N; j++)
+            {
+                func_brac(u[i][j]);
+            }
+        }
+        t += dt;
+    }
+    stop = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    cout<<endl<<"test end. Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl<<"Speed-up :"<<base_time/((double)duration.count()/1000.0)<<"x"<<endl<<endl;
+
+
+
+
+    cout<<endl<<"test start with operator()"<<endl;
+    t = 0;
+    start = std::chrono::high_resolution_clock::now();
+    while(t<t_fin*10)
+    {
+        for(int i = 0; i<N; i++)
+        {
+            for(int j = 0; j<N; j++)
+            {
+                func_par(u[i][j]);
+            }
+        }
+        t += dt;
+    }
+    stop = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    cout<<endl<<"test end. Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl<<"Speed-up :"<<base_time/((double)duration.count()/1000.0)<<"x"<<endl<<endl;
+
+    
+    
 
     return 0;
 }
