@@ -8,6 +8,7 @@
 namespace ND {
 
 template <class OP, class E>
+requires (ND::is_Array_Expression<E>::value)
 class Unary_Op : public Array_Expression<Unary_Op<OP,E>>
 {
     const E& arg;
