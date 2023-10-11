@@ -79,7 +79,7 @@ struct base_traits<Unary_Op<OP,E>>
 
 // Binary operation
 template <class E1, class OP, class E2>
-requires (  (ND::is_Array_Expression<E1>::value || ND::is_Array_Expression<E1>::value) ||
+requires (  (ND::is_Array_Expression<E1>::value || ND::is_Array_Expression<E2>::value) ||
             (std::is_convertible<typename base_traits<E1>::value_type, typename base_traits<E2>::value_type>::value ||
              std::is_convertible<typename base_traits<E2>::value_type, typename base_traits<E1>::value_type>::value))
 class Binary_Op;
