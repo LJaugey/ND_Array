@@ -9,9 +9,9 @@
 namespace ND {
 
 template <class E1, class OP, class E2>
-requires (  (ND::is_Array_Expression<E1>::value || ND::is_Array_Expression<E2>::value) ||
-            (std::is_convertible<typename base_traits<E1>::value_type, typename base_traits<E2>::value_type>::value ||
-             std::is_convertible<typename base_traits<E2>::value_type, typename base_traits<E1>::value_type>::value))
+requires (  (ND::is_Array_Expression<E1>::value && ND::is_Array_Expression<E2>::value) ||
+            (ND::is_Array_Expression<E1>::value && std::is_convertible<typename base_traits<E2>::value_type, typename E1::value_type>::value) ||
+            (ND::is_Array_Expression<E2>::value && std::is_convertible<typename base_traits<E1>::value_type, typename E2::value_type>::value))
 class Binary_Op : public Array_Expression<Binary_Op<E1,OP,E2>>
 {
     const E1& arg1;
