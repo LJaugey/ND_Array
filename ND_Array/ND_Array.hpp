@@ -156,6 +156,7 @@ public:
 
     // access element
     template <typename... ind_type>
+    requires (sizeof...(ind_type) == N)
     inline value_type& operator()(ind_type... indices)
     {
         size_t offset = 0;
@@ -167,6 +168,7 @@ public:
         return data_[offset];
     }
     template <typename... ind_type>
+    requires (sizeof...(ind_type) == N)
     inline const value_type operator()(ind_type... indices) const
     {
         size_t offset = 0;
