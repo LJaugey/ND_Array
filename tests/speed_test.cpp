@@ -142,6 +142,38 @@ int main()
 
 
 
+    double* _A_ = (double*)malloc(sizeof(double)*N*N*dim*dim*dim);
+    double* _B_ = (double*)malloc(sizeof(double)*N*N*dim*dim*dim);
+    double* _C_ = (double*)malloc(sizeof(double)*N*N*dim*dim*dim);
+    
+    for(int i = 0; i<N*N*dim*dim*dim; i++)
+    {
+        _A_[i] = 2.0;
+        _B_[i] = 0.5;
+        _C_[i] = 0.0;
+    }
+    
+    cout<<endl<<"Hand-written loop: ";
+    #ifdef _OPENMP
+    cout<<"Multi-core ("<<omp_get_max_threads()<<" threads)"<<endl;
+    #else
+    cout<<"Single-core"<<endl;
+    #endif
+    t = 0;
+    start = std::chrono::high_resolution_clock::now();
+    while(t<t_fin)
+    {
+        OMP_FOR(N*N*dim*dim*dim)
+        for(int i = 0; i<N*N*dim*dim*dim; i++)
+            _C_[i] = cos(_A_[i]) + sin(_B_[i]) - _A_[i]*dt + 2*_B_[i]*dt * tan(_C_[i]);
+        t+=dt;
+    }
+    stop = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    cout<<endl<<"test end. Code ran in "<<(double)duration.count()/1000.0<<" seconds"<<endl<<"Speed-up :"<<base_time/((double)duration.count()/1000.0)<<"x"<<endl<<endl;
+
+
+
 
     cout<<endl<<endl;
 

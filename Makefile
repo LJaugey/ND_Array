@@ -24,9 +24,6 @@ test: tests/test.cpp
 speed_test:  tests/speed_test.cpp
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-$(OBJ)/%.o: $(SRC)/%.$(EXT) Makefile
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
 clean:
 	-rm *test
 	clear

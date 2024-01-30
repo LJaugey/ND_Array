@@ -1,9 +1,9 @@
 # N-D Array
 
 This project contains a header file that defines a N-dimensional array (variadic) template. This definition takes advantage of data locality which improves performance over e.g. nested `std::vectors`.
-Mathematical expression are also optimized using lazy evaluation which is implemented with expression templates. Expression such as `(A+B)*C` is compiled to a single `for` loop containing `(A[i]+B[i])*C[i]`. This can also be used when evaluating specific array element since only the specified element is effectively computed (e.g. `(A+B)(i,j,k)` simply compiles to `(A(i,j,k)+B(i,j,k))`).
+Mathematical expression are also optimized using lazy evaluation which is implemented with expression templates. Expression such as `(A+B)*C` is compiled to a single `for` loop containing `(A[i]+B[i])*C[i]`, which makes it as efficient as hand-written C code. This also works when evaluating specific array element since only the specified element is effectively computed (e.g. `(A+B)(i,j,k)` simply compiles to `(A(i,j,k)+B(i,j,k))`).
 
-The main.cpp is a quick overview of the features and the speed_test.cpp is a demonstration of the speed difference between this template and nested `std::valarray` (which also uses lazy evaluation).
+The file `speed_test.cpp` is a demonstration of the speed difference between this template and nested `std::valarray` (which also uses lazy evaluation) as well as other interesting performance metrics. `test.cpp` contains tests but can also serve as a comprehensive list of features.
 
 **Note:** Must be compiled with c++20
 
@@ -60,8 +60,8 @@ std::cout<<A(4,3,2)<<std::endl;
 ```
 `operator[]` with 1 index. This returns a slice of the original array at the specified index.
 ```
-A[4] = 5;
-std::cout<<A[4]<<std::endl;
+A[2] = 5;
+std::cout<<A[2]<<std::endl;
 ```
 ```
 5 5 5
