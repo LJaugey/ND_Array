@@ -114,21 +114,6 @@ inline std::ostream& operator<<(std::ostream& output, const Array_Expression<E>&
     return output<<expr.eval();
 }
 
-
-//comparison operators
-template<class E1, class E2>
-static const bool operator==(const Array_Expression<E1>& expr1, const Array_Expression<E2>& expr2)
-{
-    if constexpr(!std::is_same_v<typename E1::terminal_type, typename E2::terminal_type>)  return false;
-
-    for(size_t i=0; i<E1::terminal_type::length; i++)
-    {
-        if(expr1.get_element(i) != expr2.get_element(i))  return false;
-    }
-
-    return true;
-}
-
 }
 
 #endif
