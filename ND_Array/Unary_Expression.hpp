@@ -36,6 +36,7 @@ public:
     }
 
     template <typename... ind_type>
+    requires (sizeof...(ind_type) == terminal_type::N)
     inline const value_type operator()(const ind_type... indices) const
     {
         return OP::apply(arg(indices...));

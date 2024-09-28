@@ -50,6 +50,7 @@ public:
     }
 
     template <typename... ind_type>
+    requires (sizeof...(ind_type) == terminal_type::N)
     inline const value_type operator()(const ind_type... indices) const
     {
         if constexpr(not ND::is_Array_Expression<E1>::value)

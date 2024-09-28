@@ -162,7 +162,7 @@ public:
         size_t offset = 0;
         size_t temp[N] = {static_cast<size_t>(indices)...};
 
-        for (size_t i = 0; i < std::min(N, sizeof...(ind_type)); ++i) {
+        for (size_t i = 0; i < N; ++i) {
             offset = offset * Dims[i] + temp[i];
         }
         return data_[offset];
@@ -174,7 +174,7 @@ public:
         size_t offset = 0;
         size_t temp[N] = {static_cast<size_t>(indices)...};
 
-        for (size_t i = 0; i < std::min(N, sizeof...(ind_type)); ++i) {
+        for (size_t i = 0; i < N; ++i) {
             offset = offset * Dims[i] + temp[i];
         }
         return data_[offset];
