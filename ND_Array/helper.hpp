@@ -15,7 +15,7 @@
     #define PARALLEL_FOR_REDUCE(op,n,var) _Pragma(STRINGIFY(omp parallel for simd reduction(op:var) if(n>PAR_SIZE)))
 #else
     #define PARALLEL_FOR(n)
-    #define PARALLEL_FOR_REDUCE(op,n,var) _Pragma(STRINGIFY(omp parallel for simd reduction(op:var) if(n>PAR_SIZE)))
+    #define PARALLEL_FOR_REDUCE(op,n,var)
 #endif
 
 
