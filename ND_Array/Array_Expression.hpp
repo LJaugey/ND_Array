@@ -91,7 +91,7 @@ public:
     // Check if all values are true
     const bool all() const
     {
-        for (size_t i = 1; i < terminal_type::length; i++)
+        for (size_t i = 0; i < terminal_type::length; i++)
         {
             if(get_element(i) == false) return false;
         }
