@@ -31,41 +31,41 @@ public:
     template<class E>
     void operator=(const Array_Expression<E>& expr)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
             if(mask_.get_element(i))    arr_.data_[i] = expr.get_element(i);
     }
     void operator=(const value_type val)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
             if(mask_.get_element(i))    arr_.data_[i] = val;
     }
     template<class E>
     void operator+=(const Array_Expression<E>& expr)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
             if(mask_.get_element(i))    arr_.data_[i] += expr.get_element(i);
     }
     template<class E>
     void operator-=(const Array_Expression<E>& expr)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
             if(mask_.get_element(i))    arr_.data_[i] -= expr.get_element(i);
     }
     template<class E>
     void operator*=(const Array_Expression<E>& expr)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
             if(mask_.get_element(i))    arr_.data_[i] *= expr.get_element(i);
     }
     template<class E>
     void operator/=(const Array_Expression<E>& expr)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
             if(mask_.get_element(i))    arr_.data_[i] /= expr.get_element(i);
     }
@@ -95,41 +95,41 @@ public:
     template<class E>
     void operator=(const Array_Expression<E>& expr)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
             if(mask_.get_element(i))    arr_.data_[i] = expr.get_element(i);
     }
     void operator=(const value_type val)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
             if(mask_.get_element(i))    arr_.data_[i] = val;
     }
     template<class E>
     void operator+=(const Array_Expression<E>& expr)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
             if(mask_.get_element(i))    arr_.data_[i] += expr.get_element(i);
     }
     template<class E>
     void operator-=(const Array_Expression<E>& expr)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
             if(mask_.get_element(i))    arr_.data_[i] -= expr.get_element(i);
     }
     template<class E>
     void operator*=(const Array_Expression<E>& expr)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
             if(mask_.get_element(i))    arr_.data_[i] *= expr.get_element(i);
     }
     template<class E>
     void operator/=(const Array_Expression<E>& expr)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
             if(mask_.get_element(i))    arr_.data_[i] /= expr.get_element(i);
     }

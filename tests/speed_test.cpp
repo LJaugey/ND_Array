@@ -163,7 +163,7 @@ int main()
     start = std::chrono::high_resolution_clock::now();
     while(t<t_fin)
     {
-        OMP_FOR(N*N*dim*dim*dim)
+        PARALLEL_FOR(N*N*dim*dim*dim)
         for(int i = 0; i<N*N*dim*dim*dim; i++)
             _C_[i] = cos(_A_[i]) + sin(_B_[i]) - _A_[i]*dt + 2*_B_[i]*dt * tan(_C_[i]);
         t+=dt;

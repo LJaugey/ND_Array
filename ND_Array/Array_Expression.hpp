@@ -53,7 +53,7 @@ public:
     {
         value_type res = get_element(0);
         
-        OMP_FOR_min(terminal_type::length,res)
+        PARALLEL_FOR_REDUCE(min,terminal_type::length,res)
         for (size_t i = 1; i < terminal_type::length; i++)
         {
             res = std::min(res,get_element(i));
@@ -66,7 +66,7 @@ public:
     {
         value_type res = get_element(0);
         
-        OMP_FOR_max(terminal_type::length,res)
+        PARALLEL_FOR_REDUCE(max,terminal_type::length,res)
         for (size_t i = 1; i < terminal_type::length; i++)
         {
             res = std::max(res,get_element(i));
@@ -79,7 +79,7 @@ public:
     {
         value_type res = get_element(0);
         
-        OMP_FOR_add(terminal_type::length,res)
+        PARALLEL_FOR_REDUCE(+,terminal_type::length,res)
         for (size_t i = 1; i < terminal_type::length; i++)
         {
             res += get_element(i);

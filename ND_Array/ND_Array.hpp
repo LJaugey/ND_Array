@@ -62,7 +62,7 @@ public:
     {
         data_ = new value_type[length];
 
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] = val;
@@ -75,7 +75,7 @@ public:
     {
         data_ = new value_type[length];
 
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] = other.data_[i];
@@ -92,7 +92,7 @@ public:
     // copy assigment operator
     const Array<T, firstDim, RestDims...>& operator=(const Array<T, firstDim, RestDims...>& other)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] = other.data_[i];
@@ -102,7 +102,7 @@ public:
     }
     const Array<T, firstDim, RestDims...>& operator=(value_type val)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] = val;
@@ -116,7 +116,7 @@ public:
     {
         data_ = new value_type[length];
 
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] = slice.data_[i%(RestDims*...)];
@@ -131,7 +131,7 @@ public:
     {
         data_ = new value_type[length];
         
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] = expr.get_element(shift + i);
@@ -140,7 +140,7 @@ public:
     template <typename E>
     const Array& operator=(const Array_Expression<E>& expr)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] = expr.get_element(i);
@@ -199,7 +199,7 @@ public:
 
     const Array<T, firstDim, RestDims...>& fill(value_type val)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] = val;
@@ -211,7 +211,7 @@ public:
     {
         if(data_ != other.data_)
         {
-            OMP_FOR(length)
+            PARALLEL_FOR(length)
             for (size_t i = 0; i < length; ++i)
             {
                 data_[i] = other.data_[i];
@@ -223,7 +223,7 @@ public:
     template<class E>
     const Array<T, firstDim, RestDims...>& fill(const Array_Expression<E>& expr)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] = expr.get_element(i);
@@ -248,7 +248,7 @@ public:
     template<class E>
     const Array<T, firstDim, RestDims...>& operator+=(const Array_Expression<E>& expr)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] += expr.get_element(i);
@@ -259,7 +259,7 @@ public:
     // scalar
     const Array<T, firstDim, RestDims...>& operator+=(value_type val)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] += val;
@@ -272,7 +272,7 @@ public:
     template<class E>
     const Array<T, firstDim, RestDims...>& operator-=(const Array_Expression<E>& expr)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] -= expr.get_element(i);
@@ -283,7 +283,7 @@ public:
     // scalar
     const Array<T, firstDim, RestDims...>& operator-=(value_type val)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] -= val;
@@ -296,7 +296,7 @@ public:
     template<class E>
     const Array<T, firstDim, RestDims...>& operator*=(const Array_Expression<E>& expr)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] *= expr.get_element(i);
@@ -307,7 +307,7 @@ public:
     // scalar
     const Array<T, firstDim, RestDims...>& operator*=(value_type val)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] *= val;
@@ -320,7 +320,7 @@ public:
     template<class E>
     const Array<T, firstDim, RestDims...>& operator/=(const Array_Expression<E>& expr)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] /= expr.get_element(i);
@@ -333,7 +333,7 @@ public:
     {
         value_type inv_val = 1.0/val;
 
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] *= inv_val;
@@ -412,7 +412,7 @@ public:
     {
         data_ = new value_type[length];
 
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] = val;
@@ -425,7 +425,7 @@ public:
     {
         data_ = new value_type[length];
 
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] = other.data_[i];
@@ -442,7 +442,7 @@ public:
     // copy assigment operator
     const Array<T, Dim>& operator=(const Array<T, Dim>& other)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] = other.data_[i];
@@ -452,7 +452,7 @@ public:
     }
     const Array<T, Dim>& operator=(value_type val)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] = val;
@@ -469,7 +469,7 @@ public:
     {
         data_ = new value_type[length];
         
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] = expr.get_element(shift + i);
@@ -478,7 +478,7 @@ public:
     template <typename E>
     const Array<T, Dim>& operator=(const Array_Expression<E>& expr)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] = expr.get_element(i);
@@ -505,7 +505,7 @@ public:
 
     const Array<T, Dim>& fill(value_type val)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] = val;
@@ -517,7 +517,7 @@ public:
     {
         if(data_ != other.data_)
         {
-            OMP_FOR(length)
+            PARALLEL_FOR(length)
             for (size_t i = 0; i < length; ++i)
             {
                 data_[i] = other.data_[i];
@@ -529,7 +529,7 @@ public:
     template<class E>
     const Array<T, Dim>& fill(const Array_Expression<E>& expr)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] = expr.get_element(i);
@@ -555,7 +555,7 @@ public:
     // += operator
     const Array<T, Dim>& operator+=(const Array<T, Dim>& other)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] += other.data_[i];
@@ -566,7 +566,7 @@ public:
     // scalar
     const Array<T, Dim>& operator+=(value_type val)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] += val;
@@ -578,7 +578,7 @@ public:
     // -= operator
     const Array<T, Dim>& operator-=(const Array<T, Dim>& other)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] -= other.data_[i];
@@ -589,7 +589,7 @@ public:
     // scalar
     const Array<T, Dim>& operator-=(value_type val)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] -= val;
@@ -601,7 +601,7 @@ public:
     // *= operator
     const Array<T, Dim>& operator*=(const Array<T, Dim>& other)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] *= other.data_[i];
@@ -612,7 +612,7 @@ public:
     // scalar
     const Array<T, Dim>& operator*=(value_type val)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] *= val;
@@ -624,7 +624,7 @@ public:
     // /= operator
     const Array<T, Dim>& operator/=(const Array<T, Dim>& other)
     {
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] /= other.data_[i];
@@ -637,7 +637,7 @@ public:
     {
         value_type inv_val = 1.0/val;
 
-        OMP_FOR(length)
+        PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
         {
             data_[i] *= inv_val;
