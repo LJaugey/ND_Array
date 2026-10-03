@@ -36,10 +36,10 @@ public:
 
 
     template<typename any_type>
-    using generic_terminal_type = typename base_traits<Array>::generic_terminal_type<any_type>;
+    using generic_terminal_type = typename base_traits<Array>::template generic_terminal_type<any_type>;
 
     template<typename any_type>
-    using generic_terminal_sub_type = typename base_traits<Array>::generic_terminal_sub_type<any_type>;
+    using generic_terminal_sub_type = typename base_traits<Array>::template generic_terminal_sub_type<any_type>;
 
 protected:
 
@@ -386,10 +386,10 @@ public:
 
 
     template<typename any_type>
-    using generic_terminal_type = typename base_traits<Array>::generic_terminal_type<any_type>;
+    using generic_terminal_type = typename base_traits<Array>::template generic_terminal_type<any_type>;
 
     template<typename any_type>
-    using generic_terminal_sub_type = typename base_traits<Array>::generic_terminal_sub_type<any_type>;
+    using generic_terminal_sub_type = typename base_traits<Array>::template generic_terminal_sub_type<any_type>;
 
 protected:
 

@@ -20,10 +20,10 @@ public:
     typedef typename base_traits<Unary_Op>::value_type value_type;
 
     template<typename any_type>
-    using generic_terminal_type = typename base_traits<Unary_Op>::generic_terminal_type<any_type>;
+    using generic_terminal_type = typename base_traits<Unary_Op>::template generic_terminal_type<any_type>;
 
     template<typename any_type>
-    using generic_terminal_sub_type = typename base_traits<Unary_Op>::generic_terminal_sub_type<any_type>;
+    using generic_terminal_sub_type = typename base_traits<Unary_Op>::template generic_terminal_sub_type<any_type>;
 
     
     Unary_Op(const E& a)

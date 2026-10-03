@@ -59,10 +59,10 @@ struct base_traits<Unary_Op<OP,E>>
 
 
     template<typename any_type>
-    using generic_terminal_type = typename base_traits<E>::generic_terminal_type<any_type>;
+    using generic_terminal_type = typename base_traits<E>::template generic_terminal_type<any_type>;
 
     template<typename any_type>
-    using generic_terminal_sub_type = typename base_traits<E>::generic_terminal_sub_type<any_type>;
+    using generic_terminal_sub_type = typename base_traits<E>::template generic_terminal_sub_type<any_type>;
     
 
     typedef generic_terminal_type<value_type> terminal_type;
@@ -93,13 +93,13 @@ struct base_traits<Binary_Op<E1,OP,E2>>
     using generic_terminal_type = typename std::conditional< ND::is_Array_Expression<E1>::value,
                                                     base_traits<E1>,
                                                     base_traits<E2>
-                                                    >::type::generic_terminal_type<any_type>;
+                                                    >::type::template generic_terminal_type<any_type>;
 
     template<typename any_type>
     using generic_terminal_sub_type = typename std::conditional< ND::is_Array_Expression<E1>::value,
                                                         base_traits<E1>,
                                                         base_traits<E2>
-                                                        >::type::generic_terminal_sub_type<any_type>;
+                                                        >::type::template generic_terminal_sub_type<any_type>;
 
 
     typedef generic_terminal_type<value_type> terminal_type;
