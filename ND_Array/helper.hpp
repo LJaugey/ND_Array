@@ -37,11 +37,15 @@ template <class E>
 class Array_Expression;
 
 
-template <class E>
-struct is_Array_Expression
-{
-    static constexpr bool value = std::is_base_of<Array_Expression<E>,E>::value;
-};
+template<typename E>
+struct is_Array_Expression : std::false_type {};
+
+template<typename E>
+struct is_Array_Expression<Array_Expression<E>> : std::true_type {};
+
+template<typename E>
+requires(std::is_base_of<Array_Expression<E>,E>::value)
+struct is_Array_Expression<E> : std::true_type {};
 
 
 
