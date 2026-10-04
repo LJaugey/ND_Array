@@ -29,7 +29,7 @@ public:
 
     inline const terminal_type eval() const
     {
-        return terminal_type(*this);    // Guaranteed copy elision
+        return terminal_type(static_cast<const E&>(*this));    // Guaranteed copy elision
     }
 
     // operator[] only collapses sub-array
@@ -41,7 +41,7 @@ public:
         }
         else
         {
-            return terminal_sub_type(*this, index*terminal_sub_type::length);  // Guaranteed copy elision
+            return terminal_sub_type(static_cast<const E&>(*this), index*terminal_sub_type::length);  // Guaranteed copy elision
         }
     }
 
