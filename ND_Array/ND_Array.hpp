@@ -57,7 +57,7 @@ public:
     {
         data_ = new value_type[length];
     }
-    Array(value_type val)
+    Array(const value_type& val)
     : is_original(true)
     {
         data_ = new value_type[length];
@@ -100,7 +100,7 @@ public:
 
         return *this;
     }
-    const Array<T, firstDim, RestDims...>& operator=(value_type val)
+    const Array<T, firstDim, RestDims...>& operator=(const value_type& val)
     {
         PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
@@ -197,7 +197,7 @@ public:
     }
 
 
-    const Array<T, firstDim, RestDims...>& fill(value_type val)
+    const Array<T, firstDim, RestDims...>& fill(const value_type& val)
     {
         PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
@@ -246,7 +246,7 @@ public:
 
     // += operator
     template<class E>
-    const Array<T, firstDim, RestDims...>& operator+=(const Array_Expression<E>& expr)
+    const Array<T, firstDim, RestDims...>& operator+=(const E& expr)
     {
         *this = *this + expr;
 
@@ -262,7 +262,7 @@ public:
 
     // -= operator
     template<class E>
-    const Array<T, firstDim, RestDims...>& operator-=(const Array_Expression<E>& expr)
+    const Array<T, firstDim, RestDims...>& operator-=(const E& expr)
     {
         *this = *this - expr;
 
@@ -278,7 +278,7 @@ public:
 
     // *= operator
     template<class E>
-    const Array<T, firstDim, RestDims...>& operator*=(const Array_Expression<E>& expr)
+    const Array<T, firstDim, RestDims...>& operator*=(const E& expr)
     {
         *this = *this * expr;
 
@@ -294,7 +294,7 @@ public:
 
     // /= operator
     template<class E>
-    const Array<T, firstDim, RestDims...>& operator/=(const Array_Expression<E>& expr)
+    const Array<T, firstDim, RestDims...>& operator/=(const E& expr)
     {
         *this = *this / expr;
 
@@ -375,7 +375,7 @@ public:
     {
         data_ = new value_type[length];
     }
-    Array(value_type val)
+    Array(const value_type& val)
     : is_original(true)
     {
         data_ = new value_type[length];
@@ -418,7 +418,7 @@ public:
 
         return *this;
     }
-    const Array<T, Dim>& operator=(value_type val)
+    const Array<T, Dim>& operator=(const value_type& val)
     {
         PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
@@ -471,7 +471,7 @@ public:
 
 
 
-    const Array<T, Dim>& fill(value_type val)
+    const Array<T, Dim>& fill(const value_type& val)
     {
         PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
@@ -522,7 +522,7 @@ public:
 
     // += operator
     template<class E>
-    const Array<T, Dim>& operator+=(const Array_Expression<E>& expr)
+    const Array<T, Dim>& operator+=(const E& expr)
     {
         *this = *this + expr;
 
@@ -538,7 +538,7 @@ public:
 
     // -= operator
     template<class E>
-    const Array<T, Dim>& operator-=(const Array_Expression<E>& expr)
+    const Array<T, Dim>& operator-=(const E& expr)
     {
         *this = *this - expr;
 
@@ -554,7 +554,7 @@ public:
 
     // *= operator
     template<class E>
-    const Array<T, Dim>& operator*=(const Array_Expression<E>& expr)
+    const Array<T, Dim>& operator*=(const E& expr)
     {
         *this = *this * expr;
 
@@ -570,7 +570,7 @@ public:
 
     // /= operator
     template<class E>
-    const Array<T, Dim>& operator/=(const Array_Expression<E>& expr)
+    const Array<T, Dim>& operator/=(const E& expr)
     {
         *this = *this / expr;
 
