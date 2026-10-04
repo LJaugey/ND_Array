@@ -111,7 +111,8 @@ public:
     // construct from Array_expressions
     // Shift can be used if N<expr.N (e.g. operator[] on expressions)
     template <typename E>
-    Array(const Array_Expression<E>& expr, size_t shift = 0)
+    requires(is_Array_Expression<E>::value)
+    Array(const E& expr, size_t shift = 0)
     : is_original(true)
     {
         _AllocateMemory();
@@ -119,7 +120,8 @@ public:
         _CollapseExpression(expr);
     }
     template <typename E>
-    const Array& operator=(const Array_Expression<E>& expr)
+    requires(is_Array_Expression<E>::value)
+    const Array& operator=(const E& expr)
     {
         _CollapseExpression(expr);
 
@@ -190,7 +192,8 @@ public:
         return *this;
     }
     template<class E>
-    const Array<T, firstDim, RestDims...>& fill(const Array_Expression<E>& expr)
+    requires(is_Array_Expression<E>::value)
+    const Array<T, firstDim, RestDims...>& fill(const E& expr)
     {
         _CollapseExpression(expr);
 
@@ -211,6 +214,7 @@ public:
 
     // += operator
     template<class E>
+    requires(is_Array_Expression<E>::value)
     const Array<T, firstDim, RestDims...>& operator+=(const E& expr)
     {
         *this = *this + expr;
@@ -227,6 +231,7 @@ public:
 
     // -= operator
     template<class E>
+    requires(is_Array_Expression<E>::value)
     const Array<T, firstDim, RestDims...>& operator-=(const E& expr)
     {
         *this = *this - expr;
@@ -243,6 +248,7 @@ public:
 
     // *= operator
     template<class E>
+    requires(is_Array_Expression<E>::value)
     const Array<T, firstDim, RestDims...>& operator*=(const E& expr)
     {
         *this = *this * expr;
@@ -259,6 +265,7 @@ public:
 
     // /= operator
     template<class E>
+    requires(is_Array_Expression<E>::value)
     const Array<T, firstDim, RestDims...>& operator/=(const E& expr)
     {
         *this = *this / expr;
@@ -297,6 +304,7 @@ protected:
         }
     }
     template<typename E>
+    requires(is_Array_Expression<E>::value)
     void _CollapseExpression(const E& expr, const size_t shift = 0)
     {
         PARALLEL_FOR(length)
@@ -413,7 +421,8 @@ public:
     // construct from Array_expressions
     // Shift can be used if N<expr.N (e.g. operator[] on expressions)
     template <typename E>
-    Array(const Array_Expression<E>& expr, size_t shift = 0)
+    requires(is_Array_Expression<E>::value)
+    Array(const E& expr, size_t shift = 0)
     : is_original(true)
     {
         _AllocateMemory();
@@ -421,7 +430,8 @@ public:
         _CollapseExpression(expr, shift);
     }
     template <typename E>
-    const Array<T, Dim>& operator=(const Array_Expression<E>& expr)
+    requires(is_Array_Expression<E>::value)
+    const Array<T, Dim>& operator=(const E& expr)
     {
         _CollapseExpression(expr);
 
@@ -460,7 +470,8 @@ public:
         return *this;
     }
     template<class E>
-    const Array<T, Dim>& fill(const Array_Expression<E>& expr)
+    requires(is_Array_Expression<E>::value)
+    const Array<T, Dim>& fill(const E& expr)
     {
         _CollapseExpression(expr);
 
@@ -483,6 +494,7 @@ public:
 
     // += operator
     template<class E>
+    requires(is_Array_Expression<E>::value)
     const Array<T, Dim>& operator+=(const E& expr)
     {
         *this = *this + expr;
@@ -499,6 +511,7 @@ public:
 
     // -= operator
     template<class E>
+    requires(is_Array_Expression<E>::value)
     const Array<T, Dim>& operator-=(const E& expr)
     {
         *this = *this - expr;
@@ -515,6 +528,7 @@ public:
 
     // *= operator
     template<class E>
+    requires(is_Array_Expression<E>::value)
     const Array<T, Dim>& operator*=(const E& expr)
     {
         *this = *this * expr;
@@ -531,6 +545,7 @@ public:
 
     // /= operator
     template<class E>
+    requires(is_Array_Expression<E>::value)
     const Array<T, Dim>& operator/=(const E& expr)
     {
         *this = *this / expr;
@@ -570,6 +585,7 @@ protected:
         }
     }
     template<typename E>
+    requires(is_Array_Expression<E>::value)
     void _CollapseExpression(const E& expr, const size_t shift = 0)
     {
         PARALLEL_FOR(length)
