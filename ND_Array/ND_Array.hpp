@@ -55,32 +55,25 @@ public:
     Array()
     : is_original(true)
     {
-        data_ = new value_type[length];
+        _AllocateMemory();
     }
     Array(const value_type& val)
     : is_original(true)
     {
-        data_ = new value_type[length];
+        _AllocateMemory();
 
-        PARALLEL_FOR(length)
-        for (size_t i = 0; i < length; ++i)
-        {
-            data_[i] = val;
-        }
+        _SetMemory(val);
     }
 
     // copy constructor
     Array(const Array<T, firstDim, RestDims...>& other)
     : is_original(true)
     {
-        data_ = new value_type[length];
+        _AllocateMemory();
 
-        PARALLEL_FOR(length)
-        for (size_t i = 0; i < length; ++i)
-        {
-            data_[i] = other.data_[i];
-        }
+        _SetMemory(other.data_);
     }
+    
 protected:
     // Constructor from pointer
     Array(value_type* p, bool is_or)
@@ -92,21 +85,13 @@ public:
     // copy assigment operator
     const Array<T, firstDim, RestDims...>& operator=(const Array<T, firstDim, RestDims...>& other)
     {
-        PARALLEL_FOR(length)
-        for (size_t i = 0; i < length; ++i)
-        {
-            data_[i] = other.data_[i];
-        }
+        _SetMemory(other.data_);
 
         return *this;
     }
     const Array<T, firstDim, RestDims...>& operator=(const value_type& val)
     {
-        PARALLEL_FOR(length)
-        for (size_t i = 0; i < length; ++i)
-        {
-            data_[i] = val;
-        }
+        _SetMemory(val);
         
         return *this;
     }
@@ -114,7 +99,7 @@ public:
     Array(const Array<T, RestDims...>& slice)
     : is_original(true)
     {
-        data_ = new value_type[length];
+        _AllocateMemory();
 
         PARALLEL_FOR(length)
         for (size_t i = 0; i < length; ++i)
@@ -129,22 +114,14 @@ public:
     Array(const Array_Expression<E>& expr, size_t shift = 0)
     : is_original(true)
     {
-        data_ = new value_type[length];
+        _AllocateMemory();
         
-        PARALLEL_FOR(length)
-        for (size_t i = 0; i < length; ++i)
-        {
-            data_[i] = expr.get_element(shift + i);
-        }
+        _CollapseExpression(expr);
     }
     template <typename E>
     const Array& operator=(const Array_Expression<E>& expr)
     {
-        PARALLEL_FOR(length)
-        for (size_t i = 0; i < length; ++i)
-        {
-            data_[i] = expr.get_element(i);
-        }
+        _CollapseExpression(expr);
 
         return *this;
     }
@@ -199,11 +176,7 @@ public:
 
     const Array<T, firstDim, RestDims...>& fill(const value_type& val)
     {
-        PARALLEL_FOR(length)
-        for (size_t i = 0; i < length; ++i)
-        {
-            data_[i] = val;
-        }
+        _SetMemory(val);
 
         return *this;
     }
@@ -211,11 +184,7 @@ public:
     {
         if(data_ != other.data_)
         {
-            PARALLEL_FOR(length)
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = other.data_[i];
-            }
+            _SetMemory(other.data_);
         }
         
         return *this;
@@ -223,11 +192,7 @@ public:
     template<class E>
     const Array<T, firstDim, RestDims...>& fill(const Array_Expression<E>& expr)
     {
-        PARALLEL_FOR(length)
-        for (size_t i = 0; i < length; ++i)
-        {
-            data_[i] = expr.get_element(i);
-        }
+        _CollapseExpression(expr);
 
         return *this;
     }
@@ -309,6 +274,37 @@ public:
 
         return *this;
     }
+protected:
+
+    void _AllocateMemory()
+    {
+        data_ = new value_type[length];
+    }
+    void _SetMemory(const value_type& val)
+    {
+        PARALLEL_FOR(length)
+        for (size_t i = 0; i < length; ++i)
+        {
+            data_[i] = val;
+        }
+    }
+    void _SetMemory(value_type* newData)
+    {
+        PARALLEL_FOR(length)
+        for (size_t i = 0; i < length; ++i)
+        {
+            data_[i] = newData[i];
+        }
+    }
+    template<typename E>
+    void _CollapseExpression(const E& expr, const size_t shift = 0)
+    {
+        PARALLEL_FOR(length)
+        for (size_t i = 0; i < length; ++i)
+        {
+            data_[i] = expr.get_element(i);
+        }
+    }
 };
 
 
@@ -373,32 +369,25 @@ public:
     Array()
     : is_original(true)
     {
-        data_ = new value_type[length];
+        _AllocateMemory();
     }
     Array(const value_type& val)
     : is_original(true)
     {
-        data_ = new value_type[length];
-
-        PARALLEL_FOR(length)
-        for (size_t i = 0; i < length; ++i)
-        {
-            data_[i] = val;
-        }
+        _AllocateMemory();
+        
+        _SetMemory(val);
     }
 
     // copy constructor
     Array(const Array<T, Dim>& other)
     : is_original(true)
     {
-        data_ = new value_type[length];
+        _AllocateMemory();
 
-        PARALLEL_FOR(length)
-        for (size_t i = 0; i < length; ++i)
-        {
-            data_[i] = other.data_[i];
-        }
+        _SetMemory(other.data);
     }
+
 protected:
     // Constructor from pointer
     Array(value_type* p, bool is_or)
@@ -410,21 +399,13 @@ public:
     // copy assigment operator
     const Array<T, Dim>& operator=(const Array<T, Dim>& other)
     {
-        PARALLEL_FOR(length)
-        for (size_t i = 0; i < length; ++i)
-        {
-            data_[i] = other.data_[i];
-        }
+        _SetMemory(other.data_);
 
         return *this;
     }
     const Array<T, Dim>& operator=(const value_type& val)
     {
-        PARALLEL_FOR(length)
-        for (size_t i = 0; i < length; ++i)
-        {
-            data_[i] = val;
-        }
+        _SetMemory(val);
         
         return *this;
     }
@@ -435,22 +416,14 @@ public:
     Array(const Array_Expression<E>& expr, size_t shift = 0)
     : is_original(true)
     {
-        data_ = new value_type[length];
+        _AllocateMemory();
         
-        PARALLEL_FOR(length)
-        for (size_t i = 0; i < length; ++i)
-        {
-            data_[i] = expr.get_element(shift + i);
-        }
+        _CollapseExpression(expr, shift);
     }
     template <typename E>
     const Array<T, Dim>& operator=(const Array_Expression<E>& expr)
     {
-        PARALLEL_FOR(length)
-        for (size_t i = 0; i < length; ++i)
-        {
-            data_[i] = expr.get_element(i);
-        }
+        _CollapseExpression(expr);
 
         return *this;
     }
@@ -473,11 +446,7 @@ public:
 
     const Array<T, Dim>& fill(const value_type& val)
     {
-        PARALLEL_FOR(length)
-        for (size_t i = 0; i < length; ++i)
-        {
-            data_[i] = val;
-        }
+        _SetMemory(val);
 
         return *this;
     }
@@ -485,11 +454,7 @@ public:
     {
         if(data_ != other.data_)
         {
-            PARALLEL_FOR(length)
-            for (size_t i = 0; i < length; ++i)
-            {
-                data_[i] = other.data_[i];
-            }
+            _SetMemory(other.data_);
         }
         
         return *this;
@@ -497,11 +462,7 @@ public:
     template<class E>
     const Array<T, Dim>& fill(const Array_Expression<E>& expr)
     {
-        PARALLEL_FOR(length)
-        for (size_t i = 0; i < length; ++i)
-        {
-            data_[i] = expr.get_element(i);
-        }
+        _CollapseExpression(expr);
 
         return *this;
     }
@@ -584,6 +545,38 @@ public:
         *this = *this * inv_val;
 
         return *this;
+    }
+
+protected:
+
+    void _AllocateMemory()
+    {
+        data_ = new value_type[length];
+    }
+    void _SetMemory(const value_type& val)
+    {
+        PARALLEL_FOR(length)
+        for (size_t i = 0; i < length; ++i)
+        {
+            data_[i] = val;
+        }
+    }
+    void _SetMemory(value_type* newData)
+    {
+        PARALLEL_FOR(length)
+        for (size_t i = 0; i < length; ++i)
+        {
+            data_[i] = newData[i];
+        }
+    }
+    template<typename E>
+    void _CollapseExpression(const E& expr, const size_t shift = 0)
+    {
+        PARALLEL_FOR(length)
+        for (size_t i = 0; i < length; ++i)
+        {
+            data_[i] = expr.get_element(i);
+        }
     }
 };
 
